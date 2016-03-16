@@ -1,0 +1,6 @@
+Config {
+       -- appearance
+       font = "xft:Ubuntu Mono:size=9"
+       -- general behavior
+       allDesktops = True,
+}
