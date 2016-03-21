@@ -1,3 +1,8 @@
+-- Hacks
+-- see connect_signal at bottom
+-- fullscreen signal will revert fullscreen to the state of marked.
+-- marking will set fullscreen to that state.
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -331,26 +336,37 @@ globalkeys = awful.util.table.join(
 )
 
 clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({ modkey,           }, "f",
+	function (c)
+	    awful.client.togglemarked(c)
+    end),
+    awful.key({ modkey,           }, "g",
+	function (c)
+	    -- c:redraw()
+	    -- will toggle back, as marking is the only way to toggle fullscreen
+	    c.fullscreen = not c.fullscreen
+    end),
     awful.key({ modkey,           }, "q",      function (c) c:kill()                         end),
-    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Shift"   }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey,           }, "t",
         function (c)
-            awful.client.floating.toggle(c)
-            c.ontop = awful.client.floating.get(c)
+	    floating = not awful.client.floating.get(c)
+	    awful.client.floating.set(c, floating)
+	    c.ontop = floating
+	    awful.client.unmark(c)
         end
     ),
-    -- awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey,           }, "m",
         function (c)
             c.minimized = not c.minimized
     end),
     awful.key({ modkey, "Shift"   }, "m",
         function (c)
+	    floating = awful.client.floating.get(c)
             c.maximized_horizontal = not c.maximized_horizontal
             c.maximized_vertical   = not c.maximized_vertical
+	    c.ontop = floating
     end)
 )
 
@@ -506,6 +522,31 @@ client.connect_signal(
         end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c)
+			  c.border_color = beautiful.border_focus
+end)
+client.connect_signal("unfocus",
+		      function(c)
+			  if awful.client.floating.get(c) then
+			      c.border_color = beautiful.border_float
+			  else
+			      c.border_color = beautiful.border_normal
+			  end
+end)
+client.connect_signal("marked",
+		      function(c)
+			  c.fullscreen = true
+end)
+client.connect_signal("unmarked",
+		      function(c)
+			  c.fullscreen = false
+end)
+client.connect_signal("property::fullscreen",
+		      function(c)
+			  fullscreen = awful.client.ismarked(c)
+			  c.fullscreen = fullscreen
+			  if not fullscreen then
+			      c.ontop = awful.client.floating.get(c)
+			  end
+end)
 -- }}}

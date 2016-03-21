@@ -9,7 +9,7 @@ Configuration for my [Manjaro Linux](https://manjaro.github.io/) Laptop and Desk
 - `banshee` - Music Player
 - `chromium` - Web Browser
 - `compton` - Compositor used for vsync and other effects
-- `emacs` - Customizable Text Editor
+- `emacs` - Customizable Text Editor configured with `elisp`
 - `hexchat` - IRC Client
 - `lxterminal` - Lightweight terminal with 24bit color support
 

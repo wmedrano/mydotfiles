@@ -1,11 +1,15 @@
+# Misc Modifications
+- `Super + f` is the only way to fullscreen applications. Made for viewing videos :D
+- Floating windows have `ontop` property
+- Color borders, green active, red inactive, blue inactive floating
+
 # Mouse Bindings
 - `Mouse-Left` on Tag - Switch Tag
 - `Mouse-Right` on Tag - Add Clients From The Tag To Current Screen
 - `Mouse-Scroll` on Tag - Change Tags
-- `Mouse-Move` on Client - Change Focus To Client
+- `Mouse-Move` on Clients - Change Focus To Client
 - `Super + Mouse-Left` - Drag To Move Client
 - `Super + Mouse-Right` - Drag To Resize Client
-- `Super + Mouse-Middle` - Paste
 
 # Global Keybindings
 - `XF86AudioLowerVolume` - Lower Volume 10%
@@ -35,16 +39,16 @@
 - `Super + r` - Run Command
 - `Super + x` - Run Lua Code
 - `Super + p` - Menubar, not good
-- `Super + space` - App Launcher (albert)
+- `Super + space` - App Launcher
 
 # Client Keys
 - `Super + Shift + 1..9` - Move Client To Tag N
 - `Super + Ctrl + Shift + 1..9` - Also Show Client On Tag N
 - `Super + f` - Toggle Fullscreen
 - `Super + q` - Kill
-- `Super + Ctrl + Space` - Toggle Floating
 - `Super + Shift + Return` - Set As Master
 - `Super + o` - Move To Next Monitor
-- `Super + t` - Toggle On Top
+- `Super + t` - Toggle Floating
 - `Super + m` - Minimixe
 - `Super + Shift m` - Maximize
+- `Super + g` - Redraw client, done by toggling fullscreen twice

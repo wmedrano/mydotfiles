@@ -17,6 +17,7 @@ shopt -s expand_aliases
 
 alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
+alias emacs="emacsclient"
 alias free='free -m'                      # show sizes in MB
 alias emacsclient='emacsclient -t'
 

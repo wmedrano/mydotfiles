@@ -1,58 +1,44 @@
 ;;; package --- init
 ;;; Commentary:
-;;;     If packages are missing, use (my-install-packages)
+;;;     My Emacs configuration
 ;;; Code:
 
-;; disable startup screen
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-save-default nil)
- '(column-number-mode t)
- '(company-idle-delay 0.05)
- '(company-minimum-prefix-length 1)
- '(company-selection-wrap-around t)
- '(company-tooltip-align-annotations t)
- '(company-tooltip-limit 30)
- '(company-tooltip-minimum-width 76)
  '(custom-safe-themes
    (quote
-    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default)))
- '(eldoc-idle-delay 0.1)
- '(fill-column 80)
- '(flycheck-checker-error-threshold 1000)
- '(flycheck-display-errors-delay 0.1)
- '(flycheck-idle-change-delay 1.0)
- '(indent-tabs-mode nil)
- '(inhibit-startup-screen t)
- '(linum-format "%d ")
- '(lua-indent-level 4)
- '(make-backup-files nil)
- '(menu-bar-mode nil)
- '(mouse-autoselect-window t)
+    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+ '(eldoc-echo-area-use-multiline-p t)
  '(package-selected-packages
    (quote
-    (ac-python auto-complete yasnippet which-key toml-mode smart-mode-line racer neotree monokai-theme markdown-mode magit lua-mode key-chord julia-mode irony-eldoc ibuffer-vc hindent helm-projectile helm-package helm-flyspell helm-descbinds helm-company helm-ag go-eldoc gitconfig-mode git-gutter flyspell-popup flycheck-tip flycheck-rust flycheck-irony flycheck-haskell flx-ido evil-commentary evil-anzu diminish company-racer company-quickhelp company-jedi company-irony company-go company-ghc cider cargo benchmark-init ag ace-window ace-jump-buffer)))
- '(projectile-completion-system (quote helm))
- '(projectile-switch-project-action (quote neotree-projectile-action))
- '(projectile-use-git-grep t)
- '(python-shell-interpreter "ipython")
- '(python-shell-interpreter-args "-i")
- '(racer-rust-src-path "/usr/src/rust/src")
- '(sml/name-width 24)
- '(sml/theme (quote respectful))
- '(tool-bar-mode nil)
- '(which-key-idle-delay 0.5)
- '(which-key-lighter nil))
+    (julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 119 :width normal))))
- '(popup-tip-face ((t (:background "#F0F0DF" :foreground "#272822")))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 119 :width normal)))))
+
+(setq indent-tabs-mode nil
+      inhibit-startup-screen t
+      make-backup-files nil
+      mouse-autoselect-window t)
+(global-auto-revert-mode)
+(column-number-mode +1)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(electric-pair-mode +1)
+(global-hl-line-mode)
+(menu-bar-mode -1)
+(set-fill-column 80)
+(tool-bar-mode -1)
+(xterm-mouse-mode +1)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'prog-mode-hook #'auto-fill-mode)
+(add-hook 'auto-fill-mode-hook (lambda () (set-fill-column 80)))
 
 (require 'package)
 (add-to-list 'package-archives '("marmalade"
@@ -60,241 +46,186 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-(defvar my-packages '(
-                      ace-jump-buffer ; navigate buffers better
-                      ace-window ; navigate windows better
-                      ag ; code searching tool that is better than ack
-                      benchmark-init ; benchmark emacs
-                      cargo ; rust's package manager
-                      cider ; clojure(script) development environment
-                      clojure-mode ; clojure/clojurescript programming language
-                      company ; complete-anything
-                      company-ghc ; haskell completions through ghc
-                      company-go ; gocode backend for company
-                      company-irony ; irony backend for company
-                      company-jedi ; jedi backend for company
-                      company-quickhelp ; documentation for company completions
-                      company-racer ; rust racer backend for company
-                      diminish ; make mode-line cleaner by removing some modes
-                      irony-eldoc ; irony integration for eldoc
-                      evil ; extensible vi layer
-                      evil-anzu ; displays number of matches for buffer searches
-                      evil-commentary ; comment out lines of code
-                      flycheck ; on-the-fly syntax checking
-                      flycheck-haskell ; flycheck fixes for haskell
-                      flycheck-irony ; irony integration for flycheck
-                      flycheck-rust ; flycheck fixes for rust
-                      flycheck-tip ; show flycheck errors in popup
-                      flyspell-popup ; popup for flyspell
-                      flx-ido ; better fuzzy matching for ido
-                      ghc ; happy haskell programming
-                      git-gutter ; show git information in gutter area
-                      gitconfig-mode ; editing for .gitconfig files
-                      go-eldoc ; eldoc support for go programming language
-                      go-mode ; go programming language
-                      haskell-mode ; haskell programming language
-                      helm ; incremental completions
-                      helm-ag ; Silver search with helm interface
-                      helm-company ; helm for company completions
-                      helm-descbinds ; helm for displaying keybindings
-                      helm-package ; helm for installing packages
-                      helm-projectile ; helm integration for projectile
-                      helm-flyspell ; helm integration for flyspell
-                      hindent ; haskell indentations
-                      ibuffer ; replacement for BufferMenu
-                      ibuffer-vc ; vc integration for ibuffer
-                      irony ; really nice clang integration
-                      julia-mode ; julia programming language
-                      key-chord ; map simultaneously pressed keys to commands
-                      lua-mode ; lua programming language
-                      magit ; git interface
-                      markdown-mode ; editing for markdown text files
-                      monokai-theme ; decent dark theme
-                      neotree ; file tree
-                      projectile ; project interaction
-                      racer ; rust code completion
-                      rust-mode ; rust programming language
-                      smart-mode-line ; better mode-line
-                      toml-mode ; editing for toml files
-                      which-key ; help for key shortcuts
-                      yasnippet ; template
-                      ))
-
 (defun my-install-packages ()
   "Refresh package archive and install packages."
   (interactive)
   (package-refresh-contents)
-  (dolist (package my-packages) (package-install package)))
+  (package-install-selected-packages))
 
-(require 'benchmark-init)
-(benchmark-init/activate)
+(require 'anzu)
+(require 'linum)
+(require 'monokai-theme)
+(require 'smart-mode-line)
+(require 'undo-tree)
+(require 'which-key)
+(setq anzu-mode-lighter nil
+      linum-format "%d "
+      sml/name-width 24
+      sml/theme 'respectful
+      undo-tree-mode-lighter " UT"
+      which-key-idle-delay 0.5
+      which-key-lighter nil)
+(load-theme 'monokai t)
+(global-anzu-mode +1)
+(global-linum-mode +1)
+(global-undo-tree-mode +1)
+(sml/setup)
+(which-key-mode +1)
 
+;; code folding
+(require 'yafolding)
+(add-hook 'prog-mode-hook #'yafolding-mode)
+
+;; code documentation
+(require 'eldoc)
+(setq  eldoc-echo-area-use-multiline-p t
+       eldoc-idle-delay 0.1)
+(global-eldoc-mode +1)
+(eldoc-in-minibuffer-mode +1)
+
+;; auto completions and templates
 (require 'company)
-(require 'evil)
+(require 'yasnippet)
+(setq company-lighter " comp"
+      company-idle-delay 0.05
+      company-minimum-prefix-length 1
+      company-selection-wrap-around t
+      company-tooltip-align-annotations t
+      company-tooltip-limit 24
+      company-tooltip-minimum 24
+      company-tooltip-minimum-width 64)
+(add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
+(define-key company-mode-map (kbd "C-c c") #'company-complete)
+(define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
+(define-key company-active-map [return] nil)
+(define-key company-active-map (kbd "RET") nil)
+(define-key company-active-map (kbd "TAB") #'company-complete-selection)
+(define-key company-active-map [tab] #'company-complete-selection)
+(global-company-mode +1)
+(yas-global-mode +1)
+
+;; syntax/spell checking
 (require 'flycheck)
-(require 'flycheck-tip)
 (require 'flyspell)
-(require 'ibuffer)
+(setq flycheck-checker-error-threshold 800
+      flycheck-display-errors-delay 0.2
+      flycheck-idle-change-delay 1.0
+      flyspell-mode-line-string " FlyS")
+(define-key flyspell-mode-map (kbd "C-c a") #'flyspell-popup-correct)
+(global-flycheck-mode +1)
+(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+(add-hook 'text-mode-hook #'flyspell-mode)
+
+;; emacs completions and project
+(require 'helm)
+(require 'helm-mode)
 (require 'neotree)
 (require 'projectile)
-(require 'yasnippet)
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;;
-(column-number-mode)
-(if (display-graphic-p) (company-quickhelp-mode +1))
-(electric-pair-mode +1)
-(evil-commentary-mode +1)
-(flycheck-tip-use-timer 'verbose)
-(global-anzu-mode +1)
-(global-git-gutter-mode +1)
-(git-gutter:linum-setup)
-(global-linum-mode +1)
+(require 'helm-projectile)
+(setq helm-completion-mode-string nil
+      projectile-completion-system 'helm)
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "C-c t") #'neotree-toggle)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+(define-key projectile-command-map (kbd "n") #'neotree-projectile-action)
+(define-key projectile-command-map (kbd "s") #'helm-projectile-ag)
 (helm-mode +1)
-(ido-mode 1)
-(key-chord-mode +1)
 (projectile-global-mode)
-(yas-global-mode +1)
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
-(which-key-mode)
 
-;; general hooks
-(defun my-ibuffer-setup ()
-  "VC integration for ibuffer."
-  (ibuffer-vc-set-filter-groups-by-vc-root)
-  (unless (eq ibuffer-sorting-mode 'alphabetic)
-    (ibuffer-do-sort-by-alphabetic)))
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-(add-hook 'prog-mode-hook #'auto-fill-mode)
-(add-hook 'prog-mode-hook #'flyspell-prog-mode)
-(add-hook 'prog-mode-hook #'git-gutter)
-(add-hook 'text-mode-hook #'flyspell-mode)
-(add-hook 'text-mode-hook #'git-gutter)
-(add-hook 'ibuffer-hook #'my-ibuffer-setup)
+;; git
+(require 'magit)
+(define-prefix-command 'magit-command-map)
+(global-set-key (kbd "C-c g") #'magit-command-map)
+(define-key magit-command-map (kbd "c") #'magit-commit)
+(define-key magit-command-map (kbd "d") #'magit-diff)
+(define-key magit-command-map (kbd "s") #'magit-status)
 
-;; c like languages
-(defun my-c-indentations ()
-  "Indentations for c like languages."
-  (c-set-offset 'arglist-intro '+)
-  (c-set-offset 'arglist-close 0))
-(add-hook 'c-mode-common-hook #'my-c-indentations)
+;; buffer menu
+(require 'ibuffer)
+(require 'ibuffer-projectile)
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+(add-hook 'ibuffer-hook
+	  (lambda ()
+	    (ibuffer-projectile-set-filter-groups)
+	    (unless (eq ibuffer-sorting-mode 'alphabetic)
+	      (ibuffer-do-sort-by-alphabetic))))
 
-;; c/c++, objc
+;; c/c++/obj-c
+(require 'irony)
+(require 'company-irony)
+(require 'company-irony-c-headers)
+(require 'flycheck-irony)
+(require 'irony-eldoc)
 (with-eval-after-load 'company
-  (add-to-list 'company-backend 'company-irony))
+  (add-to-list 'company-backends '(company-irony-c-headers company-irony)))
 (add-hook 'c++-mode-hook #'irony-mode)
 (add-hook 'c-mode-hook #'irony-mode)
 (add-hook 'objc-mode-hook #'irony-mode)
-(add-hook 'irony-mode-hook #'company-mode)
-(add-hook 'irony-mode-hook #'flycheck-mode)
 (add-hook 'irony-mode-hook #'flycheck-irony-setup)
+(add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options)
 (add-hook 'irony-mode-hook #'irony-eldoc)
 
 ;; clojure language
-(add-hook 'cider-mode-hook #'company-mode)
-(add-hook 'cider-repl-mode-hook #'company-mode)
-(add-hook 'cider-repl-mode-hook #'eldoc-mode)
-(add-hook 'clojure-mode-hook #'eldoc-mode)
+(require 'cider)
+(require 'flycheck-clojure)
+(add-hook 'clojure-mode-hook #'flycheck-clojure-setup)
 
 ;; go language
+(require 'go-mode)
+(require 'company-go)
+(require 'go-eldoc)
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-go))
-(add-hook 'go-mode-hook #'company-mode)
-(add-hook 'go-mode-hook #'eldoc-mode)
 (add-hook 'go-mode-hook #'go-eldoc-setup)
-(add-hook 'go-mode-hook #'flycheck-mode)
 
-;; emacs lisp language
-(add-hook 'emacs-lisp-mode-hook #'company-mode)
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+;; Emacs lisp language
 
-;; haskell language
+;; Haskell language
+(require 'haskell-mode)
+(require 'company-ghc)
+(require 'flycheck-haskell)
+(require 'ghc)
+(require 'hindent)
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-ghc))
 (add-hook 'haskell-mode-hook #'hindent-mode)
 (add-hook 'haskell-mode-hook #'ghc-init)
-(add-hook 'haskell-mode-hook #'company-mode)
-(add-hook 'haskell-mode-hook #'flycheck-mode)
 (add-hook 'haskell-mode-hook #'flycheck-haskell-setup)
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
-;; lua
-(add-hook 'lua-mode-hook #'company-mode)
-(add-hook 'lua-mode-hook #'eldoc-mode)
-(add-hook 'lua-mode-hook #'flycheck-mode)
+;; julia language
+(require 'julia-mode)
+(require 'julia-shell)
+(define-key julia-mode-map (kbd "C-c C-c") #'julia-shell-save-and-go)
+(define-key julia-mode-map (kbd "C-c C-p") #'run-julia)
+(define-key julia-mode-map (kbd "C-c C-r") #'julia-shell-run-region-or-line)
 
-;; python
-(with-eval-after-load 'company
-  (add-to-list 'company-backends 'company-jedi))
-(add-hook 'python-mode-hook #'company-mode)
-(add-hook 'python-mode-hook #'eldoc-mode)
-(add-hook 'python-mode-hook #'flycheck-mode)
+;; Lua language
+(require 'lua-mode)
+(setq lua-indent-level 4)
+
+;; python language
+(require 'company-jedi)
+(require 'python)
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i")
+(add-to-list 'company-backends 'company-jedi)
 
 ;; rust language
+(require 'rust-mode)
+(require 'cargo)
+(require 'racer)
+(require 'company-racer)
+(require 'flycheck-rust)
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-racer))
-(add-hook 'racer-mode-hook #'company-mode)
-(add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'rust-mode-hook #'cargo-minor-mode)
-(add-hook 'rust-mode-hook #'flycheck-mode)
-(add-hook 'rust-mode-hook #'flycheck-rust-setup)
 (add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'rust-mode-hook #'flycheck-rust-setup)
 
-;; theme
-(load-theme 'monokai t)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(sml/setup)
-(tool-bar-mode -1)
-(xterm-mouse-mode)
-
-;; evil keybindings
-(evil-mode 1)
-(key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
-(define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
-(define-key evil-visual-state-map (kbd "TAB") #'indent-for-tab-command)
-(define-key evil-normal-state-map "K" #'evil-scroll-up)
-(define-key evil-normal-state-map "J" #'evil-scroll-down)
-
-;; windows
-(global-set-key (kbd "\C-w") #'evil-window-map)
-(global-set-key (kbd "\C-w SPC") #'ace-window)
-
-;; neotree
-(add-to-list 'evil-emacs-state-modes 'neotree-mode)
-(global-set-key [f8] #'neotree-toggle)
-(define-key neotree-mode-map (kbd "j") #'neotree-next-line)
-(define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
-
-;; company completions
-(define-key company-active-map (kbd "RET") nil)
-(define-key company-active-map (kbd "TAB") 'company-complete-selection)
-
-;; replace things with helm
-(global-set-key (kbd "M-x") #'helm-M-x)
-(global-set-key (kbd "\C-hb") #'helm-descbinds)
-(global-set-key (kbd "\C-xb") #'helm-buffers-list)
-
-;; replace buffermenu with ibuffer
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-(define-key ibuffer-mode-map (kbd "/") #'ibuffer-jump-to-buffer)
-(define-key ibuffer-mode-map (kbd "j") #'next-line)
-(define-key ibuffer-mode-map (kbd "k") #'previous-line)
-
-;; C-c bindings
-(define-key flyspell-mode-map (kbd "\C-ca") #'helm-flyspell-correct)
-(define-key company-mode-map (kbd "\C-cc") #'helm-company)
-(define-key yas-minor-mode-map (kbd "\C-cy") #'yas-insert-snippet)
-(global-set-key (kbd "\C-cf") #'helm-projectile-ag)
-
-;; helm replacements
-(define-key projectile-command-map (kbd "s g") #'helm-projectile-grep)
-(define-key projectile-command-map (kbd "s s") #'helm-projectile-ag)
-(global-set-key (kbd "C-x C-f") #'helm-find-files)
-
-(benchmark-init/deactivate)
+;; interpreters
+(add-hook 'comint-mode-hook (lambda () (linum-mode -1)))
 
 (provide 'init)
 ;;; init ends here
