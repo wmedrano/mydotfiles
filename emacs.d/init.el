@@ -14,14 +14,14 @@
  '(eldoc-echo-area-use-multiline-p t)
  '(package-selected-packages
    (quote
-    (julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
+    (avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 119 :width normal)))))
+ '(default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
 
 (setq indent-tabs-mode nil
       inhibit-startup-screen t
@@ -54,7 +54,6 @@
 
 (require 'anzu)
 (require 'linum)
-(require 'monokai-theme)
 (require 'smart-mode-line)
 (require 'undo-tree)
 (require 'which-key)
@@ -62,7 +61,7 @@
       linum-format "%d "
       sml/name-width 24
       sml/theme 'respectful
-      undo-tree-mode-lighter " UT"
+      undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.5
       which-key-lighter nil)
 (load-theme 'monokai t)
@@ -125,7 +124,8 @@
 (setq helm-completion-mode-string nil
       projectile-completion-system 'helm)
 (global-set-key (kbd "M-x") #'helm-M-x)
-(global-set-key (kbd "C-c t") #'neotree-toggle)
+(global-set-key (kbd "C-c e") #'eshell)
+(global-set-key (kbd "C-c n") #'neotree-toggle)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
 (define-key projectile-command-map (kbd "n") #'neotree-projectile-action)
 (define-key projectile-command-map (kbd "s") #'helm-projectile-ag)
@@ -136,8 +136,11 @@
 (require 'magit)
 (define-prefix-command 'magit-command-map)
 (global-set-key (kbd "C-c g") #'magit-command-map)
+(define-key magit-command-map (kbd "b") #'magit-branch)
 (define-key magit-command-map (kbd "c") #'magit-commit)
 (define-key magit-command-map (kbd "d") #'magit-diff)
+(define-key magit-command-map (kbd "g") #'magit-pull)
+(define-key magit-command-map (kbd "p") #'magit-push)
 (define-key magit-command-map (kbd "s") #'magit-status)
 
 ;; buffer menu
@@ -218,6 +221,7 @@
 (require 'racer)
 (require 'company-racer)
 (require 'flycheck-rust)
+(setq racer-rust-src-path "/usr/src/rust/src")
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-racer))
 (add-hook 'rust-mode-hook #'cargo-minor-mode)

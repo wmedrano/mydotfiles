@@ -1,9 +1,9 @@
 # Link home files
-rm ~/.bashrc ~/.xinitrc ~/.gtkrc-2.0
+rm ~/.bashrc ~/.xinitrc ~/.gtkrc-2.0 ~/.Xresources
 ln -s `pwd`/bashrc ~/.bashrc
 ln -s `pwd`/xinitrc ~/.xinitrc
 ln -s `pwd`/gtkrc-2.0 ~/.gtkrc-2.0
-
+ln -s `pwd`/Xresources ~/.Xresources
 # Link other files
 rm ~/.config/compton.conf  ~/.config/redshift.conf
 ln -sf `pwd`/compton.conf ~/.config/compton.conf

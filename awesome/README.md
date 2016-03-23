@@ -1,3 +1,9 @@
+# Companions
+- `compton` - vsync and sheen
+- `dmenu` - application launcher, not much better than `Super + r` or `Super + p` though...
+- `redshift-gtk` - reduce eyestrain by making screen redder at night
+- `scrot` - screenshots
+
 # Misc Modifications
 - `Super + f` is the only way to fullscreen applications. Made for viewing videos :D
 - Floating windows have `ontop` property
@@ -32,7 +38,6 @@
 - `Super + Shift + l` - Toggle Between 1 and 2 Columns In Slave
 - `Super + u` - Jump To Urgent
 - `Super + Ctrl + m` - Restore/Unminimize Client
-- `Super + Shift + Space` - Toggle Between Tiling and Floating Mode
 - `Super + Return` - Open Terminal (lxterminal)
 - `Super + Shift + r` - Restart Awesome
 - `Super + Shift + q` - Quit Awesome

@@ -1,5 +1,13 @@
 # Features
 
+## Emacs
+* `helm` - incremental and fuzzy completions everywhere, projectile integration
+* `ibuffer` - buffer menu with grouping support
+* `magit` - interface to git
+* `neotree` - view file tree, projectile integration
+* `projectile` - project interaction, version control integration
+* `which-key` - displays key map automatically after entering a prefix
+
 ## Programming
 * `anzu` - matching information
 * `company` - completions
@@ -9,14 +17,6 @@
 * `yafolding` - code folding
 * `yasnippet` - templates
 
-## Emacs
-* `helm` - incremental and fuzzy completions everywhere, projectile integration
-* `ibuffer` - buffer menu with grouping support
-* `magit` - interface to git
-* `neotree` - view file tree, projectile integration
-* `projectile` - project interaction, version control integration
-* `which-key` - displays key map automatically after entering a prefix
-
 ## Editing
 * `electric-pair` - insert matching delimiters
 * `fill-mode` - automatically wrap long lines into a new line, automatically
@@ -24,6 +24,11 @@
 * `undo-tree` - tree for undoing
 * on hiatus - `evil mode` - vim emulation
 * on hiatus - `git-gutter` - display git +,-,= in gutter
+
+## On Hiatus
+* `evil-mode` - vim emulation, currently trying emacs without it
+* `git-gutter` - display git +,-,= in gutter, delay annoyed me
+
 
 # Languages
 
