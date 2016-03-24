@@ -10,11 +10,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "316d29f8cd6ca980bf2e3f1c44d3a64c1a20ac5f825a167f76e5c619b4e92ff4" "1012cf33e0152751078e9529a915da52ec742dabf22143530e86451ae8378c1a" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(eldoc-echo-area-use-multiline-p t)
  '(package-selected-packages
    (quote
-    (avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
+    (key-chord evil pastelmac-theme avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -40,6 +40,7 @@
 (add-hook 'prog-mode-hook #'auto-fill-mode)
 (add-hook 'auto-fill-mode-hook (lambda () (set-fill-column 80)))
 
+
 (require 'package)
 (add-to-list 'package-archives '("marmalade"
                                  . "http://marmalade-repo.org/packages/") t)
@@ -64,7 +65,7 @@
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.5
       which-key-lighter nil)
-(load-theme 'monokai t)
+(load-theme 'pastelmac t)
 (global-anzu-mode +1)
 (global-linum-mode +1)
 (global-undo-tree-mode +1)
@@ -78,7 +79,7 @@
 ;; code documentation
 (require 'eldoc)
 (setq  eldoc-echo-area-use-multiline-p t
-       eldoc-idle-delay 0.1)
+       eldoc-idle-delay 0.05)
 (global-eldoc-mode +1)
 (eldoc-in-minibuffer-mode +1)
 
@@ -86,7 +87,7 @@
 (require 'company)
 (require 'yasnippet)
 (setq company-lighter " comp"
-      company-idle-delay 0.05
+      company-idle-delay 0.1
       company-minimum-prefix-length 1
       company-selection-wrap-around t
       company-tooltip-align-annotations t
@@ -107,7 +108,7 @@
 (require 'flycheck)
 (require 'flyspell)
 (setq flycheck-checker-error-threshold 800
-      flycheck-display-errors-delay 0.2
+      flycheck-display-errors-delay 0.1
       flycheck-idle-change-delay 1.0
       flyspell-mode-line-string " FlyS")
 (define-key flyspell-mode-map (kbd "C-c a") #'flyspell-popup-correct)
@@ -161,17 +162,17 @@
 (require 'irony-eldoc)
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(company-irony-c-headers company-irony)))
+(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
 (add-hook 'c++-mode-hook #'irony-mode)
 (add-hook 'c-mode-hook #'irony-mode)
 (add-hook 'objc-mode-hook #'irony-mode)
-(add-hook 'irony-mode-hook #'flycheck-irony-setup)
 (add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options)
 (add-hook 'irony-mode-hook #'irony-eldoc)
 
 ;; clojure language
 (require 'cider)
 (require 'flycheck-clojure)
-(add-hook 'clojure-mode-hook #'flycheck-clojure-setup)
+(add-hook 'flycheck-mode-hook #'flycheck-clojure-setup)
 
 ;; go language
 (require 'go-mode)
@@ -191,9 +192,9 @@
 (require 'hindent)
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-ghc))
+(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
 (add-hook 'haskell-mode-hook #'hindent-mode)
 (add-hook 'haskell-mode-hook #'ghc-init)
-(add-hook 'haskell-mode-hook #'flycheck-haskell-setup)
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
@@ -224,12 +225,22 @@
 (setq racer-rust-src-path "/usr/src/rust/src")
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-racer))
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 (add-hook 'rust-mode-hook #'cargo-minor-mode)
 (add-hook 'rust-mode-hook #'racer-mode)
-(add-hook 'rust-mode-hook #'flycheck-rust-setup)
 
 ;; interpreters
 (add-hook 'comint-mode-hook (lambda () (linum-mode -1)))
+
+;; evil mode
+(require 'evil)
+(require 'key-chord)
+(evil-mode +1)
+(key-chord-mode +1)
+(key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
+(add-to-list 'evil-emacs-state-modes 'neotree-mode)
+(define-key neotree-mode-map (kbd "j") #'neotree-next-line)
+(define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 
 (provide 'init)
 ;;; init ends here

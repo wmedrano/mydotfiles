@@ -19,6 +19,7 @@
 
 ## Editing
 * `electric-pair` - insert matching delimiters
+* `evil-mode` - vim emulation
 * `fill-mode` - automatically wrap long lines into a new line, automatically
 * `linum` - display line numbers in gutter
 * `undo-tree` - tree for undoing
@@ -26,7 +27,6 @@
 * on hiatus - `git-gutter` - display git +,-,= in gutter
 
 ## On Hiatus
-* `evil-mode` - vim emulation, currently trying emacs without it
 * `git-gutter` - display git +,-,= in gutter, delay annoyed me
 
 
