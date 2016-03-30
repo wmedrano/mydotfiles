@@ -89,6 +89,7 @@ modkey = "Mod4"
 local layouts =
     {
         awful.layout.suit.tile,
+	awful.layout.suit.floating,
     }
 
 -- }}}
@@ -310,7 +311,10 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey, "Control" }, "m", awful.client.restore),
-
+    awful.key({ modkey, "Shift"   }, "space",
+	function ()
+	    awful.layout.inc(layouts, 1)
+    end),
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal)   end),

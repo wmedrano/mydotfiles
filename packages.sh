@@ -34,6 +34,9 @@ yaourt -S gocode-git --needed
 # Haskell Devtools
 sudo pacman -S cabal-install ghc ghc-mod hoogle --needed
 
+# Latex
+sudo pacman -S latex-most --needed
+
 ## Python Devtools
 sudo pacman -S ipython python-jedi python-matplotlib python-scikit-learn --needed
 sudo pacman -S python-pandas python-virtualenv jupyter --needed

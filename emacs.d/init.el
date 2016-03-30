@@ -8,13 +8,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-save-default nil)
+ '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "316d29f8cd6ca980bf2e3f1c44d3a64c1a20ac5f825a167f76e5c619b4e92ff4" "1012cf33e0152751078e9529a915da52ec742dabf22143530e86451ae8378c1a" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("5a21604c4b1f2df98e67cda2347b8f42dc9ce471a48164fcb8d3d52c3a0d10be" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "95db78d85e3c0e735da28af774dfa59308db832f84b8a2287586f5b4f21a7a5b" "6c62b1cd715d26eb5aa53843ed9a54fc2b0d7c5e0f5118d4efafa13d7715c56e" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "badc4f9ae3ee82a5ca711f3fd48c3f49ebe20e6303bba1912d4e2d19dd60ec98" "cf6d8127339c76d2a4b8165492a2bee417ccd3741d292a80015e95f6e9f8769f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "316d29f8cd6ca980bf2e3f1c44d3a64c1a20ac5f825a167f76e5c619b4e92ff4" "1012cf33e0152751078e9529a915da52ec742dabf22143530e86451ae8378c1a" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(eldoc-echo-area-use-multiline-p t)
+ '(fill-column 80)
+ '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (key-chord evil pastelmac-theme avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
+    (majapahit-theme twilight-bright-theme twilight-anti-bright-theme apropospriate-theme helm-flycheck hc-zenburn-theme gruvbox-theme anti-zenburn-theme company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl github-theme key-chord evil pastelmac-theme avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -33,13 +37,10 @@
 (electric-pair-mode +1)
 (global-hl-line-mode)
 (menu-bar-mode -1)
-(set-fill-column 80)
+(scroll-bar-mode -1)
 (tool-bar-mode -1)
 (xterm-mouse-mode +1)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
-(add-hook 'prog-mode-hook #'auto-fill-mode)
-(add-hook 'auto-fill-mode-hook (lambda () (set-fill-column 80)))
-
 
 (require 'package)
 (add-to-list 'package-archives '("marmalade"
@@ -54,21 +55,18 @@
   (package-install-selected-packages))
 
 (require 'anzu)
-(require 'linum)
 (require 'smart-mode-line)
 (require 'undo-tree)
 (require 'which-key)
 (setq anzu-mode-lighter nil
-      linum-format "%d "
-      sml/name-width 24
-      sml/theme 'respectful
+      sml/name-width 32
+      sml/theme 'dark
       undo-tree-mode-lighter " ut"
-      which-key-idle-delay 0.5
+      which-key-idle-delay 0.3
       which-key-lighter nil)
-(load-theme 'pastelmac t)
 (global-anzu-mode +1)
-(global-linum-mode +1)
 (global-undo-tree-mode +1)
+(load-theme 'twilight-bright t)
 (sml/setup)
 (which-key-mode +1)
 
@@ -95,7 +93,7 @@
       company-tooltip-minimum 24
       company-tooltip-minimum-width 64)
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
-(define-key company-mode-map (kbd "C-c c") #'company-complete)
+(define-key company-mode-map (kbd "C-c c") #'helm-company)
 (define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
 (define-key company-active-map [return] nil)
 (define-key company-active-map (kbd "RET") nil)
@@ -116,6 +114,19 @@
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
 
+;; git
+(require 'magit)
+(require 'git-gutter-fringe)
+(global-git-gutter-mode +1)
+(define-prefix-command 'magit-command-map)
+(global-set-key (kbd "C-c g") #'magit-command-map)
+(define-key magit-command-map (kbd "b") #'magit-branch)
+(define-key magit-command-map (kbd "c") #'magit-commit)
+(define-key magit-command-map (kbd "d") #'magit-diff)
+(define-key magit-command-map (kbd "g") #'magit-pull)
+(define-key magit-command-map (kbd "p") #'magit-push)
+(define-key magit-command-map (kbd "s") #'magit-status)
+
 ;; emacs completions and project
 (require 'helm)
 (require 'helm-mode)
@@ -132,17 +143,6 @@
 (define-key projectile-command-map (kbd "s") #'helm-projectile-ag)
 (helm-mode +1)
 (projectile-global-mode)
-
-;; git
-(require 'magit)
-(define-prefix-command 'magit-command-map)
-(global-set-key (kbd "C-c g") #'magit-command-map)
-(define-key magit-command-map (kbd "b") #'magit-branch)
-(define-key magit-command-map (kbd "c") #'magit-commit)
-(define-key magit-command-map (kbd "d") #'magit-diff)
-(define-key magit-command-map (kbd "g") #'magit-pull)
-(define-key magit-command-map (kbd "p") #'magit-push)
-(define-key magit-command-map (kbd "s") #'magit-status)
 
 ;; buffer menu
 (require 'ibuffer)
@@ -198,6 +198,16 @@
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
+;; JavaScript language
+(require 'js2-mode)
+(require 'js-comint)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(setq inferior-js-program-command "node"
+      inferior-js-program-arguments '("--interactive"))
+(define-key js2-mode-map (kbd "C-c C-c") #'js-send-buffer)
+(define-key js2-mode-map (kbd "C-c C-p") #'run-js)
+(define-key js2-mode-map (kbd "C-c C-r") #'js-send-region)
+
 ;; julia language
 (require 'julia-mode)
 (require 'julia-shell)
@@ -229,8 +239,7 @@
 (add-hook 'rust-mode-hook #'cargo-minor-mode)
 (add-hook 'rust-mode-hook #'racer-mode)
 
-;; interpreters
-(add-hook 'comint-mode-hook (lambda () (linum-mode -1)))
+;; comint mode - interpreters
 
 ;; evil mode
 (require 'evil)
@@ -241,6 +250,10 @@
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
+
+;; music
+(require 'helm-rhythmbox)
+(global-set-key (kbd "C-c r") #'helm-rhythmbox)
 
 (provide 'init)
 ;;; init ends here
