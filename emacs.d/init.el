@@ -31,6 +31,8 @@
       inhibit-startup-screen t
       make-backup-files nil
       mouse-autoselect-window t)
+
+(setq-default major-mode 'org-mode)
 (global-auto-revert-mode)
 (column-number-mode +1)
 (defalias 'yes-or-no-p 'y-or-n-p)
