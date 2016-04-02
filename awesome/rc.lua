@@ -71,8 +71,8 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
 browser = os.getenv("BROWSER") or "chromium"
-editor = os.getenv("EDITOR") or "emacsclient -t"
-editor_cmd = terminal .. " -e " .. editor
+editor = "emacsclient -c"
+editor_cmd = editor
 file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"

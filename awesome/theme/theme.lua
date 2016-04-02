@@ -19,9 +19,9 @@ theme.fg_urgent     = "#FFFFFF"
 theme.fg_minimize   = "#FFFFFF"
 
 theme.border_width  = 2
-theme.border_normal = "#F92672"
-theme.border_focus  = "#A6E22E"
-theme.border_float  = "#66D9EF"
+theme.border_normal = "#FF0000"
+theme.border_focus  = "#00FF00"
+theme.border_float  = "#0000FF"
 
 -- There are other variable sets
 -- overriding the default one when

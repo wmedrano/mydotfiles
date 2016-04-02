@@ -12,13 +12,13 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("5a21604c4b1f2df98e67cda2347b8f42dc9ce471a48164fcb8d3d52c3a0d10be" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "95db78d85e3c0e735da28af774dfa59308db832f84b8a2287586f5b4f21a7a5b" "6c62b1cd715d26eb5aa53843ed9a54fc2b0d7c5e0f5118d4efafa13d7715c56e" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "badc4f9ae3ee82a5ca711f3fd48c3f49ebe20e6303bba1912d4e2d19dd60ec98" "cf6d8127339c76d2a4b8165492a2bee417ccd3741d292a80015e95f6e9f8769f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "316d29f8cd6ca980bf2e3f1c44d3a64c1a20ac5f825a167f76e5c619b4e92ff4" "1012cf33e0152751078e9529a915da52ec742dabf22143530e86451ae8378c1a" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(eldoc-echo-area-use-multiline-p t)
  '(fill-column 80)
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (majapahit-theme twilight-bright-theme twilight-anti-bright-theme apropospriate-theme helm-flycheck hc-zenburn-theme gruvbox-theme anti-zenburn-theme company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl github-theme key-chord evil pastelmac-theme avy solarized-theme toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding zenburn-theme dracula-theme flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company monokai-theme)))
+    (evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -27,12 +27,11 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
 
+(setq-default major-mode 'org-mode)
 (setq indent-tabs-mode nil
       inhibit-startup-screen t
       make-backup-files nil
       mouse-autoselect-window t)
-
-(setq-default major-mode 'org-mode)
 (global-auto-revert-mode)
 (column-number-mode +1)
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -68,7 +67,7 @@
       which-key-lighter nil)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
-(load-theme 'twilight-bright t)
+(load-theme 'aurora t)
 (sml/setup)
 (which-key-mode +1)
 
@@ -97,6 +96,7 @@
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
 (define-key company-mode-map (kbd "C-c c") #'helm-company)
 (define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
 (define-key company-active-map [return] nil)
 (define-key company-active-map (kbd "RET") nil)
 (define-key company-active-map (kbd "TAB") #'company-complete-selection)
@@ -136,6 +136,7 @@
 (require 'projectile)
 (require 'helm-projectile)
 (setq helm-completion-mode-string nil
+      neo-window-width 32
       projectile-completion-system 'helm)
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-c e") #'eshell)
