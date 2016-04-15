@@ -18,6 +18,7 @@ shopt -s expand_aliases
 alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
+export BOOT_JVM_OPTIONS="-Djava.library.path=/usr/lib:/usr/local/lib"
 
 # Enable history appending instead of overwriting.  #139609
 shopt -s histappend

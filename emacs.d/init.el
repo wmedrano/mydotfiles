@@ -18,17 +18,18 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (sublime-themes evil-anzu tabbar evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (monokai-theme ag sublime-themes evil-anzu evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Liberation Mono" :foundry "1ASC" :slant normal :weight normal :height 98 :width normal))))
+ '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 98 :width normal))))
  '(hl-line ((t (:underline nil)))))
 
-(setq-default major-mode 'org-mode)
+(setq-default indent-tabs-mode nil
+              major-mode 'org-mode)
 (setq indent-tabs-mode nil
       inhibit-startup-screen t
       make-backup-files nil
@@ -59,7 +60,6 @@
 (require 'anzu)
 (require 'evil-anzu)
 (require 'smart-mode-line)
-(require 'tabbar)
 (require 'undo-tree)
 (require 'which-key)
 (setq anzu-mode-lighter nil
@@ -69,9 +69,8 @@
       which-key-idle-delay 0.3
       which-key-lighter nil)
 (global-anzu-mode +1)
-(tabbar-mode +1)
 (global-undo-tree-mode +1)
-(load-theme 'spolsky t)
+(load-theme 'monokai t)
 (sml/setup)
 (which-key-mode +1)
 
@@ -100,7 +99,9 @@
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
 (define-key company-mode-map (kbd "C-c c") #'helm-company)
 (define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
+(define-key yas-minor-mode-map [(tab)] nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key company-active-map [return] nil)
 (define-key company-active-map (kbd "RET") nil)
 (define-key company-active-map (kbd "TAB") #'company-complete-selection)
