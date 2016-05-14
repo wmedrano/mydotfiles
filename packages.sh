@@ -1,11 +1,10 @@
 # Install Packages
 
 ## Window Manager and Stuff
-sudo pacman -S awesome compton demnu vicious xmobar xmonad xmonad-contrib --needed
+sudo pacman -S arch-themes awesome compton deepin-gtk-theme deepin-icon-theme vicious --needed
 
 ## Themes
-sudo pacman -S noto-fonts numix-reborn-icon-themes ttf-ubuntu-font-family --needed
-yaourt -S sky-gtk-theme --needed
+sudo pacman -S ttf-ubuntu-font-family --needed
 
 ## Apps
 sudo pacman -S banshee chromium hexchat lxtask-gtk3 lxterminal-gtk3 qjackctl --needed
@@ -43,7 +42,7 @@ sudo pacman -S python-pandas python-virtualenv jupyter --needed
 
 # Rust Devtools
 sudo pacman -S cargo rust --needed
-yaourt -S rust-racer rust-src --needed
+yaourt -S rust-bindgen-git rust-racer rust-src --needed
 
 ## Fix game controllers
 sudo pacman -R xf86-input-joystick

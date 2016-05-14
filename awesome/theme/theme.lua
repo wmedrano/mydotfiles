@@ -5,7 +5,7 @@
 theme = {}
 theme_dir = "~/.config/awesome/theme"
 
-theme.font          = "Ubuntu Mono 10"
+theme.font          = "Ubuntu Mono 9"
 
 theme.bg_normal     = "#222222"
 theme.bg_focus      = "#535D5C"
@@ -18,7 +18,7 @@ theme.fg_focus      = "#FFFFFF"
 theme.fg_urgent     = "#FFFFFF"
 theme.fg_minimize   = "#FFFFFF"
 
-theme.border_width  = 2
+theme.border_width  = 1
 theme.border_normal = "#FF0000"
 theme.border_focus  = "#00FF00"
 theme.border_float  = "#0000FF"

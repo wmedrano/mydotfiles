@@ -9,27 +9,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-save-default nil)
+ '(blink-cursor-mode t)
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c93fabc360a4b2adb84cc7ab70a717a990777452ab0328b23812c779ff274154" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "1b46826ed71b40396e3eee3a8a8adb0b4e2bf4edeff271116a1926e5c20eede0" default)))
  '(eldoc-echo-area-use-multiline-p t)
  '(fill-column 80)
- '(menu-bar-mode nil)
+ '(global-hl-line-mode t)
  '(package-selected-packages
    (quote
-    (monokai-theme ag sublime-themes evil-anzu evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding flycheck-clojure eldoc-eval smart-mode-line powerline helm-mode-manager gitconfig-mode gitignore-mode powerline neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key yasnippet ibuffer-projectile anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (elein eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+ '(show-paren-delay 0.0)
+ '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 98 :width normal))))
+ '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal))))
  '(hl-line ((t (:underline nil)))))
 
 (setq-default indent-tabs-mode nil
-              major-mode 'org-mode)
+	      major-mode 'org-mode)
 (setq indent-tabs-mode nil
       inhibit-startup-screen t
       make-backup-files nil
@@ -47,7 +50,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("marmalade"
-                                 . "http://marmalade-repo.org/packages/") t)
+				 . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
@@ -64,13 +67,14 @@
 (require 'which-key)
 (setq anzu-mode-lighter nil
       sml/name-width 32
-      sml/theme 'dark
+      sml/theme 'respectful
       undo-tree-mode-lighter " ut"
-      which-key-idle-delay 0.3
+      which-key-idle-delay 0.1
       which-key-lighter nil)
+;; (load-theme 'twilight-bright t)
+(load-theme 'eclipse t)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
-(load-theme 'monokai t)
 (sml/setup)
 (which-key-mode +1)
 
@@ -87,7 +91,7 @@
 
 ;; auto completions and templates
 (require 'company)
-(require 'yasnippet)
+;; (require 'yasnippet)
 (setq company-lighter " comp"
       company-idle-delay 0.4
       company-minimum-prefix-length 1
@@ -96,18 +100,18 @@
       company-tooltip-limit 24
       company-tooltip-minimum 24
       company-tooltip-minimum-width 64)
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
+;; (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
 (define-key company-mode-map (kbd "C-c c") #'helm-company)
-(define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
-(define-key yas-minor-mode-map [(tab)] nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
+;; (define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
+;; (define-key yas-minor-mode-map [(tab)] nil)
+;; (define-key yas-minor-mode-map (kbd "TAB") nil)
+;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key company-active-map [return] nil)
 (define-key company-active-map (kbd "RET") nil)
 (define-key company-active-map (kbd "TAB") #'company-complete-selection)
 (define-key company-active-map [tab] #'company-complete-selection)
 (global-company-mode +1)
-(yas-global-mode +1)
+;; (yas-global-mode +1)
 
 ;; syntax/spell checking
 (require 'flycheck)
@@ -125,14 +129,6 @@
 (require 'magit)
 (require 'git-gutter-fringe)
 (global-git-gutter-mode +1)
-(define-prefix-command 'magit-command-map)
-(global-set-key (kbd "C-c g") #'magit-command-map)
-(define-key magit-command-map (kbd "b") #'magit-branch)
-(define-key magit-command-map (kbd "c") #'magit-commit)
-(define-key magit-command-map (kbd "d") #'magit-diff)
-(define-key magit-command-map (kbd "g") #'magit-pull)
-(define-key magit-command-map (kbd "p") #'magit-push)
-(define-key magit-command-map (kbd "s") #'magit-status)
 
 ;; emacs completions and project
 (require 'helm)
@@ -154,13 +150,7 @@
 
 ;; buffer menu
 (require 'ibuffer)
-(require 'ibuffer-projectile)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
-(add-hook 'ibuffer-hook
-	  (lambda ()
-	    (ibuffer-projectile-set-filter-groups)
-	    (unless (eq ibuffer-sorting-mode 'alphabetic)
-	      (ibuffer-do-sort-by-alphabetic))))
 
 ;; c/c++/obj-c
 (require 'irony)
@@ -179,8 +169,6 @@
 
 ;; clojure language
 (require 'cider)
-(require 'flycheck-clojure)
-(add-hook 'flycheck-mode-hook #'flycheck-clojure-setup)
 
 ;; go language
 (require 'go-mode)
@@ -256,6 +244,8 @@
 (key-chord-mode +1)
 (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
+(add-to-list 'evil-emacs-state-modes 'cider-mode)
+(add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 

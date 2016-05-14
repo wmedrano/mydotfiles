@@ -332,8 +332,7 @@ globalkeys = awful.util.table.join(
                 awful.util.getdir("cache") .. "/history_eval")
     end),
     -- Menubar
-    awful.key({ modkey }, "space",
-        function () awful.util.spawn("dmenu_run -fn 'ubuntu mono-13'") end),
+    awful.key({ modkey }, "space", function() menubar.show() end),
     awful.key({ modkey }, "p", function() menubar.show() end)
 )
 
