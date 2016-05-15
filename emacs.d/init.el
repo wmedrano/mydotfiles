@@ -19,7 +19,7 @@
  '(global-hl-line-mode t)
  '(package-selected-packages
    (quote
-    (elein eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy aurora-theme helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (clojure-mode-extra-font-locking eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(show-paren-delay 0.0)
  '(show-paren-mode t)
  '(tool-bar-mode nil))
@@ -67,11 +67,10 @@
 (require 'which-key)
 (setq anzu-mode-lighter nil
       sml/name-width 32
-      sml/theme 'respectful
+      sml/theme 'dark
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.1
       which-key-lighter nil)
-;; (load-theme 'twilight-bright t)
 (load-theme 'eclipse t)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
@@ -244,7 +243,6 @@
 (key-chord-mode +1)
 (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
-(add-to-list 'evil-emacs-state-modes 'cider-mode)
 (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
