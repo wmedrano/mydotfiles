@@ -19,7 +19,7 @@
  '(global-hl-line-mode t)
  '(package-selected-packages
    (quote
-    (clojure-mode-extra-font-locking eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (alect-themes material-theme leuven-theme ace-window clojure-mode-extra-font-locking eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(show-paren-delay 0.0)
  '(show-paren-mode t)
  '(tool-bar-mode nil))
@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal))))
- '(hl-line ((t (:underline nil)))))
+ '(hl-line ((t (:background "gainsboro")))))
 
 (setq-default indent-tabs-mode nil
 	      major-mode 'org-mode)
@@ -71,11 +71,15 @@
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.1
       which-key-lighter nil)
-(load-theme 'eclipse t)
+(load-theme 'material-light t)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
 (sml/setup)
 (which-key-mode +1)
+
+;;
+(require 'ace-window)
+(global-set-key (kbd "C-c w") #'ace-window)
 
 ;; code folding
 (require 'yafolding)
@@ -243,6 +247,7 @@
 (key-chord-mode +1)
 (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
+(add-to-list 'evil-emacs-state-modes 'cider-docview-mode)
 (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
