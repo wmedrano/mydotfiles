@@ -9,17 +9,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-save-default nil)
- '(blink-cursor-mode t)
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c93fabc360a4b2adb84cc7ab70a717a990777452ab0328b23812c779ff274154" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "1b46826ed71b40396e3eee3a8a8adb0b4e2bf4edeff271116a1926e5c20eede0" default)))
+    ("613a7c50dbea57860eae686d580f83867582ffdadd63f0f3ebe6a85455ab7706" "1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c93fabc360a4b2adb84cc7ab70a717a990777452ab0328b23812c779ff274154" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "1b46826ed71b40396e3eee3a8a8adb0b4e2bf4edeff271116a1926e5c20eede0" default)))
  '(eldoc-echo-area-use-multiline-p t)
  '(fill-column 80)
  '(global-hl-line-mode t)
+ '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (alect-themes material-theme leuven-theme ace-window clojure-mode-extra-font-locking eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (csharp-mode moe-theme solarized-theme monokai-theme atom-one-dark-theme alect-themes material-theme leuven-theme ace-window clojure-mode-extra-font-locking eclipse-theme smart-mode-line twilight-bright-theme ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(show-paren-delay 0.0)
  '(show-paren-mode t)
  '(tool-bar-mode nil))
@@ -28,8 +28,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal))))
- '(hl-line ((t (:background "gainsboro")))))
+ '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal)))))
 
 (setq-default indent-tabs-mode nil
 	      major-mode 'org-mode)
@@ -65,13 +64,14 @@
 (require 'smart-mode-line)
 (require 'undo-tree)
 (require 'which-key)
+(require 'moe-theme)
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/theme 'dark
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.1
       which-key-lighter nil)
-(load-theme 'material-light t)
+(moe-dark)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
 (sml/setup)
