@@ -71,7 +71,7 @@
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.1
       which-key-lighter nil)
-(moe-dark)
+(load-theme 'moe-dark t)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
 (sml/setup)
