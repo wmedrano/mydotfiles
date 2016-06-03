@@ -268,6 +268,7 @@
 (define-key evil-normal-state-map (kbd "q") nil)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
+(define-key neotree-mode-map (kbd "/") #'isearch-forward)
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
 
 ;; music
