@@ -68,7 +68,7 @@ end
 beautiful.init("~/.config/awesome/theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "lxterminal"
+terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
 editor = "emacsclient -c"
 editor_cmd = editor

@@ -10,4 +10,5 @@ emacs.d/network-security.data
 emacs.d/project-explorer-cache
 emacs.d/projectile-bookmarks.eld
 lein/self-installs/
+lein/repl-history
 hexchat/scrollback

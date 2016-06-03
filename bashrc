@@ -19,11 +19,16 @@ alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 export BOOT_JVM_OPTIONS="-Djava.library.path=/usr/lib:/usr/local/lib"
+PATH=$PATH:~/.cargo/bin
 
 # Enable history appending instead of overwriting.  #139609
 shopt -s histappend
 
 use_color=false
+
+if [ -e /usr/share/terminfo/x/xterm-256color ] && [ "$COLORTERM" == "xfce4-terminal" ]; then
+        TERM=xterm-256color
+fi
 
 # Set colorful PS1 only on colorful terminals.
 # dircolors --print-database uses its own built-in database
