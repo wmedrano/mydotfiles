@@ -18,6 +18,7 @@ shopt -s expand_aliases
 alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
+alias ec='emacsclient -t'                 # terminal emacs
 export BOOT_JVM_OPTIONS="-Djava.library.path=/usr/lib:/usr/local/lib"
 PATH=$PATH:~/.cargo/bin
 

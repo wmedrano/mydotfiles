@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Install Packages
 
 ## Window Manager and Stuff
@@ -11,7 +13,7 @@ sudo pacman -S banshee chromium hexchat lxtask-gtk3 qjackctl --needed
 yaourt -S urxvt-unicode-24bit --needed
 
 ## Utilities
-sudo pacman -S arandr aspell-en pandoc scrot --needed
+sudo pacman -S arandr aspell-en pandoc scrot xclip --needed
 yaourt -S chromium-pepper-flash redshift --needed
 
 ## Audio

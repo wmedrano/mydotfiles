@@ -18,7 +18,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (evil-commentary evil-surround yaml-mode cython-mode csharp-mode moe-theme ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode moe-theme ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -71,15 +71,27 @@
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/no-confirm-load-theme t
-      sml/theme 'dark
       undo-tree-mode-lighter " ut"
       which-key-idle-delay 0.1
       which-key-lighter nil)
-(load-theme 'moe-dark t)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
 (sml/setup)
 (which-key-mode +1)
+
+(defun dark-theme ()
+  "Apply the dark theme."
+  (interactive)
+  (load-theme 'moe-dark t)
+  (sml/apply-theme 'dark))
+
+(defun light-theme ()
+  "Apply the light theme."
+  (interactive)
+  (load-theme 'moe-light t)
+  (sml/apply-theme 'dark))
+
+(dark-theme)
 
 ;;
 (require 'ace-window)
@@ -144,7 +156,7 @@
 (require 'projectile)
 (require 'helm-projectile)
 (setq helm-completion-mode-string nil
-      neo-window-width 32
+      neo-window-width 28
       projectile-completion-system 'helm)
 (projectile-cleanup-known-projects)
 (global-set-key (kbd "M-x") #'helm-M-x)
@@ -244,12 +256,13 @@
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'company-racer))
 (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
-(add-hook 'rust-mode-hook #'cargo-minor-mode)
 (add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'rust-mode-hook #'cargo-minor-mode)
 
 ;; comint mode - interpreters
 
 ;; evil mode
+(require 'diminish)
 (require 'evil)
 (require 'evil-surround)
 (require 'evil-commentary)
@@ -257,6 +270,7 @@
 (evil-mode +1)
 (global-evil-surround-mode +1)
 (evil-commentary-mode +1)
+(diminish 'evil-commentary-mode)
 (key-chord-mode +1)
 (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
@@ -270,6 +284,12 @@
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 (define-key neotree-mode-map (kbd "/") #'isearch-forward)
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
+
+(require 'evil-terminal-cursor-changer)
+(setq evil-emacs-state-cursor '("white" box)
+      evil-insert-state-cursor '("yellow" bar)
+      evil-normal-state-cursor '("cyan" box)
+      evil-visual-state-cursor '("blue" box));
 
 ;; music
 (require 'helm-rhythmbox)

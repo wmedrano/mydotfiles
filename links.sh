@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Link home files
 rm ~/.bashrc ~/.bash_profile ~/.xinitrc ~/.gtkrc-2.0 ~/.Xresources
 ln -s `pwd`/bashrc ~/.bashrc
@@ -22,8 +24,9 @@ ln -s `pwd`/emacs.d ~/ # editing environment
 mv ~/emacs.d ~/.emacs.d
 
 # Other
-rm -r ~/.config/hexchat
+rm -r ~/.config/hexchat ~/.urxvt
 ln -s `pwd`/hexchat ~/.config # irc client
+ln -s `pwd`/urxvt ~/.urxvt # terminal
 
 # Clojure
 rm -r ~/.boot ~/.lein

@@ -334,7 +334,10 @@ globalkeys = awful.util.table.join(
     end),
     -- Menubar
     awful.key({ modkey }, "space", function() menubar.show() end),
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey }, "p", function() menubar.show() end),
+    -- Common Applications
+    awful.key({ modkey }, "c", function() awful.util.spawn("chromium") end),
+    awful.key({ modkey }, "e", function() awful.util.spawn("emacsclient -c") end)
 )
 
 clientkeys = awful.util.table.join(

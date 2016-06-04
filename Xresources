@@ -16,8 +16,17 @@ URxvt.resize-font.bigger: C-Up
 URxvt.font: xft:Inconsolata:size=12
 URxvt.scrollBar_right: true
 
+! URxvt keybindings
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.perl-ext-common: default,clipboard,matcher
+URxvt.url-launcher: chromium
+URxvt.matcher.button: 1
+
 !! source: https://github.com/spazzpp2/dotfiles/blob/29819a5ac5e451bfa39bc324378aa508ef75cae8/Molokai.xrdb
-URxvt.background: #272822
+URxvt.scrollColor: #131411
+URxvt.scrollStyle: xterm
+URxvt.depth: 32
+URxvt.background: [90]#272822
 URxvt.foreground: #d0d0d0
 URxvt.color0: #272822
 URxvt.color1: #960050
