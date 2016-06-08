@@ -10,15 +10,12 @@
  ;; If there is more than one, they won't work right.
  '(auto-save-default nil)
  '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("613a7c50dbea57860eae686d580f83867582ffdadd63f0f3ebe6a85455ab7706" default)))
  '(eldoc-echo-area-use-multiline-p t)
  '(fill-column 80)
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode moe-theme ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode moe-theme ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -71,7 +68,7 @@
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/no-confirm-load-theme t
-      undo-tree-mode-lighter " ut"
+      undo-tree-mode-lighter nil
       which-key-idle-delay 0.1
       which-key-lighter nil)
 (global-anzu-mode +1)
@@ -79,23 +76,40 @@
 (sml/setup)
 (which-key-mode +1)
 
+(defvar current-theme-type nil)
+
 (defun dark-theme ()
   "Apply the dark theme."
   (interactive)
-  (load-theme 'moe-dark t)
-  (sml/apply-theme 'dark))
+  (load-theme 'monokai t)
+  (sml/apply-theme 'respectful)
+  (setq current-theme-type "light"))
 
 (defun light-theme ()
   "Apply the light theme."
   (interactive)
   (load-theme 'moe-light t)
-  (sml/apply-theme 'dark))
+  (sml/apply-theme 'dark)
+  (setq current-theme-type "dark"))
 
-(dark-theme)
+(defun toggle-theme ()
+  "Toggle between dark and light theme."
+  (interactive)
+  (if (equal current-theme-type "light")
+      (progn (setq current-theme-type "dark") (light-theme))
+    (progn (setq current-theme-type "light") (dark-theme))))
+
+(global-set-key (kbd "C-c t") #'toggle-theme)
+(if (equal current-theme-type nil)
+    (toggle-theme))
 
 ;;
 (require 'ace-window)
 (global-set-key (kbd "C-c w") #'ace-window)
+
+;; emacs browser
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "chromium")
 
 ;; code folding
 (require 'yafolding)
@@ -139,7 +153,6 @@
       flycheck-idle-change-delay 1.0
       flyspell-mode-line-string " FlyS")
 (define-key flyspell-mode-map (kbd "C-c a") #'flyspell-popup-correct)
-(define-key flycheck-mode-map (kbd "C-c f") #'flycheck-next-error)
 (global-flycheck-mode +1)
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
@@ -189,6 +202,9 @@
 
 ;; clojure language
 (require 'cider)
+
+;; Emacs lisp
+(define-key emacs-lisp-mode-map (kbd "C-c C-r") #'eval-buffer)
 
 ;; go language
 (require 'go-mode)
@@ -262,7 +278,6 @@
 ;; comint mode - interpreters
 
 ;; evil mode
-(require 'diminish)
 (require 'evil)
 (require 'evil-surround)
 (require 'evil-commentary)
@@ -270,7 +285,6 @@
 (evil-mode +1)
 (global-evil-surround-mode +1)
 (evil-commentary-mode +1)
-(diminish 'evil-commentary-mode)
 (key-chord-mode +1)
 (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
 (add-to-list 'evil-emacs-state-modes 'neotree-mode)
@@ -280,20 +294,33 @@
 (define-key evil-normal-state-map (kbd "K") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "C-d") #'evil-join)
 (define-key evil-normal-state-map (kbd "q") nil)
+(define-key evil-normal-state-map (kbd "g a") #'helm-projectile-ag)
+(define-key evil-normal-state-map (kbd "g b") #'github-browse-file)
+(define-key evil-normal-state-map (kbd "g f") #'flycheck-next-error)
+(define-key evil-normal-state-map (kbd "g m") #'evil-goto-mark)
+(define-key evil-normal-state-map (kbd "g p") #'helm-projectile)
+(define-key evil-normal-state-map (kbd "g w") #'ace-window)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
+
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 (define-key neotree-mode-map (kbd "/") #'isearch-forward)
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
 
 (require 'evil-terminal-cursor-changer)
-(setq evil-emacs-state-cursor '("white" box)
-      evil-insert-state-cursor '("yellow" bar)
-      evil-normal-state-cursor '("cyan" box)
-      evil-visual-state-cursor '("blue" box));
+(setq evil-emacs-state-cursor  '("white" box)
+      evil-insert-state-cursor '("#F92672" bar)
+      evil-normal-state-cursor '("#66D9EF" box)
+      evil-visual-state-cursor '("#A6E22E" box));
 
 ;; music
 (require 'helm-rhythmbox)
 (global-set-key (kbd "C-c r") #'helm-rhythmbox)
+
+(require 'diminish)
+(diminish 'evil-commentary-mode)
+(diminish 'cargo-minor-mode)
+(diminish 'racer-mode)
+(diminish 'git-gutter-mode)
 
 (provide 'init)
 ;;; init ends here

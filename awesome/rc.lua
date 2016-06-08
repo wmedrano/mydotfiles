@@ -17,6 +17,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 -- Vicious widget library
 local vicious = require("vicious")
+local treesome = require("treesome")
 
 -- autostart
 
@@ -88,6 +89,7 @@ modkey = "Mod4"
 local layouts =
     {
         awful.layout.suit.tile,
+        treesome,
 	awful.layout.suit.floating,
     }
 
@@ -441,7 +443,7 @@ awful.rules.rules = {
                      raise = true,
                      keys = clientkeys,
                      buttons = clientbuttons },
-      callback = awful.client.setslave },
+    },
     { rule = { name = "Figure" },
       properties = { floating = true, ontop = true } },
     { rule = { class = "MPlayer" },
@@ -474,7 +476,7 @@ client.connect_signal(
             -- i.e. put it at the end of others instead of setting it master.
             -- awful.client.setslave(c)
 
-            -- Put windows in a smart way, only if they does not set an initial position.
+            -- Put windows in a smart way, only if they do not set an initial position.
             if not c.size_hints.user_position and not c.size_hints.program_position then
                 awful.placement.no_overlap(c)
                 awful.placement.no_offscreen(c)
