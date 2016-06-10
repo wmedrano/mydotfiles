@@ -83,25 +83,16 @@
   (interactive)
   (load-theme 'monokai t)
   (sml/apply-theme 'respectful)
-  (setq current-theme-type "light"))
+  (setq current-theme-type "dark"))
 
 (defun light-theme ()
   "Apply the light theme."
   (interactive)
   (load-theme 'moe-light t)
   (sml/apply-theme 'dark)
-  (setq current-theme-type "dark"))
+  (setq current-theme-type "light"))
 
-(defun toggle-theme ()
-  "Toggle between dark and light theme."
-  (interactive)
-  (if (equal current-theme-type "light")
-      (progn (setq current-theme-type "dark") (light-theme))
-    (progn (setq current-theme-type "light") (dark-theme))))
-
-(global-set-key (kbd "C-c t") #'toggle-theme)
-(if (equal current-theme-type nil)
-    (toggle-theme))
+(dark-theme)
 
 ;;
 (require 'ace-window)
