@@ -72,7 +72,7 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
 editor = "emacsclient -t"
-editor_cmd = terminal .. " " .. editor
+editor_cmd = terminal .. " -e " .. editor
 file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
