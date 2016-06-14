@@ -15,7 +15,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode moe-theme ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -64,7 +64,6 @@
 (require 'smart-mode-line)
 (require 'undo-tree)
 (require 'which-key)
-(require 'moe-theme)
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/no-confirm-load-theme t
@@ -73,26 +72,16 @@
       which-key-lighter nil)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
-(sml/setup)
 (which-key-mode +1)
 
-(defvar current-theme-type nil)
-
-(defun dark-theme ()
-  "Apply the dark theme."
+(sml/setup)
+(load-theme 'monokai t)
+(defun clear-bg ()
+  "Clear the background by giving a not color."
   (interactive)
-  (load-theme 'monokai t)
-  (sml/apply-theme 'respectful)
-  (setq current-theme-type "dark"))
-
-(defun light-theme ()
-  "Apply the light theme."
-  (interactive)
-  (load-theme 'moe-light t)
-  (sml/apply-theme 'dark)
-  (setq current-theme-type "light"))
-
-(dark-theme)
+  (set-background-color "#FFFFFFFF"))
+(defalias 'cb 'clear-bg)
+(add-hook 'window-setup-hook #'clear-bg)
 
 ;;
 (require 'ace-window)

@@ -17,7 +17,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 -- Vicious widget library
 local vicious = require("vicious")
-local treesome = require("treesome")
+-- local treesome = require("treesome")
 
 -- autostart
 
@@ -71,8 +71,8 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
-editor = "emacsclient -c"
-editor_cmd = editor
+editor = "emacsclient -t"
+editor_cmd = terminal .. " " .. editor
 file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
@@ -89,7 +89,7 @@ modkey = "Mod4"
 local layouts =
     {
         awful.layout.suit.tile,
-        treesome,
+        -- treesome,
 	awful.layout.suit.floating,
     }
 
@@ -339,7 +339,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
     -- Common Applications
     awful.key({ modkey }, "c", function() awful.util.spawn("chromium") end),
-    awful.key({ modkey }, "e", function() awful.util.spawn("emacsclient -c") end)
+    awful.key({ modkey }, "e", function() awful.util.spawn(editor_cmd) end)
 )
 
 clientkeys = awful.util.table.join(
