@@ -81,7 +81,8 @@
   (interactive)
   (set-background-color "#FFFFFFFF"))
 (defalias 'cb 'clear-bg)
-(add-hook 'window-setup-hook #'clear-bg)
+(add-hook 'text-mode-hook #'clear-bg)
+(add-hook 'prog-mode-hook #'clear-bg)
 
 ;;
 (require 'ace-window)
