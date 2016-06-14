@@ -10,7 +10,7 @@ sudo pacman -S ttf-ubuntu-font-family --needed
 
 ## Apps
 sudo pacman -S banshee chromium hexchat lxtask-gtk3 qjackctl --needed
-yaourt -S urxvt-unicode-24bit --needed
+yaourt -S rxvt-unicode-24bit --needed
 
 ## Utilities
 sudo pacman -S arandr aspell-en pandoc scrot xclip --needed
