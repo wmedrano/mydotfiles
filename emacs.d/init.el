@@ -83,6 +83,9 @@
 (defalias 'cb 'clear-bg)
 (add-hook 'text-mode-hook #'clear-bg)
 (add-hook 'prog-mode-hook #'clear-bg)
+(add-hook 'after-init-hook #'clear-bg)
+(add-hook 'find-file-hook #'clear-bg)
+(clear-bg)
 
 ;;
 (require 'ace-window)
@@ -288,8 +291,8 @@
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
 
 (require 'evil-terminal-cursor-changer)
-(setq evil-emacs-state-cursor  '("white" box)
-      evil-insert-state-cursor '("#F92672" bar)
+(setq evil-emacs-state-cursor  '("#FFFFFF" box)
+      evil-insert-state-cursor '("#F92672" box)
       evil-normal-state-cursor '("#66D9EF" box)
       evil-visual-state-cursor '("#A6E22E" box));
 

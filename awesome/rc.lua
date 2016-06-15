@@ -25,7 +25,7 @@ local vicious = require("vicious")
 awful.util.spawn("compton --dbus")
 
 -- emacs deamon - provide quick editing of files with `emacsclient`
-awful.util.spawn("emacs --daemon")
+awful.util.spawn("/bin/emacs --daemon")
 
 -- redshift - reduce eyestrain
 awful.util.spawn("redshift-gtk")
