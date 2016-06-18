@@ -13,7 +13,7 @@ URxvt.iso14755           : false
 URxvt.iso14755_52        : false
 URxvt.resize-font.smaller: C-Down
 URxvt.resize-font.bigger : C-Up
-URxvt.font               : xft:Inconsolata:size=12
+URxvt.font               : xft:Inconsolata:size=11
 URxvt.scrollBar_right    : true
 
 ! URxvt keybindings
@@ -22,26 +22,25 @@ URxvt.perl-ext-common       : default,clipboard,matcher
 URxvt.url-launcher          : chromium
 URxvt.matcher.button        : 1
 
-!! source: https://github.com/spazzpp2/dotfiles/blob/29819a5ac5e451bfa39bc324378aa508ef75cae8/Molokai.xrdb
 URxvt.scrollColor   : #131411
 URxvt.scrollStyle   : xterm
 URxvt.externalBorder: 2
 URxvt.depth         : 32
-URxvt.background    : [80]#272822
-URxvt.foreground    : #d0d0d0
-URxvt.color0        : #272822
-URxvt.color1        : #960050
-URxvt.color2        : #66aa11
-URxvt.color3        : #c47f2c
-URxvt.color4        : #30309b
-URxvt.color5        : #7e40a5
-URxvt.color6        : #3579a8
-URxvt.color7        : #9999aa
-URxvt.color8        : #303030
-URxvt.color9        : #ff0090
-URxvt.color10       : #80ff00
-URxvt.color11       : #ffba68
-URxvt.color12       : #5f5fee
-URxvt.color13       : #bb88dd
-URxvt.color14       : #4eb4fa
-URxvt.color15       : #d0d0d0
+URxvt.background    : [85]#2c3e50
+URxvt.foreground    : #ecf0f1
+URxvt.color0        : #2c3e50
+URxvt.color1        : #c0392b
+URxvt.color2        : #27ae60
+URxvt.color3        : #d98c10
+URxvt.color4        : #0a74b9
+URxvt.color5        : #8e44ad
+URxvt.color6        : #16a085
+URxvt.color7        : #dfe4ea
+URxvt.color8        : #34495e
+URxvt.color9        : #e74c3c
+URxvt.color10       : #2ecc71
+URxvt.color11       : #f1c40f
+URxvt.color12       : #2492db
+URxvt.color13       : #9b59b6
+URxvt.color14       : #1abc9c
+URxvt.color15       : #ecf0f1

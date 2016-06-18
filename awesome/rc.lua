@@ -72,7 +72,7 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
 editor = "emacsclient -t"
-editor_cmd = terminal .. " -e " .. editor
+editor_cmd = "emacsclient -c"
 file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
@@ -339,7 +339,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
     -- Common Applications
     awful.key({ modkey }, "c", function() awful.util.spawn("chromium") end),
-    awful.key({ modkey }, "e", function() awful.util.spawn(editor_cmd) end)
+    awful.key({ modkey }, "e", function() awful.util.spawn(editor_cmd) end),
+    awful.key({ modkey }, "z", function() awful.util.spawn("slock") end)
 )
 
 clientkeys = awful.util.table.join(

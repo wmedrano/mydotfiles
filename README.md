@@ -6,16 +6,12 @@ Configuration for my [Manjaro Linux](https://manjaro.github.io/) Laptop and Desk
 
 ## Applications
 - `awesome` - Tiling Window Manager configured with `lua`
-- `banshee` - Music Player
 - `chromium` - Web Browser
 - `compton` - Compositor used for vsync and other effects
 - `emacs` - Customizable Text Editor configured with `elisp`
 - `hexchat` - IRC Client
-- `lxterminal` - Lightweight terminal with 24bit color support
+- `urxvt` - Lightweight and customize-able terminal with 24bit color support
 
-## Resources
-- [Wallpaper](http://www.v3wall.com/en/html/pic_down/1920_1080/pic_down_81329_1920_1080.html)
+# Theme
+- Some space background
 - Sky GTK Theme with Numix Reborn Icons.
-
-## Preview
-![Preview](/preview_01.png)

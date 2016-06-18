@@ -15,7 +15,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ibuffer-vc ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter-fringe git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (solarized-theme ibuffer-projectile evil-magit flatui-theme git-gutter+ monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -27,12 +27,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 120 :width normal)))))
+ '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal)))))
 
+(require 'linum)
 (setq-default indent-tabs-mode nil
 	      major-mode 'org-mode)
 (setq indent-tabs-mode nil
       inhibit-startup-screen t
+      linum-format "%d "
       make-backup-files nil
       mouse-autoselect-window t)
 (global-auto-revert-mode)
@@ -67,6 +69,7 @@
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/no-confirm-load-theme t
+      sml/theme 'dark
       undo-tree-mode-lighter nil
       which-key-idle-delay 0.1
       which-key-lighter nil)
@@ -74,22 +77,10 @@
 (global-undo-tree-mode +1)
 (which-key-mode +1)
 
+(load-theme 'flatui t)
 (sml/setup)
-(load-theme 'monokai t)
-(defun clear-bg ()
-  "Clear the background by giving a not color."
-  (interactive)
-  (set-background-color "#FFFFFFFF"))
-(defalias 'cb 'clear-bg)
-(add-hook 'text-mode-hook #'clear-bg)
-(add-hook 'prog-mode-hook #'clear-bg)
-(add-hook 'after-init-hook #'clear-bg)
-(add-hook 'find-file-hook #'clear-bg)
-(clear-bg)
 
 ;;
-(require 'ace-window)
-(global-set-key (kbd "C-c w") #'ace-window)
 
 ;; emacs browser
 (setq browse-url-browser-function 'browse-url-generic
@@ -110,7 +101,7 @@
 (require 'company)
 ;; (require 'yasnippet)
 (setq company-lighter " comp"
-      company-idle-delay 0.4
+      company-idle-delay 0.1
       company-minimum-prefix-length 1
       company-selection-wrap-around t
       company-tooltip-align-annotations t
@@ -143,7 +134,9 @@
 
 ;; git
 (require 'magit)
-(require 'git-gutter-fringe)
+(require 'evil-magit)
+(require 'git-gutter)
+(evil-magit-init)
 (global-git-gutter-mode +1)
 
 ;; emacs completions and project
@@ -161,13 +154,19 @@
 (global-set-key (kbd "C-c n") #'neotree-toggle)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
 (define-key projectile-command-map (kbd "n") #'neotree-projectile-action)
-(define-key projectile-command-map (kbd "s") #'helm-projectile-ag)
+(define-key projectile-command-map (kbd "s") #'projectile-ag)
 (helm-mode +1)
 (projectile-global-mode)
 
 ;; buffer menu
 (require 'ibuffer)
+(require 'ibuffer-projectile)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
+(add-hook 'ibuffer-hook
+          (lambda ()
+            (ibuffer-projectile-set-filter-groups)
+            (unless (eq ibuffer-sorting-mode 'alphabetic)
+              (ibuffer-do-sort-by-alphabetic))))
 
 ;; c/c++/obj-c
 (require 'irony)
@@ -278,23 +277,28 @@
 (define-key evil-normal-state-map (kbd "K") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "C-d") #'evil-join)
 (define-key evil-normal-state-map (kbd "q") nil)
-(define-key evil-normal-state-map (kbd "g a") #'helm-projectile-ag)
-(define-key evil-normal-state-map (kbd "g b") #'github-browse-file)
-(define-key evil-normal-state-map (kbd "g f") #'flycheck-next-error)
-(define-key evil-normal-state-map (kbd "g m") #'evil-goto-mark)
-(define-key evil-normal-state-map (kbd "g p") #'helm-projectile)
-(define-key evil-normal-state-map (kbd "g w") #'ace-window)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
-
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 (define-key neotree-mode-map (kbd "/") #'isearch-forward)
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
 
+;; g keys!
+(require 'ace-window)
+(define-key evil-normal-state-map (kbd "g /") #'helm-projectile-ag)
+(define-key evil-normal-state-map (kbd "g a") #'flyspell-goto-next-error)
+(define-key evil-normal-state-map (kbd "g b") #'github-browse-file)
+(define-key evil-normal-state-map (kbd "g f") #'flycheck-next-error)
+(define-key evil-normal-state-map (kbd "g m") #'evil-set-marker)
+(define-key evil-normal-state-map (kbd "g M") #'evil-goto-mark)
+(define-key evil-normal-state-map (kbd "g p") #'helm-projectile)
+(define-key evil-normal-state-map (kbd "g w") #'ace-window)
+
 (require 'evil-terminal-cursor-changer)
-(setq evil-emacs-state-cursor  '("#FFFFFF" box)
-      evil-insert-state-cursor '("#F92672" box)
-      evil-normal-state-cursor '("#66D9EF" box)
-      evil-visual-state-cursor '("#A6E22E" box));
+(setq evil-emacs-state-cursor  '("#7f8c8d" box)
+      evil-insert-state-cursor '("#e74c3c" box)
+      evil-motion-state-cursor '("#9b59b6" box)
+      evil-normal-state-cursor '("#3498db" box)
+      evil-visual-state-cursor '("#2ecc71" box));
 
 ;; music
 (require 'helm-rhythmbox)
