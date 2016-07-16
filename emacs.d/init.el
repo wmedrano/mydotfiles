@@ -15,7 +15,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (solarized-theme ibuffer-projectile evil-magit flatui-theme git-gutter+ monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm-projectile helm projectile magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (twilight-bright-theme moe-theme ibuffer-projectile helm-projectile projectile smooth-scrolling solarized-theme evil-magit flatui-theme git-gutter+ monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -64,25 +64,29 @@
 (require 'anzu)
 (require 'evil-anzu)
 (require 'smart-mode-line)
+(require 'smooth-scrolling)
 (require 'undo-tree)
 (require 'which-key)
 (setq anzu-mode-lighter nil
       sml/name-width 32
       sml/no-confirm-load-theme t
       sml/theme 'dark
+      smooth-scroll-margin 3
       undo-tree-mode-lighter nil
       which-key-idle-delay 0.1
       which-key-lighter nil)
 (global-anzu-mode +1)
 (global-undo-tree-mode +1)
+(smooth-scrolling-mode +1)
 (which-key-mode +1)
 
-(load-theme 'flatui t)
+(load-theme 'twilight-bright t)
 (sml/setup)
 
 ;;
 
 ;; emacs browser
+(require 'browse-url)
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium")
 

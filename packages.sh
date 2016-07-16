@@ -14,7 +14,7 @@ yaourt -S rxvt-unicode-24bit --needed
 
 ## Utilities
 sudo pacman -S arandr aspell-en pandoc scrot xclip --needed
-yaourt -S chromium-pepper-flash redshift --needed
+yaourt -S chromium-pepper-flash chromium-widevine redshift --needed
 
 ## Audio
 sudo pacman -S portaudio portmidi --needed
