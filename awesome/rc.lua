@@ -71,6 +71,7 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
+private_browser = "chromium --incognito"
 editor = "emacsclient -t"
 editor_cmd = "emacsclient -c"
 file_browser = "thunar"
@@ -338,7 +339,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "space", function() menubar.show() end),
     awful.key({ modkey }, "p", function() menubar.show() end),
     -- Common Applications
-    awful.key({ modkey }, "c", function() awful.util.spawn("chromium") end),
+    awful.key({ modkey }, "c", function() awful.util.spawn(browser) end),
+    awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn(private_browser) end),
     awful.key({ modkey }, "e", function() awful.util.spawn(editor_cmd) end),
     awful.key({ modkey }, "z", function() awful.util.spawn("slock") end)
 )

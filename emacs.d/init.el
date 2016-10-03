@@ -15,7 +15,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (twilight-bright-theme moe-theme ibuffer-projectile helm-projectile projectile smooth-scrolling solarized-theme evil-magit flatui-theme git-gutter+ monokai-theme github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ag evil-anzu evil-avy helm-themes helm-flycheck company-quickhelp helm-package git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
+    (ibuffer-projectile helm-projectile projectile smooth-scrollingevil-magit git-gutter+ github-browse-file evil-terminal-cursor-changer diminish evil-commentary evil-surround yaml-mode cython-mode csharp-mode ace-window clojure-mode-extra-font-locking smart-mode-line ag evil-anzu evil-avy helm-flycheck company-quickhelp helm-package git-gutter helm-company helm-rhythmbox js2-mode js-comint nodejs-repl key-chord evil avy toml-mode julia-shell julia-mode undo-tree markdown-mode yafolding eldoc-eval helm-mode-manager gitconfig-mode gitignore-mode neotree benchmark-init company-jedi lua-mode flycheck-haskell company-ghc ghc hindent haskell-mode flyspell-popup go-eldoc company-go cider flycheck-irony irony-eldoc company-irony-c-headers company-irony helm-ag which-key anzu helm magit flycheck-rust cargo company-racer racer rust-mode flycheck company)))
  '(projectile-globally-ignored-directories
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".cargo")))
@@ -80,7 +80,7 @@
 (smooth-scrolling-mode +1)
 (which-key-mode +1)
 
-(load-theme 'twilight-bright t)
+(load-theme 'leuven t)
 (sml/setup)
 
 ;;
@@ -103,7 +103,6 @@
 
 ;; auto completions and templates
 (require 'company)
-;; (require 'yasnippet)
 (setq company-lighter " comp"
       company-idle-delay 0.1
       company-minimum-prefix-length 1
@@ -112,17 +111,11 @@
       company-tooltip-limit 24
       company-tooltip-minimum 24
       company-tooltip-minimum-width 64)
-;; (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
-;; (define-key yas-minor-mode-map (kbd "C-c y") #'company-yasnippet)
-;; (define-key yas-minor-mode-map [(tab)] nil)
-;; (define-key yas-minor-mode-map (kbd "TAB") nil)
-;; (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key company-active-map [return] nil)
 (define-key company-active-map (kbd "RET") nil)
 (define-key company-active-map (kbd "TAB") #'company-complete-selection)
 (define-key company-active-map [tab] #'company-complete-selection)
 (global-company-mode +1)
-;; (yas-global-mode +1)
 
 ;; syntax/spell checking
 (require 'flycheck)
@@ -156,7 +149,7 @@
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-c e") #'eshell)
 (global-set-key (kbd "C-c n") #'neotree-toggle)
-(global-set-key (kbd "C-x C-f") #'helm-find-files)
+;; (global-set-key (kbd "C-x C-f") #'helm-find-files)
 (define-key projectile-command-map (kbd "n") #'neotree-projectile-action)
 (define-key projectile-command-map (kbd "s") #'projectile-ag)
 (helm-mode +1)
@@ -280,7 +273,6 @@
 (define-key evil-normal-state-map (kbd "J") #'evil-scroll-down)
 (define-key evil-normal-state-map (kbd "K") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "C-d") #'evil-join)
-(define-key evil-normal-state-map (kbd "q") nil)
 (define-key neotree-mode-map (kbd "j") #'neotree-next-line)
 (define-key neotree-mode-map (kbd "k") #'neotree-previous-line)
 (define-key neotree-mode-map (kbd "/") #'isearch-forward)

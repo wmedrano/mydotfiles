@@ -47,5 +47,8 @@ sudo pacman -S python-pandas python-virtualenv jupyter --needed
 sudo pacman -S cargo rust --needed
 yaourt -S rust-src --needed
 
+# DB
+sudo pacman -S sqlite redis --needed
+
 ## Fix game controllers
 sudo pacman -R xf86-input-joystick
