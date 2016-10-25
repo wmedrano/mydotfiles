@@ -83,7 +83,7 @@
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-h f") 'counsel-describe-function)
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
-  (define-key projectile-mode-map (kbd "C-c p") nil) ;; packages shouldn't take C-c _
+  (define-key projectile-mode-map (kbd "C-c p") 'counsel-projectile-switch-project)
   (diminish 'ivy-mode)
   ;; ibuffer
   (require 'ibuffer)

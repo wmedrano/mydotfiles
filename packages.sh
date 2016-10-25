@@ -48,7 +48,7 @@ sudo pacman -S cargo rust --needed
 yaourt -S rust-src --needed
 
 # DB
-sudo pacman -S sqlite redis --needed
+sudo pacman -S elasticsearch sqlite redis --needed
 
 ## Fix game controllers
 sudo pacman -R xf86-input-joystick
