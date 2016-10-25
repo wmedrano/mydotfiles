@@ -101,6 +101,12 @@
   (which-key-mode t))
 (global-emacs-setup)
 
+;; git and magit
+(add-hook 'magit-diff-mode-hook
+	  (lambda ()
+	    (require 'evil)
+	    (evil-motion-state)))
+
 ;; all languages
 (require 'evil)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
