@@ -14,7 +14,7 @@
     ("4e753673a37c71b07e3026be75dc6af3efbac5ce335f3707b7d6a110ecb636a3" default)))
  '(package-selected-packages
    (quote
-    (counsel-projectile counsel ivy hl-todo magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling smart-mode-line lua-mode key-chord julia-shell irony-eldoc ibuffer-projectile hindent go-eldoc git-gutter git-gutter+ flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider cargo ag ace-window))))
+    (neotree toml-mode monokai-theme counsel-projectile counsel ivy hl-todo magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling smart-mode-line lua-mode key-chord julia-shell irony-eldoc ibuffer-projectile hindent go-eldoc git-gutter git-gutter+ flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider cargo ag ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -25,11 +25,20 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+(defun my-install-packages ()
+  "Refresh contents from melpa and install the necessary packages."
+  (interactive)
+  (package-refresh-contents)
+  (package-install-selected-packages))
 
 ;; global emacs
 (defun global-emacs-setup ()
   "Setup for things consistent across all of Emacs."
   (interactive)
+  ;; path variables
+  (when (eq system-type 'darwin)
+    (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+    (setq exec-path (append exec-path '("/usr/local/bin"))))
   ;; misc
   (require 'diminish)
   (require 'smooth-scrolling)
@@ -64,6 +73,11 @@
   (setq sml/name-width 32
 	sml/no-confirm-load-theme t
 	sml/theme 'dark)
+  (if (eq system-type 'darwin)
+      (load-theme 'monokai t))
+  (load-theme
+   (if (eq system-type 'darwin) 'monokai 'leuven)
+   t)
   (sml/setup)
   ;; projectile + ivy + counsel
   (require 'diminish)
@@ -84,6 +98,7 @@
   (global-set-key (kbd "C-h f") 'counsel-describe-function)
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
   (define-key projectile-mode-map (kbd "C-c p") 'counsel-projectile-switch-project)
+  (diminish 'counsel-mode)
   (diminish 'ivy-mode)
   ;; ibuffer
   (require 'ibuffer)
@@ -179,9 +194,8 @@
   (interactive)
   (require 'julia-mode)
   (require 'julia-shell)
-  (define-key julia-mode-map (kbd "C-c C-c") #'julia-shell-save-and-go)
-  (define-key julia-mode-map (kbd "C-c C-p") #'run-julia)
-  (define-key julia-mode-map (kbd "C-c C-r") #'julia-shell-run-region-or-line))
+  (define-key julia-mode-map (kbd "C-c r") #'run-julia)
+  (define-key julia-mode-map (kbd "C-c b") #'julia-shell-run-region-or-line))
 (add-hook 'julia-mode-hook 'julia-lang-setup)
 
 ;; lua language
@@ -202,12 +216,15 @@
   (cargo-minor-mode t)
   (racer-mode t)
   (setq racer-cmd "~/.cargo/bin/racer"
-	racer-rust-src-path "/usr/src/rust/src")
+	racer-rust-src-path (if (eq system-type 'darwin)
+				"~/github/rust/src"
+			      "/usr/src/rust/src"))
   (add-to-list 'company-backends 'company-racer)
   (flycheck-rust-setup)
-  (define-key racer-mode-map (kbd "C-c C-d") 'racer-find-definition)
-  (define-key cargo-minor-mode-map (kbd "C-c C-k") 'cargo-process-build)
-  (define-key cargo-minor-mode-map (kbd "C-c C-r") 'cargo-process-run)
+  (define-key evil-normal-state-map (kbd "g d") 'racer-find-definition)
+  (define-key cargo-minor-mode-map (kbd "C-c b") 'cargo-process-build)
+  (define-key cargo-minor-mode-map (kbd "C-c r") 'cargo-process-run)
+  (define-key cargo-minor-mode-map (kbd "C-c t") 'cargo-proces-test)
   (add-hook 'before-save-hook 'rust-format-buffer)
   )
 (add-hook 'rust-mode-hook 'rust-lang-setup)
@@ -237,17 +254,13 @@
 (defun evil-keys-normal ()
   "Set bindings for evil normal state."
   (require 'evil)
-  (require 'swiper)
   (define-key evil-normal-state-map (kbd "J") 'evil-scroll-down)
   (define-key evil-normal-state-map (kbd "K") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-d") 'evil-join)
-  (define-key evil-normal-state-map (kbd "/") 'swiper)
-  ;; swiper reverses the semantics of searching forwards and backwards
-  ;; apparently
-  (define-key evil-normal-state-map (kbd "n") 'evil-search-previous)
-  (define-key evil-motion-state-map (kbd "n") 'evil-search-previous)
-  (define-key evil-normal-state-map (kbd "N") 'evil-search-next)
-  (define-key evil-motion-state-map (kbd "N") 'evil-search-next)
+  (define-key evil-normal-state-map (kbd "RET") nil)
+  (define-key evil-normal-state-map [ret] nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-motion-state-map [ret] nil)
   ;; sacred g keys
   (require 'ace-window)
   (require 'counsel-projectile)
@@ -328,6 +341,8 @@
 ;; undo-tree mode is started by evil
 (add-hook 'undo-tree-mode-hook (lambda ()
 				 (setq undo-tree-mode-lighter nil)))
+
+(emacs-lisp-mode)
 
 (provide 'init)
 ;;; init.el ends here
