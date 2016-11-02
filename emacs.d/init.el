@@ -46,18 +46,21 @@
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)) ;; jj to go back to normal mode
 
 (defun set-up-evil-keys-normal ()
-  "Set bindings for evil normal state."
+  "Set bindings for evil normal state. It is mostly a superset of the evil motion state."
   (require 'ace-window)
   (require 'counsel-projectile)
   (require 'evil)
-  (define-key evil-normal-state-map (kbd "J") 'evil-scroll-down) ;; J to scroll down
-  (define-key evil-normal-state-map (kbd "K") 'evil-scroll-up) ;; K to scroll up
-  (define-key evil-normal-state-map (kbd "C-d") 'evil-join) ;; C-d to join, was old J behavior
+  ;; replace evil-join with scrolling down
+  (define-key evil-normal-state-map (kbd "J") 'evil-scroll-down)
+  ;; scroll up
+  (define-key evil-normal-state-map (kbd "K") 'evil-scroll-up)
+  ;; replace scroll down with join
+  (define-key evil-normal-state-map (kbd "C-d") 'evil-join)
+  ;; overwrite motion state behavior, which let the return fall through to the buffer
+  (define-key evil-normal-state-map (kbd "RET") (lambda () (interactive)))
   ;; sacred g keys
-  (define-key evil-normal-state-map (kbd "g P") 'counsel-projectile-switch-project) ;; switch project or open file in project
-  (define-key evil-normal-state-map (kbd "g p") 'counsel-projectile) ;; switch project or open file in project
-  (define-key evil-normal-state-map (kbd "g w") 'ace-window) ;; move to another window, enumerated if there are more than 2
-  (define-key evil-normal-state-map (kbd "g /") 'counsel-projectile-ag)) ;; search entire project using ag
+  ;; replace evil-fill
+  (define-key evil-normal-state-map (kbd "g w") 'ace-window))
 
 (defun set-up-evil-motion-keys ()
   "Set bindings for evil motion state."
@@ -71,7 +74,8 @@
   ;; sacred g keys
   (define-key evil-motion-state-map (kbd "g P") 'counsel-projectile-switch-project) ;; switch project or open file in project
   (define-key evil-motion-state-map (kbd "g p") 'counsel-projectile) ;; switch project or open file in project
-  (define-key evil-motion-state-map (kbd "g w") 'ace-window) ;; move to another window, enumerated if there are more than 2
+  ;; move to another window, enumerated if there are more than 2
+  (define-key evil-motion-state-map (kbd "g w") 'ace-window)
   (define-key evil-motion-state-map (kbd "g /") 'counsel-projectile-ag)) ;; search entire project using ag
 
 (defun set-up-evil-keys ()
@@ -92,8 +96,8 @@
   ;; emacs-state - regular emacs, no vim stuff
   ;; motion-state - just movement, no editing and macros
   (add-to-list 'evil-emacs-state-modes 'comint-mode) ;; interpreters shouldn't use evil
-  (add-to-list 'evil-motion-state-modes 'magit-mode) ;; magit diff is mostly reading
-  (add-to-list 'evil-motion-state-modes 'neotree-mode) ;; neotree isn't an input buffer
+  (add-to-list 'evil-motion-state-modes 'magit-diff-mode) ;; magit diff shouldn't be edited
+  (add-to-list 'evil-motion-state-modes 'neotree-mode) ;; neotree isn't a text buffer
   (diminish 'evil-surround-mode) ;; don't show in modeline
   (diminish 'evil-commentary-mode)) ;; don't show in modeline
 
@@ -124,7 +128,7 @@
   (diminish 'git-gutter-mode) ;; don't waste mode line space showing "git gutter"
   (which-key-mode t) ;; enable which key, shows keybinding help after pressing a prefixed key
   (diminish 'which-key-mode) ;; don't waste modeline space displaying wkey
-  (load-theme 'leuven) ;; light theme
+  (load-theme 'leuven t) ;; light theme
   )
 
 (set-up-styling)

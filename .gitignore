@@ -6,6 +6,7 @@ emacs.d/ido.last
 emacs.d/irony
 emacs.d/.python-environments
 emacs.d/snippets
+emacs.d/tramp
 emacs.d/network-security.data
 emacs.d/project-explorer-cache
 emacs.d/projectile-bookmarks.eld
