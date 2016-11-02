@@ -40,8 +40,9 @@ sudo pacman -S cabal-install ghc ghc-mod hoogle --needed
 sudo pacman -S latex-most --needed
 
 ## Python Devtools
+sudo pacman -S cython
 sudo pacman -S ipython python-jedi python-matplotlib python-scikit-learn --needed
-sudo pacman -S python-pandas python-virtualenv jupyter --needed
+sudo pacman -S python-pandas python-virtualenv jupyter jupyterlab-git jupyter-notebook --needed
 
 # Rust Devtools
 sudo pacman -S cargo rust --needed

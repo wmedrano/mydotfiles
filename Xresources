@@ -26,8 +26,8 @@ URxvt.scrollColor   : #131411
 URxvt.scrollStyle   : xterm
 URxvt.externalBorder: 2
 URxvt.depth         : 32
-URxvt.background    : [85]#272822
-URxvt.foreground    : #ecf0f1
+URxvt.background    : #ffffff
+URxvt.foreground    : #121212
 URxvt.color0        : #2c3e50
 URxvt.color1        : #c0392b
 URxvt.color2        : #27ae60
