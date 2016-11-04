@@ -5,6 +5,7 @@ emacs.d/eshell
 emacs.d/ido.last
 emacs.d/irony
 emacs.d/.python-environments
+emacs.d/recentf
 emacs.d/snippets
 emacs.d/tramp
 emacs.d/network-security.data

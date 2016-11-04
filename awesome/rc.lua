@@ -28,6 +28,7 @@ awful.util.spawn("compton --dbus")
 awful.util.spawn("/bin/emacs --daemon")
 
 -- redshift - reduce eyestrain
+awful.util.spawn("killall redshift")
 awful.util.spawn("redshift-gtk")
 
 -- computer specific

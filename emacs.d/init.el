@@ -18,13 +18,15 @@
     ("4e753673a37c71b07e3026be75dc6af3efbac5ce335f3707b7d6a110ecb636a3" default)))
  '(package-selected-packages
    (quote
-    (evil-anzu anzu yaml-mode leuven-theme neotree toml-mode counsel-projectile counsel ivy magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc git-gutter git-gutter+ flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider cargo ag ace-window))))
+    (volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode counsel-projectile counsel ivy magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider cargo ag ace-window)))
+ '(volatile-highlights-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal)))))
+ '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 98 :width normal))))
+ '(vhl/default-face ((t (:background "IndianRed1" :foreground "black" :underline nil)))))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -103,29 +105,50 @@
 
 (set-up-evil-keys)
 
+;; global keys
+(defun reload-emacs-config ()
+  "Reload init.el."
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
+
+(defun set-up-global-keys ()
+  "Set up global key bindings."
+  (interactive)
+  (global-set-key (kbd "<f11>") 'reload-emacs-config)
+  (global-set-key (kbd "<f10>") 'neotree-toggle))
+
+(set-up-global-keys)
+
 
 ;; styling
 (defun set-up-styling ()
     "Set up emacs styling."
   (interactive)
+  (require 'diff-hl)
   (require 'evil-anzu)
   (require 'diminish)
-  (require 'git-gutter)
   (require 'smooth-scrolling)
+  (require 'volatile-highlights)
   (require 'which-key)
   (setq column-number-mode t ;; display the column number in mode line
 	inhibit-startup-screen t ;; stop showing annoying welcome screen
-	smooth-scrolling-margin 3 ;; .. scroll margin 3
+	smooth-scroll-margin 3 ;; .. scroll margin 3
         which-key-idle-delay 0.1 ;; wait 0.1 seconds before showing which key info
+	diff-hl-flydiff-delay 0.1 ;; wait for 0.1 seconds of idle time to update git status
 	)
   (global-anzu-mode t) ;; show number of matches for isearch/evil-search
+  (diminish 'anzu-mode) ;; don't waste space in modeline with "Anzu"
+  (global-linum-mode t) ;; show line numbers
   (global-hl-line-mode t) ;; highlight current
   (smooth-scrolling-mode t) ;; enable smooth scroll
   (menu-bar-mode -1) ;; hide menu bar
   (tool-bar-mode -1) ;; and hide toolbar
   (scroll-bar-mode -1) ;; don't show scroll bar
-  (global-git-gutter-mode t) ;; mark lines changed according to git on the left side
-  (diminish 'git-gutter-mode) ;; don't waste mode line space showing "git gutter"
+  (global-diff-hl-mode t) ;; show git changes on the left fringes, doesn't work in terminals
+  (diff-hl-flydiff-mode t) ;; calculate diffs on the fly, don't wait for saving
+  (volatile-highlights-mode t) ;; highlight affected areas when using undo/redo
+  (diminish 'volatile-highlights-mode) ;; but don't show in modeline
+  ;; don't waste mode line space showing "git gutter"
   (which-key-mode t) ;; enable which key, shows keybinding help after pressing a prefixed key
   (diminish 'which-key-mode) ;; don't waste modeline space displaying wkey
   (load-theme 'leuven t) ;; light theme
@@ -152,6 +175,10 @@
 (defun fix-paths ()
   "Fix paths for mac and brew."
   (interactive)
+  ;; rust binaries installed with cargo
+  (setenv "PATH" (concat (getenv "PATH") "~/.cargo/bin"))
+  (add-to-list 'exec-path "~/.cargo/bin")
+  ;; brew path for mac
   (when (eq system-type 'darwin)
     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
     (setq exec-path (append exec-path '("/usr/local/bin")))))
@@ -162,8 +189,11 @@
   "Set up parenthesis."
   (interactive)
   (setq show-paren-delay 0.0 ;; highlight parenthesis right away
+	hl-paren-delay 0.05
         )
-  (show-paren-mode t) ;; highlight matching parens
+  (show-paren-mode t) ;; highlight matching parens when on paren
+  (global-highlight-parentheses-mode t) ;; highlight (makes red) outer parens
+  (diminish 'highlight-parentheses-mode) ;; don't show hl-p in the modeline
   (electric-pair-mode t) ;; create matching closing parens/braces automatically
   )
 
@@ -193,20 +223,6 @@
 (set-up-minibuffer-completions)
 
 
-;; project awareness
-;; enables functions like counsel-projectile-ag
-(defun set-up-project-awareness ()
-  "make emacs aware of projects using projectile."
-  (interactive)
-  (require 'projectile)
-  (require 'counsel-projectile)
-  (projectile-global-mode t) ;; enable projectile
-  (counsel-projectile-on) ;; enable counsel for projectile, for the find file
-  )
-
-(set-up-project-awareness)
-
-
 ;; misc
 (defun set-up-misc-stuff ()
   "Set up stuff other stuff."
@@ -224,7 +240,7 @@
   (require 'company)
   (require 'counsel)
   (require 'diminish)
-  (setq company-idle-delay 0.2 ;; start autocompleting after 0.2 seconds
+  (setq company-idle-delay 0.15 ;; start autocompleting after 0.15 seconds
 	company-minimum-prefix-length 2 ;; start completing after second character
 	company-selection-wrap-around t ;; make selection back wrappeable
 	company-tooltip-align-annotations t ;; show annotations
@@ -246,6 +262,21 @@
 (add-hook 'company-mode-hook 'set-up-company-mode)
 
 (add-hook 'prog-mode-hook 'company-mode) ;; enable autocompletion in all modes
+
+
+;; project awareness
+;; enables functions like counsel-projectile-ag
+(defun set-up-project-awareness ()
+  "make emacs aware of projects using projectile."
+  (interactive)
+  (require 'projectile)
+  (require 'counsel-projectile)
+  (projectile-global-mode t) ;; enable projectile
+  (projectile-cleanup-known-projects) ;; delete projects that don't exist from cache
+  (counsel-projectile-on) ;; enable counsel for projectile, for the find file
+  )
+
+(set-up-project-awareness)
 
 
 ;; syntax/spell check
@@ -271,7 +302,7 @@
 (add-hook 'flyspell-mode-hook 'set-up-flyspell-spell-checker)
 (add-hook 'text-mode-hook 'flyspell-mode) ;; enable spell checking in text modes
 (add-hook 'prog-mode-hook 'flyspell-prog-mode) ;; spellcheck comments in program modes
-(add-hook 'prog-mode-hook 'flycheck-mode) ;; enable syntax checking in all programming languages
+(global-flycheck-mode t) ;; enable syntax checking in all programming languages
 
 
 ;; documentation - display docs in echo area
@@ -285,6 +316,7 @@
 
 (add-hook 'eldoc-mode-hook 'set-up-eldoc)
 (add-hook 'prog-mode-hook 'eldoc-mode) ;; enable eldoc in all modes
+
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; language specific
@@ -315,6 +347,7 @@
   (interactive)
   (require 'cider)
   (require 'clojure)
+  (require 'rainbow-delimiters)
   ;; connect to lein repl
   ;; I usually create a lein repl outside of emacs
   ;; Either way, I end up doing 2 cider connects, 1 for clojure and 1 for clojurescript
@@ -387,12 +420,14 @@
   (require 'company-racer)
   (require 'racer)
   (cargo-minor-mode t) ;; enable cargo mode, for running cargo commands
+  (diminish 'cargo-minor-mode) ;; but don't show in modeline, as rust implies cargo
   (racer-mode t) ;; enable racer mode, Rust AutoCompletER
+  (diminish 'racer-mode) ;; but don't show in modeline, as rust implies racer
   (setq
-   ;; racer command, it's in this dir for all my setup since
-   ;; I install it via: `cargo install racer'
-   racer-cmd "~/.cargo/bin/racer"
    ;; set rust src dir, varies between my linux and mac
+   company-racer-rust-src (if (eq system-type 'darwin)
+			      "~/github/rust/src"
+			    "/usr/src/rust/src")
    racer-rust-src-path (if (eq system-type 'darwin)
 			   "~/github/rust/src"
 			 "/usr/src/rust/src"))
@@ -405,7 +440,7 @@
   (add-hook 'before-save-hook 'rust-format-buffer) ;; use rust format before saving
   )
 
-(add-hook 'rust-mode-hook 'rust-lang-setup)
+(add-hook 'rust-mode-hook 'set-up-rust-lang)
 
 ;; python language
 (defun set-up-python-lang ()
