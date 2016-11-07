@@ -31,6 +31,7 @@ use_color=false
 
 if [ -e /usr/share/terminfo/x/xterm-256color ] && [ "$COLORTERM" == "xfce4-terminal" ]; then
     TERM=xterm-256color
+    TERM=rxvt-unicode-24bit
 fi
 
 # Set colorful PS1 only on colorful terminals.
@@ -57,12 +58,7 @@ if ${use_color} ; then
 	fi
     fi
 
-    # if [[ ${EUID} == 0 ]] ; then
-    # 	PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
-    # else
-    # 	PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
-    # fi
-
+    export PS1="\[$(tput bold)\]\[\033[38;5;14m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;2m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;10m\]\w\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;2m\]]\[$(tput sgr0)\]\[\033[38;5;6m\]:\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]"
     alias ls='ls --color=auto'
     alias grep='grep --colour=auto'
     alias egrep='egrep --colour=auto'

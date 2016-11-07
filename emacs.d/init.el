@@ -18,7 +18,7 @@
     ("4e753673a37c71b07e3026be75dc6af3efbac5ce335f3707b7d6a110ecb636a3" default)))
  '(package-selected-packages
    (quote
-    (volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode counsel-projectile counsel ivy magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider cargo ag ace-window)))
+    (glsl-mode flyspell-correct-popup flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode counsel-projectile counsel ivy magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil diminish company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window)))
  '(volatile-highlights-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -26,6 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Inconsolata" :foundry "PfEd" :slant normal :weight normal :height 98 :width normal))))
+ '(ahs-face ((t (:background "goldenrod1"))))
  '(vhl/default-face ((t (:background "IndianRed1" :foreground "black" :underline nil)))))
 
 (require 'package)
@@ -35,9 +36,20 @@
   "Refresh contents from melpa and install the necessary packages."
   (interactive)
   (package-refresh-contents)
-  (package-install-selected-packages))
-(require 'dash) ;; library for common functional programming fns
-(require 's) ;; basic string manipulation library
+  (package-install-selected-packages)
+  (require 'irony)
+  (message "Installing irony server for C/C++/ObjC integration.")
+  (irony-install-server)
+  (message "Installing jedi for Python integration.")
+  (require 'company-jedi)
+  (jedi:install-server))
+
+;; (require 'dash) ;; library for common functional programming fns
+;; (require 's) ;; basic string manipulation library
+;; clisp functions and macros
+;; This actually needs to be explicitly loaded by some packages
+;; (irony)
+(require 'cl)
 
 ;; vim like keybindings
 (defun set-up-evil-keys-insert ()
@@ -59,17 +71,22 @@
   ;; replace scroll down with join
   (define-key evil-normal-state-map (kbd "C-d") 'evil-join)
   ;; overwrite motion state behavior, which let the return fall through to the buffer
-  (define-key evil-normal-state-map (kbd "RET") (lambda () (interactive)))
+  (define-key evil-normal-state-map (kbd "RET") 'indent-for-tab-command)
   ;; sacred g keys
+  (define-key evil-normal-state-map (kbd "g e") 'flycheck-next-error)
   ;; replace evil-fill
   (define-key evil-normal-state-map (kbd "g w") 'ace-window))
+
+(defun set-up-evil-keys-visual ()
+  "Set bindings for evil visual state mode."
+  (define-key evil-visual-state-map (kbd "RET") 'indent-for-tab-command))
 
 (defun set-up-evil-motion-keys ()
   "Set bindings for evil motion state."
   (require 'ace-window)
   (require 'counsel-projectile)
   (require 'evil)
-  (define-key evil-normal-state-map (kbd "J") 'evil-scroll-down) ;; scroll down
+  (define-key evil-motion-state-map (kbd "J") 'evil-scroll-down) ;; scroll down
   (define-key evil-motion-state-map (kbd "K") 'evil-scroll-up) ;; scroll up
   ;; remove RET binding, some buffers go somewhere when RET is pressed, but evil overrides this binding
   (define-key evil-motion-state-map (kbd "RET") nil) ;; don't do anything
@@ -91,19 +108,37 @@
   ;; set up keys for different states
   (set-up-evil-keys-insert) ;; defined above
   (set-up-evil-keys-normal) ;; defined above
+  (set-up-evil-keys-visual) ;; defined above
   (set-up-evil-motion-keys) ;; defined above
   (evil-commentary-mode t) ;; "g c" to comment out code, ie: gcc for lines, gcw for word..., or v-select stuff-gc
   (evil-surround-mode t) ;; parenthesis stuff, I haven't figured it out how to use it yet
   ;; modes that don't use regular evil modes
   ;; emacs-state - regular emacs, no vim stuff
-  ;; motion-state - just movement, no editing and macros
-  (add-to-list 'evil-emacs-state-modes 'comint-mode) ;; interpreters shouldn't use evil
-  (add-to-list 'evil-motion-state-modes 'magit-diff-mode) ;; magit diff shouldn't be edited
-  (add-to-list 'evil-motion-state-modes 'neotree-mode) ;; neotree isn't a text buffer
+  (add-to-list 'evil-emacs-state-modes 'comint-mode)
+  ;; motion-state - just movement, no editing
+  (add-to-list 'evil-motion-state-modes 'magit-diff-mode)
+  (add-to-list 'evil-motion-state-modes 'neotree-mode)
+  (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
+  (add-to-list 'evil-motion-state-modes 'compilation-mode)
+  (add-to-list 'evil-motion-state-modes 'messages-buffer-mode)
   (diminish 'evil-surround-mode) ;; don't show in modeline
   (diminish 'evil-commentary-mode)) ;; don't show in modeline
 
-(set-up-evil-keys)
+(defun set-up-ide-base-keys ()
+  "Add basic functions to key map such as build, run, and
+  test. These are really basic and better overwritten by
+  project/language specific bindings."
+  (interactive)
+  (require 'projectile)
+  ;; Set the default build run and test commands
+  (global-set-key (kbd "C-c b") 'projectile-compile-project)
+  (global-set-key (kbd "C-c r") 'projectile-run-project)
+  (global-set-key (kbd "C-c t") 'projectile-test-project)
+  ;; Add extra ignore directories for rust
+  (add-to-list 'projectile-globally-ignored-directories ".cargo"))
+
+(add-hook 'after-init-hook 'set-up-evil-keys)
+(add-hook 'projectile-mode-hook 'set-up-ide-base-keys)
 
 ;; global keys
 (defun reload-emacs-config ()
@@ -114,13 +149,17 @@
 (defun set-up-global-keys ()
   "Set up global key bindings."
   (interactive)
-  (global-set-key (kbd "<f11>") 'reload-emacs-config)
-  (global-set-key (kbd "<f10>") 'neotree-toggle))
+  (require 'neotree)
+  (global-set-key (kbd "<f11>") 'reload-emacs-config) ;;
+  (global-set-key (kbd "<f10>") 'neotree-toggle)) ;; file tree
 
-(set-up-global-keys)
+(add-hook 'after-init-hook 'set-up-global-keys)
 
 
-;; styling
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; theming and looks
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun set-up-styling ()
     "Set up emacs styling."
   (interactive)
@@ -135,6 +174,7 @@
 	smooth-scroll-margin 3 ;; .. scroll margin 3
         which-key-idle-delay 0.1 ;; wait 0.1 seconds before showing which key info
 	diff-hl-flydiff-delay 0.1 ;; wait for 0.1 seconds of idle time to update git status
+	ahs-idle-interval 0.2 ;; highlight symbols
 	)
   (global-anzu-mode t) ;; show number of matches for isearch/evil-search
   (diminish 'anzu-mode) ;; don't waste space in modeline with "Anzu"
@@ -154,14 +194,17 @@
   (load-theme 'leuven t) ;; light theme
   )
 
-(set-up-styling)
+(add-hook 'after-init-hook 'set-up-styling)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; file formatting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun set-up-file-formatting ()
   "Set up file formatting."
   (interactive)
   (setq auto-save-default nil ;; extraneous files annoy me
+	backup-inhibited t ;; extraneous files annoy me
 	make-backup-files nil ;; extraneous files annoy me
 	fill-column 80 ;; M-q(command-fill-paragraph) will aim for 80 characters per line
 	indent-tabs-mode nil ;; don't use tabs
@@ -169,9 +212,14 @@
   (global-auto-revert-mode t) ;; update emacs buffers when files change for whatever reason
   (add-hook 'before-save-hook 'delete-trailing-whitespace) ;; trim before saving
   )
-(set-up-file-formatting)
+(add-hook 'after-init-hook 'set-up-file-formatting)
 
-;; path variables - my mac setup doesn't recognize brew packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; path variables
+;; add cargo just in case
+;; my mac setup doesn't recognize brew packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun fix-paths ()
   "Fix paths for mac and brew."
   (interactive)
@@ -182,7 +230,7 @@
   (when (eq system-type 'darwin)
     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
     (setq exec-path (append exec-path '("/usr/local/bin")))))
-(fix-paths)
+(add-hook 'after-init-hook 'fix-paths)
 
 ;; parenthesis
 (defun set-up-parenthesis ()
@@ -197,12 +245,16 @@
   (electric-pair-mode t) ;; create matching closing parens/braces automatically
   )
 
-(set-up-parenthesis)
+(add-hook 'after-init-hook 'set-up-parenthesis)
 
 
-;; minibuffer completions
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; better minibuffer completions to everything, find-file, M-x, ag
 ;; ivy provides the completion backend
 ;; counsel versions use ivy and add more info to completion items
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun set-up-minibuffer-completions ()
   "Set up minibuffer compeltions."
   (interactive)
@@ -220,7 +272,7 @@
   (diminish 'counsel-mode) ;; don't waste modeline space displaying counsel
   )
 
-(set-up-minibuffer-completions)
+(add-hook 'after-init-hook 'set-up-minibuffer-completions)
 
 
 ;; misc
@@ -231,7 +283,7 @@
         )
   (defalias 'yes-or-no-p 'y-or-n-p)) ;; yes/no prompts now accept y/n
 
-(set-up-misc-stuff)
+(add-hook 'after-init-hook 'set-up-misc-stuff)
 
 
 ;; auto-complete
@@ -264,22 +316,29 @@
 (add-hook 'prog-mode-hook 'company-mode) ;; enable autocompletion in all modes
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; project awareness
 ;; enables functions like counsel-projectile-ag
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun set-up-project-awareness ()
   "make emacs aware of projects using projectile."
   (interactive)
   (require 'projectile)
   (require 'counsel-projectile)
+  (setq projectile-ignored-projects '("/usr/src/rust/"))
   (projectile-global-mode t) ;; enable projectile
   (projectile-cleanup-known-projects) ;; delete projects that don't exist from cache
   (counsel-projectile-on) ;; enable counsel for projectile, for the find file
   )
 
-(set-up-project-awareness)
+(add-hook 'after-init-hook 'set-up-project-awareness)
 
 
-;; syntax/spell check
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; syntax/spell checking
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun set-up-flycheck-syntax-checker ()
   "Setup for flycheck-mode, syntax checking."
   (interactive)
@@ -305,7 +364,10 @@
 (global-flycheck-mode t) ;; enable syntax checking in all programming languages
 
 
-;; documentation - display docs in echo area
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; code documentation - display docs in echo area
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun set-up-eldoc ()
   "Setup for `eldoc-mode`."
   (interactive)
@@ -317,10 +379,27 @@
 (add-hook 'eldoc-mode-hook 'set-up-eldoc)
 (add-hook 'prog-mode-hook 'eldoc-mode) ;; enable eldoc in all modes
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; compilation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun set-up-compilation ()
+  "Sets up emacs for compilation. Compilation isn't necessarily
+compilation, it can run any command."
+  (interactive)
+  (require 'compile)
+  ;; reuse the same compilation buffer
+  (define-key compilation-mode-map (kbd "r") 'revert-buffer) ;; reruns the compilation
+  ;; by default reruns compilation, but let this still be a vim key
+  (define-key compilation-mode-map (kbd "g") nil)
+  )
 
-;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'special-display-buffers-names "*compilation*")
+(add-hook 'compilation-mode-hook 'set-up-compilation)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; language specific
-;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; c/c++/obj-c
 ;; irony creates a C++ server with clang tools for analyzing C++ code.
@@ -328,13 +407,15 @@
   (require 'irony)
   (require 'company-irony)
   (require 'company-irony-c-headers)
+  (require 'evil)
   (require 'flycheck-irony)
   (require 'irony-eldoc)
   (require 'company)
   (add-to-list 'company-backends '(company-irony-c-headers company-irony)) ;; add irony backend for autocompleting
   (flycheck-irony-setup) ;; set up flycheck to use irony
   (irony-cdb-autosetup-compile-options) ;; ???
-  (irony-eldoc)) ;; allow eldoc to get information from irony
+  (irony-eldoc)
+  (define-key evil-normal-state-mode (kbd "C-c b") 'cc-compile)) ;; allow eldoc to get information from irony
 
 (add-hook 'irony-mode-hook 'set-up-irony-mode)
 (add-hook 'c++-mode-hook 'irony-mode) ;; enable irony for c++
@@ -360,6 +441,7 @@
 ;; elisp language
 (defun set-up-emacs-lisp-lang ()
   "Setup for emacs-lisp-mode."
+  (define-key emacs-lisp-mode-map (kbd "C-c b") 'byte-compile-file)
   (define-key emacs-lisp-mode-map (kbd "C-c r") 'eval-buffer)) ;; run code in buffer
 
 (add-hook 'emacs-lisp-mode-hook 'set-up-emacs-lisp-lang)
@@ -413,17 +495,33 @@
 (add-hook 'lua-mode-hook 'set-up-lua-lang)
 
 ;; rust language
+(defun cargo-build ()
+  "Run cargo build."
+  (interactive)
+  (compile "cargo build"))
+
+(defun cargo-run ()
+  "Run cargo run."
+  (interactive)
+  (compile "cargo run"))
+
+(defun cargo-test ()
+  "Run cargo test."
+  (interactive)
+  (compile "cargo test"))
+
 (defun set-up-rust-lang ()
   "Setup for rust-mode."
   (interactive)
   (require 'company)
   (require 'company-racer)
+  (require 'compile)
   (require 'racer)
-  (cargo-minor-mode t) ;; enable cargo mode, for running cargo commands
-  (diminish 'cargo-minor-mode) ;; but don't show in modeline, as rust implies cargo
   (racer-mode t) ;; enable racer mode, Rust AutoCompletER
   (diminish 'racer-mode) ;; but don't show in modeline, as rust implies racer
   (setq
+   ;; Cargo commands are well defined, they don't need text refinement
+   compilation-read-command nil
    ;; set rust src dir, varies between my linux and mac
    company-racer-rust-src (if (eq system-type 'darwin)
 			      "~/github/rust/src"
@@ -434,9 +532,9 @@
   (add-to-list 'company-backends 'company-racer) ;; add racer backend for completion
   (flycheck-rust-setup) ;; flycheck needs extra set up for rust, for cargo awareness probably
   (define-key evil-normal-state-map (kbd "g d") 'racer-find-definition) ;; replace evil's version with this
-  (define-key cargo-minor-mode-map (kbd "C-c b") 'cargo-process-build) ;; cargo build
-  (define-key cargo-minor-mode-map (kbd "C-c r") 'cargo-process-run) ;; cargo run
-  (define-key cargo-minor-mode-map (kbd "C-c t") 'cargo-proces-test) ;; cargo test
+  (define-key rust-mode-map (kbd "C-c b") 'cargo-build) ;; cargo build
+  (define-key rust-mode-map (kbd "C-c r") 'cargo-process-run) ;; cargo run
+  (define-key rust-mode-map (kbd "C-c t") 'cargo-proces-test) ;; cargo test
   (add-hook 'before-save-hook 'rust-format-buffer) ;; use rust format before saving
   )
 

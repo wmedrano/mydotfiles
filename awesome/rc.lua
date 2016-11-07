@@ -73,8 +73,6 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 terminal = "urxvt"
 browser = os.getenv("BROWSER") or "chromium"
 private_browser = "chromium --incognito"
-editor = "emacsclient -t"
-editor_cmd = "emacsclient -c"
 file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
@@ -118,7 +116,7 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
     { "manual", terminal .. " -e man awesome" },
-    { "edit config", editor_cmd .. " " .. awesome.conffile },
+    { "edit config", "emacsclient -c " .. awesome.conffile },
     { "restart", awesome.restart },
     { "quit", awesome.quit }
 }
@@ -342,7 +340,7 @@ globalkeys = awful.util.table.join(
     -- Common Applications
     awful.key({ modkey }, "c", function() awful.util.spawn(browser) end),
     awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn(private_browser) end),
-    awful.key({ modkey }, "e", function() awful.util.spawn(editor_cmd) end),
+    awful.key({ modkey }, "e", function() awful.util.spawn("/bin/emacs") end),
     awful.key({ modkey }, "z", function() awful.util.spawn("slock") end)
 )
 
@@ -489,14 +487,14 @@ client.connect_signal(
 end)
 
 client.connect_signal("focus", function(c)
-			  c.border_color = beautiful.border_focus
+			  c.border_color = theme.border_focus
 end)
 client.connect_signal("unfocus",
 		      function(c)
 			  if awful.client.floating.get(c) then
-			      c.border_color = beautiful.border_float
+			      c.border_color = theme.border_marked
 			  else
-			      c.border_color = beautiful.border_normal
+			      c.border_color = theme.border_normal
 			  end
 end)
 client.connect_signal("marked",
