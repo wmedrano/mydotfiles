@@ -393,7 +393,7 @@ compilation, it can run any command."
   (define-key compilation-mode-map (kbd "g") nil)
   )
 
-(add-to-list 'special-display-buffers-names "*compilation*")
+(add-to-list 'special-display-buffer-names "*compilation*")
 (add-hook 'compilation-mode-hook 'set-up-compilation)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
