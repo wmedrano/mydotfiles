@@ -174,7 +174,7 @@
         mode-line-end-spaces)
       )
 (load-theme 'leuven t)
-(set-face-font 'default "inconsolata")
+(set-face-font 'default "inconsolata-10")
 
 
 ;; toolbars and scrollbars
