@@ -1,10 +1,13 @@
 ;;; package --- init
 ;;; Commentary:
 ;;;     will.s.medrano@gmail.com Emacs configuration
+;;;
 ;;;     evil mode, vim like keybindings
+;;;
 ;;;     projectile for project awareness
-;;;     helm
-;;;     company autocomplete + flycheck syntax checker + eldoc code documentation
+;;;
+;;;     helm + company autocomplete + flycheck syntax checker + eldoc code documentation
+;;; 
 ;;;     language specific back-ends for understanding code
 ;;; Code:
 
@@ -20,8 +23,14 @@
  '(helm-mode t)
  '(package-selected-packages
    (quote
-    (swiper-helm markdown-mode helm-company helm-ag helm-projectile helm auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flyspell-correct-popup flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window))))
-
+    (ace-jump-buffer flyspell-correct-helm ace-jump-mode evil-search-highlight-persist markdown-mode helm-company helm-ag helm-projectile helm auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you
+ could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -81,7 +90,7 @@
 	     `(,(rx bos "*helm" (* not-newline) "*" eos)
 	       (display-buffer-in-side-window)
 	       (inhibit-same-window . t)
-	       ;; (window-height . 0.4)
+	       (window-height . 0.4)
                ))
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
@@ -102,7 +111,6 @@
 
 ;; navigation keys
 (require 'key-chord)
-(require 'swiper-helm)
 (key-chord-mode t) ;; enable binding to fast consecutive keypresses for bindings
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state) ;; jj to go from insert state to normal state
 ;; I use J and K to scroll, instead of C-d, C-u
@@ -111,7 +119,6 @@
 (define-key evil-normal-state-map (kbd "C-d") 'evil-join) ;; used to be on "J"
 (define-key evil-normal-state-map (kbd "K") nil)
 (define-key evil-motion-state-map (kbd "K") 'evil-scroll-up)
-(define-key evil-motion-state-map (kbd "/") 'swiper-helm)
 ;; Sometimes pressing enter in non-editing files should do something, like open a file
 (define-key evil-motion-state-map (kbd "RET") nil) ;; remove shadowing of ret key
 
@@ -131,11 +138,14 @@
 
 ;; g keys, g is a prefix key in evil normal/motion/visual state maps,
 ;; which makes it convenient to add in useful functionality under it
+(require 'ace-jump-mode)
 (require 'ace-window)
 (require 'helm-projectile)
+(set-face-font 'aw-leading-char-face "inconsolata-128")
 (define-key evil-motion-state-map (kbd "g e") 'flycheck-next-error) ;; go to next error
 ;; opens a frame that lists buffer errors
 (define-key evil-motion-state-map (kbd "g E") 'flycheck-list-errors)
+(define-key evil-motion-state-map (kbd "g l") 'ace-jump-line-mode)
 (define-key evil-motion-state-map (kbd "g p") 'helm-projectile) ;; open buffer/file/project
 (define-key evil-motion-state-map (kbd "g P") 'helm-projectile-switch-project) ;; open project
 (define-key evil-motion-state-map (kbd "g r") 'revert-buffer) ;; revert buffer to its file contents or rerun command
@@ -144,11 +154,14 @@
 (define-key evil-motion-state-map (kbd "g /") 'helm-projectile-ag) ;; search all buffers
 
 ;; Emacs defines a prefix keymap under C-c
+(require 'ace-jump-mode)
 (require 'ace-window)
+(require 'flyspell-correct-helm)
 (require 'projectile)
 ;; projectile keys, they are under the global keymap to make them easily override-able
-(global-set-key (kbd "C-c a") 'flyspell-popup-correct)
+(global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic)
 (global-set-key (kbd "C-c b") 'projectile-compile-project)
+(global-set-key (kbd "C-c j") 'ace-jump-mode)
 (global-set-key (kbd "C-c r") 'projectile-run-project)
 (global-set-key (kbd "C-c t") 'projectile-test-project)
 ;; manage windows, monolithic function
@@ -163,6 +176,7 @@
 
 (global-set-key (kbd "<f11>") 'reload-emacs-config)
 (global-set-key (kbd "<f10>") 'neotree-toggle)
+(global-set-key [(shift f10)] 'neotree-projectile-action)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -170,19 +184,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; color scheme, mode-line and font
-(setq-default mode-line-format
-      '("%e"
-        mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote
-        (vc-mode vc-mode) mode-line-frame-identification mode-line-buffer-identification
-        mode-line-position
-        evil-mode-line-tag
-        mode-name " |"
-        projectile-mode-line
-        flycheck-mode-line
-        mode-line-misc-info
-        mode-line-end-spaces)
-      )
-(set-face-font 'default "inconsolata-14")
+(defun small-font ()
+  "Set the font for low res displays."
+  (interactive)
+  (set-face-font 'default "inconsolata-11"))
+
+(defun big-font ()
+  "Set the font for hi dpi displays."
+  (interactive)
+  (set-face-font 'default "inconsolata-16"))
 
 (defun load-light-theme ()
   "Load the light theme."
@@ -196,6 +206,7 @@
   (require 'zenburn-theme)
   (load-theme 'zenburn t))
 
+(big-font)
 (load-light-theme)
 
 
@@ -232,7 +243,7 @@
 (require 'paren)
 (require 'highlight-parentheses)
 (setq show-paren-delay 1.0 ;; highlight matching parenthesis after t seconds
-      hl-paren-delay 1.0 ;; wait a little bit before bolding (actually reddening) outer parens
+      hl-paren-delay 0.4 ;; wait a little bit before bolding (actually reddening) outer parens
       )
 (show-paren-mode t) ;; highlight matching parens when on a paren
 (global-highlight-parentheses-mode t) ;; highlight (actually makes red) outer parens
@@ -241,6 +252,7 @@
 ;; misc
 (require 'auto-highlight-symbol)
 (require 'evil-anzu)
+(require 'evil-search-highlight-persist)
 (require 'volatile-highlights)
 (require 'which-key)
 (setq inhibit-startup-screen t ;; stop showing annoying welcome screen
@@ -251,6 +263,7 @@
 (set-face-background 'ahs-face "yellow1") ;; make symbol highlighting yellow
 (global-auto-highlight-symbol-mode t) ;; highlight symbols at point
 (global-anzu-mode t) ;; show number of matches for isearch/evil-search
+(global-evil-search-highlight-persist t) ;; persist search highlighting
 (volatile-highlights-mode t) ;; highlight affected areas when using undo/redo
 (which-key-mode t) ;; enable which key, shows keybinding help after pressing a prefixed key
 
@@ -281,24 +294,27 @@
       company-tooltip-minimum 20 ;; show n candidates in view?
       company-tooltip-minimum-width 60) ;; make n characters wide
 (global-company-mode t) ;; enable auto-completion globally
-(define-key company-mode-map (kbd "C-c SPC") 'helm-company) ;; use helm to find completions
-(define-key company-active-map (kbd "C-n") 'company-select-next) ;; C-n to go to next candidate
-(define-key company-active-map (kbd "C-p") 'company-select-previous) ;; C-p to go to previous candidate
-(define-key company-active-map (kbd "C-h") 'company-show-doc-buffer) ;; Show documentation for selected entry
-;; Make tab only way to complete. There are 2 entries for each since company defines both of them as well
-(define-key company-active-map (kbd "RET") nil) ;; Make return not do anything, will insert new line
-(define-key company-active-map [return] nil) ;; Make return not do anything, will insert new line
-(define-key company-active-map [tab] 'company-complete-selection) ;; use tab to complete
-(define-key company-active-map (kbd "TAB") 'company-complete-selection) ;; use tab to complete
+(add-hook 'company-mode-hook
+          (lambda ()
+            (define-key company-mode-map (kbd "C-c SPC") 'helm-company) ;; use helm to find completions
+            (define-key company-active-map (kbd "C-n") 'company-select-next) ;; C-n to go to next candidate
+            (define-key company-active-map (kbd "C-p") 'company-select-previous) ;; C-p to go to previous candidate
+            (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer) ;; Show documentation for selected entry
+            ;; Make tab only way to complete. There are 2 entries for each since company defines both of them as well
+            (define-key company-active-map (kbd "RET") nil) ;; Make return not do anything, will insert new line
+            (define-key company-active-map [return] nil) ;; Make return not do anything, will insert new line
+            (define-key company-active-map [tab] 'company-complete-selection) ;; use tab to complete
+            (define-key company-active-map (kbd "TAB") 'company-complete-selection) ;; use tab to complete
+            ))
 
 
 ;; syntax/spell checking
 (require 'flycheck)
 (require 'flyspell)
 (setq flycheck-checker-error-threshold 400 ;; don't show more than 400 errors
-      flycheck-display-errors-delay 1.25 ;; Wait t seconds of idle before displaying errors in minibuffer.
+      flycheck-display-errors-delay 60 ;; Wait t seconds of idle before displaying errors in minibuffer
       ;; This is higher than eldoc's delay to make flycheck take precedence.
-      flycheck-idle-change-delay 1.0) ;; wait 1.0 seconds of idle before finding new errors
+      flycheck-idle-change-delay 1.5) ;; wait 1.0 seconds of idle before finding new errors
 (global-flycheck-mode t) ;; enable flycheck in all buffers
 (add-hook 'text-mode-hook 'flyspell-mode) ;; enable spell checking in text modes
 (add-hook 'prog-mode-hook 'flyspell-prog-mode) ;; spellcheck comments in program modes
@@ -308,7 +324,7 @@
 
 (require 'eldoc)
 (setq eldoc-echo-area-use-multiline-p t ;; allow eldoc to resize minibuffer
-      eldoc-idle-delay 0.5 ;; Show faster than flycheck to allow flycheck to take precedence.
+      eldoc-idle-delay 0.2 ;; Show faster than flycheck to allow flycheck to take precedence.
       )
 (global-eldoc-mode t) ;; enable eldoc in all modes
 
@@ -326,6 +342,7 @@ Compilation isn't necessarily compilation, it can run any command."
   (require 'compile)
   ;; reuse the same compilation buffer
   (define-key compilation-mode-map (kbd "r") 'revert-buffer) ;; reruns the compilation
+  (define-key compilation-mode-map (kbd "h") nil) ;; should still be hjkl
   ;; by default reruns compilation, but let this still be the vim prefix key, g
   (define-key compilation-mode-map (kbd "g") nil)
   )

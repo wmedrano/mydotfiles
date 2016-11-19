@@ -341,6 +341,7 @@ globalkeys = awful.util.table.join(
     -- Common Applications
     awful.key({ modkey }, "c", function() awful.util.spawn(browser) end),
     awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn(private_browser) end),
+    awful.key({ modkey,         }, "o",function () awful.screen.focus_relative(1)    end),
     awful.key({ modkey }, "e", function() awful.util.spawn("/bin/emacs") end),
     awful.key({ modkey }, "z", function() awful.util.spawn("slock") end)
 )
@@ -358,7 +359,7 @@ clientkeys = awful.util.table.join(
     end),
     awful.key({ modkey,           }, "q",      function (c) c:kill()                         end),
     awful.key({ modkey, "Shift"   }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
+    awful.key({ modkey, "Shift"   }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey,           }, "t",
         function (c)
 	    floating = not awful.client.floating.get(c)
