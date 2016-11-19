@@ -7,7 +7,7 @@
 ;;;     projectile for project awareness
 ;;;
 ;;;     helm + company autocomplete + flycheck syntax checker + eldoc code documentation
-;;; 
+;;;
 ;;;     language specific back-ends for understanding code
 ;;; Code:
 
@@ -27,7 +27,7 @@
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you
- could mess it up, so be careful.
+ ;; could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
@@ -95,6 +95,15 @@
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+(defun custom-keyboard-quit ()
+  "`custom-keyboard-quit' is similar to the default `keyboard-quit'.
+It clears other things as well."
+  (interactive)
+  (evil-search-highlight-persist-remove-all)
+  (keyboard-quit)
+  )
+(global-set-key (kbd "C-g") 'custom-keyboard-quit)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -312,7 +321,7 @@
 (require 'flycheck)
 (require 'flyspell)
 (setq flycheck-checker-error-threshold 400 ;; don't show more than 400 errors
-      flycheck-display-errors-delay 60 ;; Wait t seconds of idle before displaying errors in minibuffer
+      flycheck-display-errors-delay 10.0 ;; Wait t seconds of idle before displaying errors in minibuffer
       ;; This is higher than eldoc's delay to make flycheck take precedence.
       flycheck-idle-change-delay 1.5) ;; wait 1.0 seconds of idle before finding new errors
 (global-flycheck-mode t) ;; enable flycheck in all buffers
@@ -347,6 +356,7 @@ Compilation isn't necessarily compilation, it can run any command."
   (define-key compilation-mode-map (kbd "g") nil)
   )
 
+ ;; open compilation buffers in their own frame
 (add-to-list 'special-display-buffer-names "*compilation*")
 (add-hook 'compilation-mode-hook 'set-up-compilation)
 
@@ -499,6 +509,8 @@ Warning untested, and I don't know what the right packages to use are."
   (interactive))
 
 (add-hook 'sql-mode-hook 'set-up-sql-lang)
+
+
 
 (provide 'init)
 ;;; init.el ends here
