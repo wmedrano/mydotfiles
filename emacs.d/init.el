@@ -3,7 +3,7 @@
 ;;;     will.s.medrano@gmail.com Emacs configuration
 ;;;     evil mode, vim like keybindings
 ;;;     projectile for project awareness
-;;;     counsel mode + ivy, better autocompletions
+;;;     helm
 ;;;     company autocomplete + flycheck syntax checker + eldoc code documentation
 ;;;     language specific back-ends for understanding code
 ;;; Code:
@@ -17,9 +17,10 @@
  '(custom-safe-themes
    (quote
     ("4e753673a37c71b07e3026be75dc6af3efbac5ce335f3707b7d6a110ecb636a3" default)))
+ '(helm-mode t)
  '(package-selected-packages
    (quote
-    (auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flyspell-correct-popup flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode counsel-projectile counsel ivy magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window))))
+    (swiper-helm markdown-mode helm-company helm-ag helm-projectile helm auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flyspell-correct-popup flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flyspell-popup flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window))))
 
 
 (require 'package)
@@ -41,7 +42,7 @@
 ;; (require 's) ;; basic string manipulation library
 ;; clisp functions and macros
 ;; This actually needs to be explicitly loaded by irony
-(require 'cl)
+(require 'cl-lib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; path variables
@@ -62,25 +63,29 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; project managing and global emacs environment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'counsel)
-(require 'counsel-projectile)
-(require 'ivy)
 (require 'projectile)
 
-(setq ivy-height 16 ;; max height of completion is n entries
-      ivy-use-virtual-buffers t ;; allow ivy history
-      ivy-format-function 'ivy-format-function-line ;; highlight whole line for current selection in ivy
-      ;; set projectile mode line to be a bit more compact, Projectile -> Proj
-      projectile-mode-line '(:eval
+(setq projectile-mode-line '(:eval
                              (if (file-remote-p default-directory) " Proj[]"
                                (format " Proj[%s]" (projectile-project-name))))
       )
-(ivy-mode t) ;; allow ivy to replace default completions
-(counsel-mode t) ;; replace some functions with improved counsel versions, ie: M-x, C-x C-f, C-h f
 (defalias 'yes-or-no-p 'y-or-n-p) ;; yes/no prompts now accept y/n
-(projectile-global-mode t) ;; enable projectile for project recognition
-(counsel-projectile-on) ;; enable counsel for projectile stuff as well
+(projectile-mode t) ;; enable projectile for project recognition
 (add-to-list 'projectile-globally-ignored-directories ".cargo") ;; ignore .cargo directories
+
+;; helm
+(require 'helm)
+(require 'helm-projectile)
+(setq helm-always-two-windows t)
+(add-to-list 'display-buffer-alist
+	     `(,(rx bos "*helm" (* not-newline) "*" eos)
+	       (display-buffer-in-side-window)
+	       (inhibit-same-window . t)
+	       ;; (window-height . 0.4)
+               ))
+(helm-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -97,6 +102,7 @@
 
 ;; navigation keys
 (require 'key-chord)
+(require 'swiper-helm)
 (key-chord-mode t) ;; enable binding to fast consecutive keypresses for bindings
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state) ;; jj to go from insert state to normal state
 ;; I use J and K to scroll, instead of C-d, C-u
@@ -105,6 +111,7 @@
 (define-key evil-normal-state-map (kbd "C-d") 'evil-join) ;; used to be on "J"
 (define-key evil-normal-state-map (kbd "K") nil)
 (define-key evil-motion-state-map (kbd "K") 'evil-scroll-up)
+(define-key evil-motion-state-map (kbd "/") 'swiper-helm)
 ;; Sometimes pressing enter in non-editing files should do something, like open a file
 (define-key evil-motion-state-map (kbd "RET") nil) ;; remove shadowing of ret key
 
@@ -124,14 +131,17 @@
 
 ;; g keys, g is a prefix key in evil normal/motion/visual state maps,
 ;; which makes it convenient to add in useful functionality under it
-(require 'counsel-projectile)
+(require 'ace-window)
+(require 'helm-projectile)
 (define-key evil-motion-state-map (kbd "g e") 'flycheck-next-error) ;; go to next error
 ;; opens a frame that lists buffer errors
 (define-key evil-motion-state-map (kbd "g E") 'flycheck-list-errors)
-(define-key evil-motion-state-map (kbd "g p") 'counsel-projectile) ;; open buffer/file/project
-(define-key evil-motion-state-map (kbd "g P") 'counsel-projectile-switch-project) ;; open project
+(define-key evil-motion-state-map (kbd "g p") 'helm-projectile) ;; open buffer/file/project
+(define-key evil-motion-state-map (kbd "g P") 'helm-projectile-switch-project) ;; open project
 (define-key evil-motion-state-map (kbd "g r") 'revert-buffer) ;; revert buffer to its file contents or rerun command
-(define-key evil-motion-state-map (kbd "g /") 'counsel-projectile-ag) ;; search all buffers
+(define-key evil-motion-state-map (kbd "g w") 'ace-window)
+(define-key evil-normal-state-map (kbd "g w") nil) ;;
+(define-key evil-motion-state-map (kbd "g /") 'helm-projectile-ag) ;; search all buffers
 
 ;; Emacs defines a prefix keymap under C-c
 (require 'ace-window)
@@ -160,7 +170,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; color scheme, mode-line and font
-(require 'leuven-theme)
 (setq-default mode-line-format
       '("%e"
         mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote
@@ -173,8 +182,21 @@
         mode-line-misc-info
         mode-line-end-spaces)
       )
-(load-theme 'leuven t)
-(set-face-font 'default "inconsolata-10")
+(set-face-font 'default "inconsolata-14")
+
+(defun load-light-theme ()
+  "Load the light theme."
+  (interactive)
+  (require 'leuven-theme)
+  (load-theme 'leuven t))
+
+(defun load-dark-theme ()
+  "Load the dark theme."
+  (interactive)
+  (require 'zenburn-theme)
+  (load-theme 'zenburn t))
+
+(load-light-theme)
 
 
 ;; toolbars and scrollbars
@@ -193,12 +215,13 @@
 
 ;; line numbers, emphasis and details
 (require 'diff-hl)
+(require 'diff-hl-flydiff)
 (require 'hlinum)
 (setq
  ;; show column number in modeline
  column-number-mode t
- ;; wait for 0.2 sesconds of inactivity to update git status for lines
- diff-hl-flydiff-delay 0.2)
+ ;; wait for t sesconds of inactivity to update git status for lines
+ diff-hl-flydiff-delay 1.0)
 (global-linum-mode t) ;; show line numbers
 (hlinum-activate) ;; bold the current line number
 (global-hl-line-mode t) ;; highlight current line
@@ -206,8 +229,10 @@
 (diff-hl-flydiff-mode t) ;; calculate the diffs on the fly, don't wait for saving
 
 ;; parenthesis
-(setq show-paren-delay 0.0 ;; highlight matching parenthesis right away
-      hl-paren-delay 0.05 ;; wait a little bit before bolding (actually reddening) outer parens
+(require 'paren)
+(require 'highlight-parentheses)
+(setq show-paren-delay 1.0 ;; highlight matching parenthesis after t seconds
+      hl-paren-delay 1.0 ;; wait a little bit before bolding (actually reddening) outer parens
       )
 (show-paren-mode t) ;; highlight matching parens when on a paren
 (global-highlight-parentheses-mode t) ;; highlight (actually makes red) outer parens
@@ -219,7 +244,7 @@
 (require 'volatile-highlights)
 (require 'which-key)
 (setq inhibit-startup-screen t ;; stop showing annoying welcome screen
-      which-key-idle-delay 0.1 ;; wait 0.1 seconds before showing which key info
+      which-key-idle-delay 0.2 ;; wait t seconds before showing which key info
       ahs-idle-interval 1.0 ;; highlight current symbol in buffer after t seconds of idle
       )
 (set-face-background 'vhl/default-face "IndianRed1") ;; make undo/redo highighting red
@@ -247,8 +272,8 @@
 
 ;; auto completion
 (require 'company)
-(require 'counsel)
-(setq company-idle-delay 0.2 ;; start autocompleting after t seconds
+(require 'helm-company)
+(setq company-idle-delay 0.5 ;; start autocompleting after t seconds
       company-minimum-prefix-length 2 ;; start completing after second character
       company-selection-wrap-around t ;; make selection back wrappeable
       company-tooltip-align-annotations t ;; show annotations
@@ -256,7 +281,7 @@
       company-tooltip-minimum 20 ;; show n candidates in view?
       company-tooltip-minimum-width 60) ;; make n characters wide
 (global-company-mode t) ;; enable auto-completion globally
-(define-key company-mode-map (kbd "C-c SPC") 'counsel-company) ;; use counsel to find completions
+(define-key company-mode-map (kbd "C-c SPC") 'helm-company) ;; use helm to find completions
 (define-key company-active-map (kbd "C-n") 'company-select-next) ;; C-n to go to next candidate
 (define-key company-active-map (kbd "C-p") 'company-select-previous) ;; C-p to go to previous candidate
 (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer) ;; Show documentation for selected entry
@@ -267,24 +292,23 @@
 (define-key company-active-map (kbd "TAB") 'company-complete-selection) ;; use tab to complete
 
 
-
 ;; syntax/spell checking
 (require 'flycheck)
 (require 'flyspell)
 (setq flycheck-checker-error-threshold 400 ;; don't show more than 400 errors
-      flycheck-display-errors-delay 0.1 ;; Wait 0.1 seconds of idle before displaying errors in minibuffer.
+      flycheck-display-errors-delay 1.25 ;; Wait t seconds of idle before displaying errors in minibuffer.
       ;; This is higher than eldoc's delay to make flycheck take precedence.
       flycheck-idle-change-delay 1.0) ;; wait 1.0 seconds of idle before finding new errors
 (global-flycheck-mode t) ;; enable flycheck in all buffers
 (add-hook 'text-mode-hook 'flyspell-mode) ;; enable spell checking in text modes
 (add-hook 'prog-mode-hook 'flyspell-prog-mode) ;; spellcheck comments in program modes
-
+(add-to-list 'special-display-buffer-names "*Flycheck errors*") ;; give it its own frame
 
 ;; code documentation - display docs in echo area
 
 (require 'eldoc)
 (setq eldoc-echo-area-use-multiline-p t ;; allow eldoc to resize minibuffer
-      eldoc-idle-delay 0.05 ;; Show faster than flycheck to allow flycheck to take precedence.
+      eldoc-idle-delay 0.5 ;; Show faster than flycheck to allow flycheck to take precedence.
       )
 (global-eldoc-mode t) ;; enable eldoc in all modes
 
@@ -324,7 +348,7 @@ Compilation isn't necessarily compilation, it can run any command."
   (flycheck-irony-setup) ;; set up flycheck to use irony
   (irony-cdb-autosetup-compile-options) ;; ???
   (irony-eldoc) ;; allow eldoc to get information from irony
-  (define-key evil-normal-state-mode (kbd "C-c b") 'cc-compile))
+  (define-key evil-normal-state-map (kbd "C-c b") 'cc-compile))
 (add-hook 'irony-mode-hook 'set-up-irony-mode)
 (add-hook 'c++-mode-hook 'irony-mode) ;; enable irony for c++
 (add-hook 'c-mode-hook 'irony-mode) ;; enable irony for c
@@ -335,7 +359,7 @@ Compilation isn't necessarily compilation, it can run any command."
   "Setup for clojure-mode."
   (interactive)
   (require 'cider)
-  (require 'clojure)
+  (require 'clojure-mode)
   (require 'rainbow-delimiters)
   ;; connect to lein repl
   ;; I usually create a lein repl outside of emacs
@@ -447,6 +471,7 @@ Warning untested, and I don't know what the right packages to use are."
   (add-to-list 'company-backends 'company-jedi) ;; use jedi backend for python completion
   (define-key python-mode-map (kbd "C-c b") 'run-python) ;; run a python shell
   (define-key python-mode-map (kbd "C-c r") 'python-shell-send-buffer) ;; run python buffer
+  (define-key evil-normal-state-map (kbd "g d") 'jedi:goto-definition) ;; jedi definition
   )
 
 (add-hook 'python-mode-hook 'set-up-python-lang)
