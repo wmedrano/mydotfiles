@@ -13,11 +13,11 @@ sudo pacman -S banshee chromium hexchat lxtask-gtk3 qjackctl --needed
 yaourt -S rxvt-unicode-24bit --needed
 
 ## Utilities
-sudo pacman -S arandr aspell-en pandoc scrot xclip --needed
+sudo pacman -S arandr aspell-en markdown pandoc scrot xclip --needed
 yaourt -S chromium-pepper-flash chromium-widevine redshift --needed
 
 ## Audio
-sudo pacman -S portaudio portmidi --needed
+sudo pacman -S audacity portaudio portmidi --needed
 
 # General Devtools
 sudo pacman -S the_silver_searcher --needed

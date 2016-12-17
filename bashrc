@@ -29,11 +29,6 @@ shopt -s histappend
 
 use_color=false
 
-if [ -e /usr/share/terminfo/x/xterm-256color ] && [ "$COLORTERM" == "xfce4-terminal" ]; then
-    TERM=xterm-256color
-    TERM=rxvt-unicode-24bit
-fi
-
 # Set colorful PS1 only on colorful terminals.
 # dircolors --print-database uses its own built-in database
 # instead of using /etc/DIR_COLORS.  Try to use the external file

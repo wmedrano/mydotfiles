@@ -23,11 +23,10 @@
  '(helm-mode t)
  '(package-selected-packages
    (quote
-    (ace-jump-buffer flyspell-correct-helm ace-jump-mode evil-search-highlight-persist markdown-mode helm-company helm-ag helm-projectile helm auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent go-eldoc flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-go company-ghc cider ag ace-window))))
+    (helm-open-github persp-mode ace-jump-buffer flyspell-correct-helm ace-jump-mode evil-search-highlight-persist markdown-mode helm-company helm-ag helm-projectile helm auto-highlight-symbol rainbow-delimiters hlinum nyan-mode glsl-mode flycheck-rust volatile-highlights racer highlight-parentheses diff-hl evil-anzu anzu yaml-mode leuven-theme neotree toml-mode magit evil-commentary evil-surround zenburn-theme which-key smooth-scrolling lua-mode key-chord julia-shell irony-eldoc hindent flycheck-irony flycheck-haskell evil company-racer company-jedi company-irony-c-headers company-irony company-ghc cider ag ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you
- ;; could mess it up, so be careful.
+ ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
@@ -116,7 +115,7 @@ It clears other things as well."
 (require 'evil-surround)
 (evil-mode t) ;; enable evil mode globally
 (evil-commentary-mode t) ;; enable commenting out code in vim like way
-(evil-surround-mode t) ;; parens/brace manipulation
+(global-evil-surround-mode t) ;; parens/brace manipulation
 
 ;; navigation keys
 (require 'key-chord)
@@ -140,6 +139,7 @@ It clears other things as well."
 (add-to-list 'evil-motion-state-modes 'neotree-mode) ;; file tree navigation
 (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode) ;; lists buffer errors
 (add-to-list 'evil-motion-state-modes 'messages-buffer-mode) ;; lists Emacs errors
+(add-to-list 'evil-motion-state-modes 'cider-stacktrace-mode) ;; clojure errors
 
 ;; non-vim modes
 (add-to-list 'evil-emacs-state-modes 'comint-mode) ;; interpreter
@@ -196,12 +196,12 @@ It clears other things as well."
 (defun small-font ()
   "Set the font for low res displays."
   (interactive)
-  (set-face-font 'default "inconsolata-11"))
+  (set-face-font 'default "inconsolata-12"))
 
 (defun big-font ()
   "Set the font for hi dpi displays."
   (interactive)
-  (set-face-font 'default "inconsolata-16"))
+  (set-face-font 'default "inconsolata-14"))
 
 (defun load-light-theme ()
   "Load the light theme."
@@ -267,6 +267,7 @@ It clears other things as well."
 (setq inhibit-startup-screen t ;; stop showing annoying welcome screen
       which-key-idle-delay 0.2 ;; wait t seconds before showing which key info
       ahs-idle-interval 1.0 ;; highlight current symbol in buffer after t seconds of idle
+      mouse-autoselect-window t ;; allow mouse to fuzzy focus
       )
 (set-face-background 'vhl/default-face "IndianRed1") ;; make undo/redo highighting red
 (set-face-background 'ahs-face "yellow1") ;; make symbol highlighting yellow
@@ -275,6 +276,7 @@ It clears other things as well."
 (global-evil-search-highlight-persist t) ;; persist search highlighting
 (volatile-highlights-mode t) ;; highlight affected areas when using undo/redo
 (which-key-mode t) ;; enable which key, shows keybinding help after pressing a prefixed key
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; file formatting
@@ -403,18 +405,6 @@ Compilation isn't necessarily compilation, it can run any command."
   (define-key emacs-lisp-mode-map (kbd "C-c r") 'eval-buffer)) ;; run code in buffer
 (add-hook 'emacs-lisp-mode-hook 'set-up-emacs-lisp-lang)
 
-;; go language - untested
-(defun set-up-go-lang ()
-  "Set up for go lang.  Warning, untested, I don't program in go in my spare time."
-  (require 'go-mode)
-  (require 'company-go)
-  (require 'go-eldoc)
-  (require 'company)
-  (add-to-list 'company-backends 'company-go) ;; use company go backed for auto completion
-  (go-eldoc-setup) ;; set up eldoc for go
-  (add-hook 'before-save-hook 'gofmt-before-save)) ;; use gofmt on all go files
-(add-hook 'go-mode-hook 'set-up-go-lang)
-
 ;; haskell language - not tested very much
 (defun set-up-haskell-lang ()
   "Set up for 'haskell-mode'.
@@ -432,6 +422,7 @@ Warning untested, and I don't know what the right packages to use are."
   (hindent-mode t) ;; enable HaskellINDENT
   (ghc-init)) ;; initialize ghc
 (add-hook 'haskell-mode-hook 'set-up-haskell-lang)
+(add-to-list 'special-display-buffer-names "*cider-error*")
 
 ;; julia language
 (defun set-up-julia-lang ()

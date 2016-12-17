@@ -13,7 +13,7 @@ URxvt.iso14755           : false
 URxvt.iso14755_52        : false
 URxvt.resize-font.smaller: C-Down
 URxvt.resize-font.bigger : C-Up
-URxvt.font               : xft:Inconsolata:size=16
+URxvt.font               : xft:Inconsolata:size=18
 URxvt.scrollBar_right    : true
 
 ! URxvt keybindings
