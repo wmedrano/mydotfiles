@@ -1,5 +1,5 @@
 ;;; wmedrano-emacs --- Summary:
-;;;   Good support for C/C++, Clojure, Emacs Lisp, and Clojure.
+;;;   Good support for C/C++, Clojure, Emacs Lisp, and Rust.
 ;;;   Includes auto completions, documentation lookup, and syntax checking.
 ;;;   Uses evil for VIM like keys bindings.
 ;;; Commentary:
