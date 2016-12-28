@@ -342,6 +342,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "c", function() awful.util.spawn(browser) end),
     awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn(private_browser) end),
     awful.key({ modkey,         }, "o",function () awful.screen.focus_relative(1)    end),
+    awful.key({ modkey, "Shift" }, "e", function() awful.util.spawn_with_shell("export COLOR_SCHEME=dark && /bin/emacs") end),
     awful.key({ modkey }, "e", function() awful.util.spawn("/bin/emacs") end),
     awful.key({ modkey, "Shift" }, "z", function() awful.util.spawn("poweroff") end),
     awful.key({ modkey }, "z", function() awful.util.spawn("slock") end)
