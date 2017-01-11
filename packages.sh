@@ -3,10 +3,11 @@
 # Install Packages
 
 ## Window Manager and Stuff
-sudo pacman -S arc-themes awesome compton deepin-gtk-theme deepin-icon-theme vicious --needed
+sudo pacman -S numix-reborn-icon-themes numix-themes-archblue --needed
+sudo pacman -S awesome compton deepin-gtk-theme deepin-icon-theme vicious --needed
 
 ## Themes
-sudo pacman -S ttf-ubuntu-font-family --needed
+sudo pacman -S adobe-source-code-pro-fonts ttf-ubuntu-font-family --needed
 
 ## Apps
 sudo pacman -S chromium hexchat lxtask-gtk3 qjackctl --needed
@@ -19,7 +20,7 @@ yaourt -S chromium-pepper-flash chromium-widevine redshift --needed
 sudo pacman -S audacity portaudio portmidi --needed
 
 # General Devtools
-sudo pacman -S emacs rxvt-unicode the_silver_searcher --needed
+sudo pacman -S emacs kcov rxvt-unicode the_silver_searcher --needed
 
 # C/C++ Devtools
 sudo pacman -S clang cmake --needed
@@ -39,6 +40,7 @@ sudo pacman -S jupyter jupyterlab-git jupyter-notebook --needed
 # Rust Devtools
 sudo pacman -S cargo rust --needed
 yaourt -S rust-src --needed
+cargo install cargo-check
 cargo install racer
 cargo install ripgrep
 cargo install rust-fmt

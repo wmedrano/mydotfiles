@@ -71,9 +71,6 @@ beautiful.init("~/.config/awesome/theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
-browser = os.getenv("BROWSER") or "chromium"
-private_browser = "chromium --incognito"
-file_browser = "thunar"
 screenshot = "scrot"
 play_pause = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.banshee /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
 calculator = terminal .. " -e python"
@@ -339,8 +336,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "space", function() menubar.show() end),
     awful.key({ modkey }, "p", function() menubar.show() end),
     -- Common Applications
-    awful.key({ modkey }, "c", function() awful.util.spawn(browser) end),
-    awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn(private_browser) end),
+    awful.key({ modkey }, "c", function() awful.util.spawn("google-chrome-stable") end),
+    awful.key({ modkey, "Shift" }, "c", function() awful.util.spawn("google-chrome-stable --incognito") end),
     awful.key({ modkey,         }, "o",function () awful.screen.focus_relative(1)    end),
     awful.key({ modkey, "Shift" }, "e", function() awful.util.spawn_with_shell("export COLOR_SCHEME=dark && /bin/emacs") end),
     awful.key({ modkey }, "e", function() awful.util.spawn("/bin/emacs") end),
