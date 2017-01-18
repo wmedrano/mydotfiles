@@ -13,7 +13,6 @@
 
 
 
-
 ;;; package management
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -58,7 +57,6 @@
         lua-mode ;; Syntax highlighting for lua
         magit ;; Emacs interface for git
         markdown-mode ;; Markdown syntax highlighting and utilies
-        mode-icons ;; Replace some modeline modes text with icons
         monokai-theme ;; Dark candy theme
         neotree ;; File tree
         nyan-mode ;; Nyan cat in modeline to show position of buffer
@@ -66,13 +64,11 @@
         projectile ;; Project navigation and management
         racer ;; Racer in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
-        spaceline ;;
         sql-mode ;; SQL syntax highlighting
         syslog-mode ;; syslog syntax highlighting and utilities
         toml-mode ;; Syntax highlighting for TOML
         volatile-highlights ;; Highlight undo/redo affected areas
         which-key ;; Discover prefix keys
-        yahoo-weather ;; weather info in modeline
         yaml-mode ;; yaml syntax highlighting and utilities
         zenburn-theme ;; Dark theme
         zerodark-theme ;; Dark theme
@@ -153,6 +149,7 @@
 ;; light/dark themes
 
 (require 'nyan-mode)
+(setq nyan-bar-length 16)
 
 (defun load-dark-theme ()
   "Use the zerodark/zenburn theme along with its stylish modeline."
@@ -182,10 +179,6 @@
 (require 'all-the-icons)
 (setq all-the-icons-scale-factor 1.0)
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(default ((t (:family "Source Code Pro" :foundry "ADBO" :slant normal :height 144 :width normal)))))
 
 ;; remove screen clutter
@@ -219,7 +212,9 @@
 ;;; buffer/file formatting
 
 ;; disk and backups
-(setq backup-directory-alist '(("." . "~/.saves")))
+(require 'autorevert)
+(setq auto-revert-interval 3
+      backup-directory-alist '(("." . "~/.saves")))
 (global-auto-revert-mode t)
 
 ;; formatting
@@ -228,6 +223,8 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; parenthesis
+(require 'highlight-parentheses)
+(global-highlight-parentheses-mode)
 (electric-pair-mode t)
 
 
@@ -307,7 +304,8 @@ Opens in the project root if in a projectile project."
   (ace-select-window))
 (setq split-window-preferred-function 'split-window-with-ace
       aw-dispatch-always t
-      aw-fair-aspect-ratio 2.2)
+      aw-fair-aspect-ratio 2.4
+      aw-scope 'frame)
 
 (eyebrowse-mode)
 (define-key eyebrowse-mode-map (kbd "C-c j") 'eyebrowse-switch-to-window-config)
