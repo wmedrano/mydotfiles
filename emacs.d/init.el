@@ -22,15 +22,17 @@
 (setq package-selected-packages
       '(
         ace-window ;; window jumping
-        ag ;; required by projectile-ag
         all-the-icons ;; icons
         cider ;; Clojure REPL support
+        clang-format ;; Format C/C++ buffers
         clojure-mode ;; Clojure syntax
         company ;; Autocompletions
         company-flx ;; Allow fuzzy autocompletions
         company-irony ;; Irony backend for company
         company-irony-c-headers ;; Irony headers for autocompletion
         company-racer ;; Rust Racer backend for company
+        counsel ;; Enhancements for ivy
+        counsel-projectile ;; Counsel integration for projectile
         diff-hl ;; Show git changes in gutter
         diminish ;; Hide minor modes
         evil ;; VIM like keys
@@ -41,15 +43,15 @@
         flycheck ;; Realtime syntax checking
         flycheck-irony ;; Irony backend for flycheck syntax checking
         flycheck-rust ;; Rustc backend for flycheck syntax checking
-        flyspell-correct-helm ;; Correct spelling with helm menu
+        flyspell-correct-ivy ;; Correct spelling with ivy menu
         gitconfig-mode ;; Syntax highlighting for gitconfig files.
         gitignore-mode ;; Syntax highlighting for gitignore files.
-        helm ;; Incremental completion framework
-        helm-ag ;; Helm frontend for ag
-        helm-projectile ;; Helm integration for projectile
+        hl-anything ;; Highlight all things!
         hlinum ;; Highlight current line number
         irony ;; Clang based C/C++ code server
         irony-eldoc ;; Irony backend for documentation
+        ivy ;; Completion framework
+        ivy-rich ;; More rich frontends for ivy
         json-mode ;; Syntax highlighting and utilities for json
         key-chord ;; Map key chords to single function
         leuven-theme ;; Light theme
@@ -62,9 +64,12 @@
         nyan-mode ;; Nyan cat in modeline to show position of buffer
         org-pomodoro ;; Pomodoro technique in org mode
         projectile ;; Project navigation and management
+        projectile-ripgrep ;; Run rg on project
         racer ;; Racer in Emacs
+        ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
         sql-mode ;; SQL syntax highlighting
+        swiper ;; ivy powered isearch
         syslog-mode ;; syslog syntax highlighting and utilities
         toml-mode ;; Syntax highlighting for TOML
         volatile-highlights ;; Highlight undo/redo affected areas
@@ -118,12 +123,14 @@
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
 
-(require 'helm)
+(require 'counsel)
+(require 'ivy)
 
-;; helm-projectile-ag for searching
-(require 'helm-projectile)
-(define-key evil-motion-state-map (kbd "g/") 'helm-projectile-ag) ;; search in project
-(define-key evil-motion-state-map (kbd "gp") 'helm-projectile) ;; navigate buffers
+;; ivy powered searching
+(require 'counsel-projectile)
+(key-chord-define evil-motion-state-map "//" 'swiper) ;; search current buffer
+(define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
+(define-key evil-motion-state-map (kbd "gp") 'counsel-projectile) ;; navigate buffers
 
 ;; error navigation
 (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
@@ -135,9 +142,8 @@
 (define-key evil-motion-state-map (kbd "gd") 'xref-find-definitions)
 
 ;; projectile keys
-(define-key projectile-mode-map (kbd "C-c p s") 'projectile-ag)
+(define-key projectile-mode-map (kbd "C-c p s") 'projectile-ripgrep)
 (define-key projectile-mode-map (kbd "C-c c") 'projectile-compile-project)
-(define-key projectile-mode-map (kbd "C-c g") 'projectile-find-tag)
 (define-key projectile-mode-map (kbd "C-c r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "C-c s") 'projectile-run-async-shell-command-in-root)
 (define-key projectile-mode-map (kbd "C-c t") 'projectile-test-project)
@@ -207,6 +213,9 @@
 (setq which-key-idle-delay 0.7)
 (which-key-mode)
 
+;; misc emacs
+(add-to-list 'evil-motion-state-modes 'custom-mode)
+
 
 
 ;;; buffer/file formatting
@@ -223,8 +232,8 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; parenthesis
-(require 'highlight-parentheses)
-(global-highlight-parentheses-mode)
+(require 'hl-anything)
+(add-hook 'prog-mode-hook 'hl-paren-mode)
 (electric-pair-mode t)
 
 
@@ -233,7 +242,9 @@
 
 ;; fix magit for evil
 (require 'magit)
-(setq auto-revert-check-vc-info t)
+(setq auto-revert-check-vc-info t
+      magit-display-buffer-function 'split-window-with-ace
+      magit-commit-show-diff nil)
 (add-to-list 'evil-motion-state-modes 'magit-diff-mode)
 (add-to-list 'evil-motion-state-modes 'magit-status-mode)
 (define-key magit-diff-mode-map (kbd "r") 'magit-refresh-all)
@@ -258,13 +269,20 @@
    nil))
 (projectile-mode t)
 
-;; helm - incremental completion
-(require 'helm)
-(require 'helm-projectile)
-(setq helm-always-two-windows t
-      helm-move-to-line-cycle-in-source t)
-(helm-mode t)
-(global-set-key (kbd "M-x") 'helm-M-x)
+;; ivy + counsel - incremental completion
+(require 'counsel)
+(require 'ivy)
+(require 'ivy-rich)
+(require 'counsel-projectile)
+(setq ivy-height 24
+      ivy-fixed-height-minibuffer t)
+(ivy-mode)
+(counsel-mode)
+(counsel-projectile-on)
+(ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
+(ivy-set-display-transformer 'counsel-projectile-switch-to-buffer 'ivy-rich-switch-buffer-transformer)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-c SPC") 'ivy-resume)
 
 ;; neotree - file tree interface
 (require 'neotree)
@@ -306,6 +324,7 @@ Opens in the project root if in a projectile project."
       aw-dispatch-always t
       aw-fair-aspect-ratio 2.4
       aw-scope 'frame)
+(set-face-attribute 'aw-leading-char-face nil :height 8.0)
 
 (eyebrowse-mode)
 (define-key eyebrowse-mode-map (kbd "C-c j") 'eyebrowse-switch-to-window-config)
@@ -358,7 +377,7 @@ Opens in the project root if in a projectile project."
 (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
 ;; flyspell - spell checking
-(require 'flyspell-correct-helm)
+(require 'flyspell-correct-ivy)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 (define-key flyspell-mode-map (kbd "C-c a") 'flyspell-correct-previous-word-generic)
@@ -396,6 +415,7 @@ Opens in the project root if in a projectile project."
 (add-hook 'irony-mode-hook 'company-mode)
 (add-hook 'irony-mode-hook 'irony-eldoc)
 (add-hook 'irony-mode-hook 'flycheck-mode)
+(add-hook 'c++-mode-hook (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
 
 ;; Clojure
 ;;
@@ -451,13 +471,15 @@ Opens in the project root if in a projectile project."
 (diminish 'anzu-mode)
 (diminish 'auto-revert-mode)
 (diminish 'company-mode)
+(diminish 'counsel-mode)
 (diminish 'eldoc-mode)
 (diminish 'evil-commentary-mode)
 (diminish 'evil-surround-mode)
 (diminish 'flycheck-mode)
 (diminish 'flyspell-mode)
-(diminish 'helm-mode)
 (diminish 'irony-mode)
+(diminish 'highlight-parentheses-mode)
+(diminish 'ivy-mode)
 (diminish 'racer-mode)
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
