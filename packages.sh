@@ -20,7 +20,7 @@ yaourt -S chromium-pepper-flash chromium-widevine redshift --needed
 sudo pacman -S audacity portaudio portmidi --needed
 
 # General Devtools
-sudo pacman -S emacs kcov rxvt-unicode the_silver_searcher --needed
+sudo pacman -S emacs kcov rxvt-unicode --needed
 
 # C/C++ Devtools
 sudo pacman -S clang cmake --needed

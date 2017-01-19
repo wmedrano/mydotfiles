@@ -130,7 +130,7 @@
 (require 'counsel-projectile)
 (key-chord-define evil-motion-state-map "//" 'swiper) ;; search current buffer
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
-(define-key evil-motion-state-map (kbd "gp") 'counsel-projectile) ;; navigate buffers
+(define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
 
 ;; error navigation
 (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
@@ -145,7 +145,6 @@
 (define-key projectile-mode-map (kbd "C-c p s") 'projectile-ripgrep)
 (define-key projectile-mode-map (kbd "C-c c") 'projectile-compile-project)
 (define-key projectile-mode-map (kbd "C-c r") 'projectile-run-project)
-(define-key projectile-mode-map (kbd "C-c s") 'projectile-run-async-shell-command-in-root)
 (define-key projectile-mode-map (kbd "C-c t") 'projectile-test-project)
 
 
@@ -316,17 +315,23 @@ Opens in the project root if in a projectile project."
 ;;; window management
 (require 'ace-window)
 (require 'eyebrowse)
-(defun split-window-with-ace (&optional window)
-  "Use ace window to select new WINDOW."
+(defun split-window-bsp (&optional window)
+  "Split WINDOW either vertically or horizontally, whatever is best."
   (interactive)
-  (ace-select-window))
-(setq split-window-preferred-function 'split-window-with-ace
+  (let ((window (or window (selected-window)))
+        (aspect-ratio 2.4)
+        (w (window-body-width window))
+        (h (window-body-height window)))
+    (if (< (* h aspect-ratio) w)
+        (with-selected-window window (split-window-horizontally))
+      (with-selected-window window (split-window-vertically)))))
+(setq split-window-preferred-function 'split-window-bsp
       aw-dispatch-always t
       aw-fair-aspect-ratio 2.4
       aw-scope 'frame)
 (set-face-attribute 'aw-leading-char-face nil :height 8.0)
-
 (eyebrowse-mode)
+(global-set-key (kbd "C-c s") 'split-window-bsp)
 (define-key eyebrowse-mode-map (kbd "C-c j") 'eyebrowse-switch-to-window-config)
 (define-key eyebrowse-mode-map (kbd "C-c J") 'eyebrowse-rename-window-config)
 (define-key eyebrowse-mode-map (kbd "C-c k") 'eyebrowse-create-window-config)
