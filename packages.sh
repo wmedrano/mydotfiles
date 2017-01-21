@@ -28,6 +28,9 @@ sudo pacman -S clang cmake --needed
 # Clojure Devtools
 yaourt -S boot leiningen2-git --needed
 
+# Go
+sudo pacman -S go --needed
+
 # Latex
 sudo pacman -S latex-most --needed
 

@@ -7,7 +7,6 @@
 ;;; Code:
 
 
-
 ;;; Stop emacs from automatically modifying this file
 (setq custom-file "/dev/null")
 
@@ -39,7 +38,7 @@
         evil-anzu ;; Show number of isearch candidates
         evil-commentary ;; Comment code out easily
         evil-surround ;; Manipulate braces/parenthesis/brackets...
-        eyebrowse ;; Window managing
+        flx ;; Fuzzy sorting
         flycheck ;; Realtime syntax checking
         flycheck-irony ;; Irony backend for flycheck syntax checking
         flycheck-rust ;; Rustc backend for flycheck syntax checking
@@ -69,6 +68,7 @@
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
         sql-mode ;; SQL syntax highlighting
+        smex ;; Required for good sorting for Counsel-M-x
         swiper ;; ivy powered isearch
         syslog-mode ;; syslog syntax highlighting and utilities
         toml-mode ;; Syntax highlighting for TOML
@@ -123,12 +123,12 @@
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
 
-(require 'counsel)
-(require 'ivy)
-
 ;; ivy powered searching
 (require 'counsel-projectile)
+(require 'projectile)
+(require 'swiper)
 (key-chord-define evil-motion-state-map "//" 'swiper) ;; search current buffer
+(key-chord-define evil-motion-state-map "??" 'swiper-all) ;; search open buffers
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
 
@@ -242,7 +242,6 @@
 ;; fix magit for evil
 (require 'magit)
 (setq auto-revert-check-vc-info t
-      magit-display-buffer-function 'split-window-with-ace
       magit-commit-show-diff nil)
 (add-to-list 'evil-motion-state-modes 'magit-diff-mode)
 (add-to-list 'evil-motion-state-modes 'magit-status-mode)
@@ -271,12 +270,17 @@
 ;; ivy + counsel - incremental completion
 (require 'counsel)
 (require 'ivy)
+(require 'flx)
 (require 'ivy-rich)
 (require 'counsel-projectile)
-(setq ivy-height 24
+(require 'smex)
+(setq ivy-sort-max-size 30000
+      ivy-flx-limit 10000
+      ivy-height 24
       ivy-fixed-height-minibuffer t)
 (ivy-mode)
 (counsel-mode)
+(ivy-toggle-fuzzy)
 (counsel-projectile-on)
 (ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
 (ivy-set-display-transformer 'counsel-projectile-switch-to-buffer 'ivy-rich-switch-buffer-transformer)
@@ -314,7 +318,6 @@ Opens in the project root if in a projectile project."
 
 ;;; window management
 (require 'ace-window)
-(require 'eyebrowse)
 (defun split-window-bsp (&optional window)
   "Split WINDOW either vertically or horizontally, whatever is best."
   (interactive)
@@ -328,19 +331,13 @@ Opens in the project root if in a projectile project."
 (setq split-window-preferred-function 'split-window-bsp
       aw-dispatch-always t
       aw-fair-aspect-ratio 2.4
-      aw-scope 'frame)
+      aw-scope 'frame
+      window-min-width 50
+      window-min-height 20)
 (set-face-attribute 'aw-leading-char-face nil :height 8.0)
-(eyebrowse-mode)
 (global-set-key (kbd "C-c s") 'split-window-bsp)
-(define-key eyebrowse-mode-map (kbd "C-c j") 'eyebrowse-switch-to-window-config)
-(define-key eyebrowse-mode-map (kbd "C-c J") 'eyebrowse-rename-window-config)
-(define-key eyebrowse-mode-map (kbd "C-c k") 'eyebrowse-create-window-config)
-(define-key eyebrowse-mode-map (kbd "C-c K") 'eyebrowse--delete-window-config)
-(define-key eyebrowse-mode-map (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
-(eyebrowse-rename-window-config 1 "default")
-
 
 
 ;;; IDE features, auto-complete, code documentation, and syntax checking.
