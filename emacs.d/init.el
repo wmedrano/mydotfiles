@@ -222,7 +222,8 @@
 ;; disk and backups
 (require 'autorevert)
 (setq auto-revert-interval 3
-      backup-directory-alist '(("." . "~/.saves")))
+      auto-save-file-name-transforms `((".*", "/tmp" t))
+      backup-directory-alist '(("." . "/tmp")))
 (global-auto-revert-mode t)
 
 ;; formatting
@@ -293,6 +294,7 @@
 (setq neo-theme 'icons
       neo-smart-open t
       neo-show-hidden-files t
+      neo-window-width 24
       neo-auto-indent-point nil)
 (defun neotree-toggle-dwim ()
   "Similar to neotree-toggle but it is projectile aware.
@@ -332,8 +334,8 @@ Opens in the project root if in a projectile project."
       aw-dispatch-always t
       aw-fair-aspect-ratio 2.4
       aw-scope 'frame
-      window-min-width 50
-      window-min-height 20)
+      window-min-width 24
+      window-min-height 16)
 (set-face-attribute 'aw-leading-char-face nil :height 8.0)
 (global-set-key (kbd "C-c s") 'split-window-bsp)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
