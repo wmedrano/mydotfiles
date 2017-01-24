@@ -22,6 +22,7 @@
       '(
         ace-window ;; window jumping
         all-the-icons ;; icons
+        apropospriate-theme ;; Dark and Light theme
         cider ;; Clojure REPL support
         clang-format ;; Format C/C++ buffers
         clojure-mode ;; Clojure syntax
@@ -44,6 +45,7 @@
         flycheck-rust ;; Rustc backend for flycheck syntax checking
         flyspell-correct-ivy ;; Correct spelling with ivy menu
         gitconfig-mode ;; Syntax highlighting for gitconfig files.
+        github-theme ;; Light theme
         gitignore-mode ;; Syntax highlighting for gitignore files.
         hl-anything ;; Highlight all things!
         hlinum ;; Highlight current line number
@@ -58,6 +60,7 @@
         lua-mode ;; Syntax highlighting for lua
         magit ;; Emacs interface for git
         markdown-mode ;; Markdown syntax highlighting and utilies
+        moe-theme ;; Light and Dark theme
         monokai-theme ;; Dark candy theme
         neotree ;; File tree
         nyan-mode ;; Nyan cat in modeline to show position of buffer
@@ -67,8 +70,8 @@
         racer ;; Racer in Emacs
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
-        sql-mode ;; SQL syntax highlighting
         smex ;; Required for good sorting for Counsel-M-x
+        sql-mode ;; SQL syntax highlighting
         swiper ;; ivy powered isearch
         syslog-mode ;; syslog syntax highlighting and utilities
         toml-mode ;; Syntax highlighting for TOML
@@ -155,30 +158,50 @@
 
 (require 'nyan-mode)
 (setq nyan-bar-length 16)
+(nyan-mode t)
+(nyan-start-animation)
+(nyan-toggle-wavy-trail)
 
-(defun load-dark-theme ()
-  "Use the zerodark/zenburn theme along with its stylish modeline."
-  (require 'zerodark-theme)
-  (load-theme 'zerodark t)
-  (zerodark-setup-modeline-format)
-  ;; (require 'zenburn-theme)
-  ;; (load-theme 'zenburn t)
-  )
 
-(defun load-light-theme ()
-  "Use the leuven theme."
-  (require 'leuven-theme)
-  (load-theme 'leuven t)
-  (nyan-mode)
-  (nyan-start-animation)
-  (nyan-toggle-wavy-trail)
-  )
+(defun initialize-theme (&optional theme-name)
+  "Initialize THEME-NAME defined theme."
+  (interactive)
+  (let ((th (or theme-name (getenv "EMACS_THEME"))))
+    (cond
+     ((string= th "apro-dark")
+      (require 'apropospriate)
+      (load-theme 'apropospriate-dark))
+     ((string= th "apro-light")
+      (require 'apropospriate)
+      (load-theme 'apropospriate-light))
+     ((string= th "leuven")
+      (require 'leuven-theme)
+      (load-theme 'leuven t))
+     ((string= th "github")
+      (require 'github-theme)
+      (load-theme 'github t))
+     ((string= th "moe-dark")
+      (require 'moe-theme)
+      (load-theme 'moe-dark))
+     ((string= th "moe-light")
+      (require 'moe-theme)
+      (load-theme 'moe-light))
+     ((string= th "monokai")
+      (require 'monokai-theme)
+      (load-theme 'monokai-theme))
+     ((string= th "spacegray")
+      (require 'spacegray-theme)
+      (load-theme 'spacegray t))
+     ((string= th "zenburn")
+      (require 'zenburn-theme)
+      (load-theme 'zenburn t))
+     ((string= th "zerodark")
+      (require 'zerodark-theme)
+      (load-theme 'zerodark t)
+      (zerodark-setup-modeline-format))
+     (t))))
 
-(unless (getenv "NO_THEME")
-    (if (string= (getenv "COLOR_SCHEME") "dark")
-	(load-dark-theme)
-      (load-light-theme)))
-
+(initialize-theme)
 
 ;; font
 (require 'all-the-icons)
@@ -222,8 +245,9 @@
 ;; disk and backups
 (require 'autorevert)
 (setq auto-revert-interval 3
-      auto-save-file-name-transforms `((".*", "/tmp" t))
-      backup-directory-alist '(("." . "/tmp")))
+      auto-save-file-name-transforms `((".*" "~/.saves/" t))
+      auto-save-list-file-prefix "~/.saves/"
+      backup-directory-alist '(("." . "~/.saves")))
 (global-auto-revert-mode t)
 
 ;; formatting
@@ -389,6 +413,7 @@ Opens in the project root if in a projectile project."
 
 
 ;;; compilation mode - runs processes and shows output
+(require 'ansi-color)
 (add-to-list 'evil-motion-state-modes 'compilation-mode)
 ;; don't shadow evil's bindings
 (setq comint-scroll-to-bottom-on-output t
@@ -396,6 +421,9 @@ Opens in the project root if in a projectile project."
 (define-key compilation-mode-map (kbd "g") nil)
 (define-key compilation-mode-map (kbd "h") nil)
 (define-key compilation-mode-map (kbd "r") 'revert-buffer)
+(add-hook 'compilation-filter-hook
+          (lambda () (let ((buffer-read-only nil))
+                       (ansi-color-apply-on-region (point-min) (point-max)))))
 
 
 
@@ -483,6 +511,7 @@ Opens in the project root if in a projectile project."
 (diminish 'flyspell-mode)
 (diminish 'irony-mode)
 (diminish 'highlight-parentheses-mode)
+(add-hook 'hl-paren-mode-hook (lambda () (diminish 'hl-paren-mode)))
 (diminish 'ivy-mode)
 (diminish 'racer-mode)
 (diminish 'undo-tree-mode)
