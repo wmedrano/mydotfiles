@@ -23,6 +23,7 @@
         ace-window ;; window jumping
         all-the-icons ;; icons
         apropospriate-theme ;; Dark and Light theme
+        benchmark-init ;; Profile emacs startup
         cider ;; Clojure REPL support
         clang-format ;; Format C/C++ buffers
         clojure-mode ;; Clojure syntax
@@ -63,10 +64,12 @@
         moe-theme ;; Light and Dark theme
         monokai-theme ;; Dark candy theme
         neotree ;; File tree
+        nix-mode ;; Nix syntax highlighting
         nyan-mode ;; Nyan cat in modeline to show position of buffer
         org-pomodoro ;; Pomodoro technique in org mode
         projectile ;; Project navigation and management
         projectile-ripgrep ;; Run rg on project
+        protobuf-mode ;; Protobuffers mode
         racer ;; Racer in Emacs
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
@@ -89,6 +92,8 @@
   (package-install-selected-packages)
   )
 
+(require 'benchmark-init)
+(benchmark-init/activate)
 
 
 ;;; vim like keybindings
@@ -134,6 +139,7 @@
 (key-chord-define evil-motion-state-map "??" 'swiper-all) ;; search open buffers
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
+(add-to-list 'evil-motion-state-modes 'ripgrep-search-mode)
 
 ;; error navigation
 (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
@@ -215,12 +221,17 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-;; lines
+;; lines and highlight
 (require 'hlinum)
 (global-linum-mode t) ;; show line numbers
 (global-hl-line-mode t) ;; highlight current line
 (hlinum-activate) ;; emphasize current line number
 (column-number-mode) ;; show column number, as well as row number in modeline
+(hl-highlight-mode t) ;; allow highlighting
+(global-set-key (kbd "C-c h") 'hl-highlight-thingatpt-global)
+(global-set-key (kbd "C-c H") 'hl-unhilight-all-global)
+(global-set-key (kbd "C-c C-h") 'hl-highlight-thingatpt-local)
+(global-set-key (kbd "C-c C-H") 'hl-unhilight-all-local)
 
 ;; show number of matches when searching a buffer
 (require 'evil-anzu)
@@ -348,7 +359,7 @@ Opens in the project root if in a projectile project."
   "Split WINDOW either vertically or horizontally, whatever is best."
   (interactive)
   (let ((window (or window (selected-window)))
-        (aspect-ratio 2.4)
+        (aspect-ratio 2.3)
         (w (window-body-width window))
         (h (window-body-height window)))
     (if (< (* h aspect-ratio) w)
@@ -392,16 +403,17 @@ Opens in the project root if in a projectile project."
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
 
 ;; eldoc - code documentation
-(require 'eldoc)
+;; (require 'eldoc)
 (setq eldoc-echo-area-use-multiline-p t
       eldoc-idle-delay 0.3)
 
 
 ;; flycheck - syntax checking
-(require 'flycheck)
+;; (require 'flycheck)
 (setq flycheck-checker-error-threshold 400
+      flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled)
       flycheck-display-errors-delay 0.5
-      flycheck-idle-change-delay 1.0)
+      flycheck-idle-change-delay 0.5)
 (add-to-list 'evil-motion-state-modes 'flycheck-error-list-mode)
 
 ;; flyspell - spell checking
@@ -413,7 +425,7 @@ Opens in the project root if in a projectile project."
 
 
 ;;; compilation mode - runs processes and shows output
-(require 'ansi-color)
+;; (require 'ansi-color)
 (add-to-list 'evil-motion-state-modes 'compilation-mode)
 ;; don't shadow evil's bindings
 (setq comint-scroll-to-bottom-on-output t
@@ -433,11 +445,11 @@ Opens in the project root if in a projectile project."
 ;;
 ;; automatically brings up an irony server to provide smart
 ;; functionality.
-(require 'company-irony)
-(require 'company-irony-c-headers)
-(require 'flycheck-irony)
-(require 'irony)
-(require 'irony-eldoc)
+;; (require 'company-irony)
+;; (require 'company-irony-c-headers)
+;; (require 'flycheck-irony)
+;; (require 'irony)
+;; (require 'irony-eldoc)
 (add-to-list 'company-backends 'company-irony)
 (add-to-list 'company-backends 'company-irony-c-headers)
 (add-hook 'c++-mode-hook 'irony-mode)
@@ -452,8 +464,8 @@ Opens in the project root if in a projectile project."
 ;; Clojure
 ;;
 ;; requires connection to a Clojure REPL with cider
-(require 'cider)
-(require 'clojure-mode)
+;; (require 'cider)
+;; (require 'clojure-mode)
 (add-hook 'cider-mode-hook 'company-mode)
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'cider-mode-hook 'flycheck-mode)
@@ -469,10 +481,10 @@ Opens in the project root if in a projectile project."
 ;; Rust
 ;;
 ;; Uses racer as a backend for documentation and completions.
-(require 'company-racer)
-(require 'flycheck-rust)
-(require 'racer)
-(require 'rust-mode)
+;; (require 'company-racer)
+;; (require 'flycheck-rust)
+;; (require 'racer)
+;; (require 'rust-mode)
 (setenv "RUST_SRC_PATH" (expand-file-name "~/src/rust/src"))
 ;; TODO: figure out why initial value of racer-rust-src-path is
 ;; correct, but then it switches to bogus value
@@ -511,12 +523,15 @@ Opens in the project root if in a projectile project."
 (diminish 'flyspell-mode)
 (diminish 'irony-mode)
 (diminish 'highlight-parentheses-mode)
+(diminish 'hl-highlight-mode)
 (add-hook 'hl-paren-mode-hook (lambda () (diminish 'hl-paren-mode)))
 (diminish 'ivy-mode)
 (diminish 'racer-mode)
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
+
+(benchmark-init/deactivate)
 
 (provide 'init)
 ;;; init.el ends here
