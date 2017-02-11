@@ -38,10 +38,10 @@ end
 
 -- autostart
 awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs --daemon")
-awful.util.spawn_with_shell("killall compton && compton --dbus")
-awful.util.spawn_with_shell("killall hexchat && hexchat")
-awful.util.spawn_with_shell("killall redshift-gtk && redshift-gtk")
-awful.util.spawn_with_shell("killall nm-applet && nm-applet")
+awful.util.spawn_with_shell("pkill compton && compton --dbus")
+awful.util.spawn_with_shell("pkill hexchat && hexchat")
+awful.util.spawn_with_shell("pkill redshift-gtk && redshift-gtk")
+awful.util.spawn_with_shell("pkill nm-applet && nm-applet")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -49,7 +49,7 @@ beautiful.init(awful.util.get_themes_dir() .. "zenburn/theme.lua")
 beautiful.get().border_width = 3
 beautiful.get().border_focus = "#FF0000"
 beautiful.get().border_marked = "#00FF00"
-beautiful.get().font = "Ubuntu Mono 12"
+beautiful.get().font = "Fira Mono 10"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -371,9 +371,8 @@ globalkeys = awful.util.table.join(
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",
         function (c)
-            -- c.fullscreen = not c.fullscreen
-           awful.layout.inc(1)
-            c:raise()
+            c.fullscreen = not c.fullscreen
+            -- c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
     awful.key({ modkey,           }, "q",      function (c) c:kill()                         end,
@@ -518,7 +517,7 @@ awful.rules.rules = {
 client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
+    if not awesome.startup then awful.client.setslave(c) end
 
     if awesome.startup and
       not c.size_hints.user_position
@@ -578,10 +577,12 @@ client.connect_signal("mouse::enter", function(c)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("focus", function(c)
+                         c.border_color = beautiful.border_focus
+end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
-client.connect_signal("property::fullscreen",
-                      function(c)
-                         c.fullscreen = false
-                      end)
+-- client.connect_signal("property::fullscreen",
+--                       function(c)
+--                          c.fullscreen = false
+--                       end)
 -- }}}

@@ -52,8 +52,7 @@ if ${use_color} ; then
 	    eval $(dircolors -b /etc/DIR_COLORS)
 	fi
     fi
-
-    export PS1="\[$(tput bold)\]\[\033[38;5;14m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;2m\][\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;10m\]\w\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;2m\]]\[$(tput sgr0)\]\[\033[38;5;6m\]:\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]"
+    export PS1="\[\e[31;47m\]\\$ \[\e[m\]\[\e[34;47m\]\u\[\e[m\]\[\e[32;47m\][\[\e[m\]\[\e[32;47m\]\W\[\e[m\]\[\e[32;47m\]]\[\e[m\]\[\e[30;47m\]:\[\e[m\] "
     alias ls='ls --color=auto'
     alias grep='grep --colour=auto'
     alias egrep='egrep --colour=auto'

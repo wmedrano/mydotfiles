@@ -1,4 +1,5 @@
 boot/cache
+emacs.d/.hl-save
 emacs.d/.python-environments
 emacs.d/auto-save-list
 emacs.d/elpa
@@ -16,3 +17,4 @@ emacs.d/tramp
 lein/self-installs/
 lein/repl-history
 hexchat/scrollback
+hexchat/servlist.conf

@@ -42,6 +42,7 @@
         evil-surround ;; Manipulate braces/parenthesis/brackets...
         flx ;; Fuzzy sorting
         flycheck ;; Realtime syntax checking
+        flycheck-clangcheck ;; Use clang-check for linting
         flycheck-irony ;; Irony backend for flycheck syntax checking
         flycheck-rust ;; Rustc backend for flycheck syntax checking
         flyspell-correct-ivy ;; Correct spelling with ivy menu
@@ -213,7 +214,7 @@
 (require 'all-the-icons)
 (setq all-the-icons-scale-factor 1.0)
 (custom-set-faces
- '(default ((t (:family "Source Code Pro" :foundry "ADBO" :slant normal :height 144 :width normal)))))
+ '(default ((t (:family "Fira Mono" :slant normal :height 144 :width normal)))))
 
 ;; remove screen clutter
 (setq inhibit-startup-screen t)
@@ -313,7 +314,8 @@
 (setq ivy-sort-max-size 30000
       ivy-flx-limit 10000
       ivy-height 24
-      ivy-fixed-height-minibuffer t)
+      ivy-fixed-height-minibuffer t
+      ivy-wrap t)
 (ivy-mode)
 (counsel-mode)
 (ivy-toggle-fuzzy)
@@ -331,48 +333,31 @@
       neo-show-hidden-files t
       neo-window-width 24
       neo-auto-indent-point nil)
-(defun neotree-toggle-dwim ()
-  "Similar to neotree-toggle but it is projectile aware.
-Opens in the project root if in a projectile project."
-  (interactive)
-  (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
-      (neotree-projectile-action)
-    (neotree-toggle)))
 (add-to-list 'evil-motion-state-modes 'neotree-mode)
 (add-hook 'neotree-mode-hook (lambda () (linum-mode -1)))
-(global-set-key (kbd "<f10>") 'neotree-toggle-dwim)
 (define-key neotree-mode-map (kbd "RET") 'neotree-enter-ace-window)
 
 
 
 ;;; misc
 (setq mouse-autoselect-window t
-      browse-url-browser-function 'browse-url-chromium)
+      browse-url-browser-function 'browse-url-chrome)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (global-set-key (kbd "<f11>") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+(global-set-key (kbd "C-c o") 'browse-url)
 
 
 
 ;;; window management
 (require 'ace-window)
-(defun split-window-bsp (&optional window)
-  "Split WINDOW either vertically or horizontally, whatever is best."
-  (interactive)
-  (let ((window (or window (selected-window)))
-        (aspect-ratio 2.3)
-        (w (window-body-width window))
-        (h (window-body-height window)))
-    (if (< (* h aspect-ratio) w)
-        (with-selected-window window (split-window-horizontally))
-      (with-selected-window window (split-window-vertically)))))
 (setq split-window-preferred-function 'split-window-bsp
       aw-dispatch-always t
       aw-fair-aspect-ratio 2.4
       aw-scope 'frame
-      window-min-width 24
-      window-min-height 16)
+      window-min-width 12
+      window-min-height 5)
 (set-face-attribute 'aw-leading-char-face nil :height 8.0)
-(global-set-key (kbd "C-c s") 'split-window-bsp)
+(global-set-key (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
 
@@ -530,6 +515,9 @@ Opens in the project root if in a projectile project."
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
+
+;; load misc functions
+(require 'wm)
 
 (benchmark-init/deactivate)
 

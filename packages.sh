@@ -7,7 +7,7 @@ sudo pacman -S numix-reborn-icon-themes numix-themes-archblue --needed
 sudo pacman -S awesome compton deepin-gtk-theme deepin-icon-theme vicious --needed
 
 ## Themes
-sudo pacman -S adobe-source-code-pro-fonts ttf-ubuntu-font-family --needed
+sudo pacman -S ttf-fira-mono ttf-fira-sans --needed
 
 ## Apps
 sudo pacman -S chromium hexchat lxtask-gtk3 qjackctl --needed
