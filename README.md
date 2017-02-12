@@ -6,12 +6,9 @@ Configuration for my [Manjaro Linux](https://manjaro.github.io/) Laptop and Desk
 
 ## Applications
 - `awesome` - Tiling Window Manager configured with `lua`
-- `chromium` - Web Browser
+- `google-chrome-stable` - Web Browser
 - `compton` - Compositor used for vsync and other effects
 - `emacs` - Customizable Text Editor configured with `elisp`
 - `hexchat` - IRC Client
 - `urxvt` - Lightweight and customize-able terminal with 24bit color support
-
-# Theme
-- Some space background
-- Sky GTK Theme with Numix Reborn Icons.
+- `alacritty` - Experimental and new terminal

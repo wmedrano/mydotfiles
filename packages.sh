@@ -3,10 +3,10 @@
 # Install Packages
 
 ## Window Manager and Stuff
-sudo pacman -S numix-reborn-icon-themes numix-themes-archblue --needed
-sudo pacman -S awesome compton deepin-gtk-theme deepin-icon-theme vicious --needed
+sudo pacman -S awesome compton vicious --needed
 
-## Themes
+## Themes & Fonts
+sudo pacman -S arc-gtk-theme arc-icon-theme --needed
 sudo pacman -S ttf-fira-mono ttf-fira-sans --needed
 
 ## Apps
@@ -21,6 +21,7 @@ sudo pacman -S audacity portaudio portmidi --needed
 
 # General Devtools
 sudo pacman -S emacs kcov rxvt-unicode --needed
+yaourt -S alacritty-git --needed
 
 # C Related Devtools
 sudo pacman -S clang cmake emscripten gdb lldb llvm llvm-libs --needed

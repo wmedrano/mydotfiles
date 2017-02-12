@@ -4,9 +4,39 @@
 ;;;   will.s.medrano@gmail.com
 ;;; Code:
 
+(require 'counsel)
 (require 'evil)
 (require 'neotree)
 (require 'projectile)
+
+;;; counsel-projectile-rg
+
+;;;###autoload
+(defun counsel-projectile-rg (&optional options)
+  "Ivy version of `projectile-rg'."
+  (interactive)
+  (if (projectile-project-p)
+      (let* ((options
+              (if current-prefix-arg
+                  (read-string "options: ")
+                options))
+             (ignored
+              (unless (eq (projectile-project-vcs) 'git)
+                ;; rg supports git ignore files
+                (append
+                 (cl-union (projectile-ignored-files-rel) grep-find-ignored-files)
+                 (cl-union (projectile-ignored-directories-rel) grep-find-ignored-directories))))
+             (options
+              (concat options " "
+                      (mapconcat (lambda (i)
+                                   (concat "--ignore-file " (shell-quote-argument i)))
+                                 ignored
+                                 " "))))
+        (counsel-rg nil
+                    (projectile-project-root)
+                    options
+                    (projectile-prepend-project-name "rg")))
+    (user-error "You're not in a project")))
 
 ;;;###autoload
 (defun wm-neotree-toggle-dwim ()
@@ -52,15 +82,19 @@ This is calibrated for taking an entire 4k display."
   (interactive)
   (delete-other-windows)
 
-  ;; main partition
+  ;; left partition
   (magit-diff-working-tree)
 
   ;; bottom partition
   (with-selected-window (split-window-below)
     (evil-window-set-height 20)
-    (magit-status-internal default-directory)
-    (with-selected-window (split-window-right)
-      (magit-log-all))))
+    (magit-status-internal default-directory))
+
+  ;; right partition
+  (with-selected-window (split-window-right)
+    (magit-log-all))
+
+  )
 
 ;;;###autoload
 (defun wm-new-view-ide ()

@@ -140,6 +140,7 @@
 (key-chord-define evil-motion-state-map "??" 'swiper-all) ;; search open buffers
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
+(add-to-list 'evil-motion-state-modes 'socyl-search-mode)
 (add-to-list 'evil-motion-state-modes 'ripgrep-search-mode)
 
 ;; error navigation
@@ -473,7 +474,7 @@
 (setenv "RUST_SRC_PATH" (expand-file-name "~/src/rust/src"))
 ;; TODO: figure out why initial value of racer-rust-src-path is
 ;; correct, but then it switches to bogus value
-(setq racer-rust-src-path nil)
+(setq-default racer-rust-src-path nil)
 (add-to-list 'exec-path "~/.cargo/bin")
 (add-to-list 'company-backends 'company-racer)
 (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
@@ -515,6 +516,11 @@
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
+
+;; socyl
+(require 'socyl)
+(require 'socyl-ripgrep)
+(setq socyl-backend 'ripgrep)
 
 ;; load misc functions
 (require 'wm)

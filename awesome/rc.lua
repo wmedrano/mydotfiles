@@ -38,10 +38,13 @@ end
 
 -- autostart
 awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs --daemon")
-awful.util.spawn_with_shell("pkill compton && compton --dbus")
-awful.util.spawn_with_shell("pkill hexchat && hexchat")
-awful.util.spawn_with_shell("pkill redshift-gtk && redshift-gtk")
-awful.util.spawn_with_shell("pkill nm-applet && nm-applet")
+awful.util.spawn_with_shell("pkill compton; sleep 0.5 && compton --dbus")
+awful.util.spawn_with_shell("pkill hexchat; sleep 0.5 && hexchat")
+
+-- widgets
+awful.util.spawn_with_shell("pkill nm-applet; sleep 1 && nm-applet")
+awful.util.spawn_with_shell("pkill pa-applet; sleep 2 && pa-applet")
+awful.util.spawn_with_shell("pkill redshift-gtk; sleep 3 && redshift-gtk")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -49,12 +52,14 @@ beautiful.init(awful.util.get_themes_dir() .. "zenburn/theme.lua")
 beautiful.get().border_width = 3
 beautiful.get().border_focus = "#FF0000"
 beautiful.get().border_marked = "#00FF00"
-beautiful.get().font = "Fira Mono 10"
+beautiful.get().font = "Fira Mono 12"
+beautiful.get().menu_height = 32
+beautiful.get().menu_width = 256
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvt"
-editor = "emacsclient" or os.getenv("EDITOR") or "nano"
-editor_cmd = "emacsclient -c"
+terminal = "alacritty"
+cli_editor_cmd = "emacsclient -t"
+gui_editor_cmd = "emacsclient -c"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -104,7 +109,7 @@ end
 myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "edit config", gui_editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }
@@ -210,7 +215,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.mywibox = awful.wibar({ position = "top", height = 24, screen = s })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -371,10 +376,15 @@ globalkeys = awful.util.table.join(
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",
         function (c)
-            c.fullscreen = not c.fullscreen
-            -- c:raise()
+           c.fullscreen = not c.fullscreen
+           c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
+    awful.key({ modkey,           }, "g",
+       function (c)
+          c:raise()
+       end,
+       {description = "raise", group = "client"}),
     awful.key({ modkey,           }, "q",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
@@ -581,8 +591,7 @@ client.connect_signal("focus", function(c)
                          c.border_color = beautiful.border_focus
 end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- client.connect_signal("property::fullscreen",
---                       function(c)
---                          c.fullscreen = false
---                       end)
+client.connect_signal("property::fullscreen",
+                      function(c)
+                      end)
 -- }}}

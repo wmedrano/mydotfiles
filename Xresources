@@ -5,7 +5,7 @@ Xft.hinting   : 1
 Xft.hintstyle : hintslight
 Xft.rgba      : rgb
 Xft.lcdfilter : lcddefault
-Xcursor.theme : deepin
+Xcursor.theme : Adwaita
 
 
 ! URxvt
