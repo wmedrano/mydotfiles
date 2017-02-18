@@ -25,6 +25,7 @@
         apropospriate-theme ;; Dark and Light theme
         benchmark-init ;; Profile emacs startup
         cider ;; Clojure REPL support
+        circe ;; IRC client
         clang-format ;; Format C/C++ buffers
         clojure-mode ;; Clojure syntax
         company ;; Autocompletions
@@ -75,12 +76,14 @@
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
         smex ;; Required for good sorting for Counsel-M-x
+        smooth-scrolling ;; Scroll without being jumpy
         sql-mode ;; SQL syntax highlighting
         swiper ;; ivy powered isearch
         syslog-mode ;; syslog syntax highlighting and utilities
         toml-mode ;; Syntax highlighting for TOML
         volatile-highlights ;; Highlight undo/redo affected areas
         which-key ;; Discover prefix keys
+        yafolding ;; Fold code
         yaml-mode ;; yaml syntax highlighting and utilities
         zenburn-theme ;; Dark theme
         zerodark-theme ;; Dark theme
@@ -125,7 +128,7 @@
 (define-key evil-motion-state-map (kbd "K") 'evil-scroll-up)
 
 ;; allow RET keybinding to bypass evil in motion state modes
-(define-key evil-normal-state-map (kbd "RET") (lambda () (evil-next-line)))
+(define-key evil-normal-state-map (kbd "RET") (lambda () (interactive) (evil-next-line)))
 (define-key evil-motion-state-map (kbd "RET") nil)
 
 ;; allow TAB to affect even in normal mode, TAB usually fixes indent
@@ -140,7 +143,6 @@
 (key-chord-define evil-motion-state-map "??" 'swiper-all) ;; search open buffers
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
-(add-to-list 'evil-motion-state-modes 'socyl-search-mode)
 (add-to-list 'evil-motion-state-modes 'ripgrep-search-mode)
 
 ;; error navigation
@@ -165,10 +167,10 @@
 ;; light/dark themes
 
 (require 'nyan-mode)
-(setq nyan-bar-length 16)
+(setq nyan-bar-length 16
+      nyan-wavy-trail t)
 (nyan-mode t)
 (nyan-start-animation)
-(nyan-toggle-wavy-trail)
 
 
 (defun initialize-theme (&optional theme-name)
@@ -231,9 +233,7 @@
 (column-number-mode) ;; show column number, as well as row number in modeline
 (hl-highlight-mode t) ;; allow highlighting
 (global-set-key (kbd "C-c h") 'hl-highlight-thingatpt-global)
-(global-set-key (kbd "C-c H") 'hl-unhilight-all-global)
-(global-set-key (kbd "C-c C-h") 'hl-highlight-thingatpt-local)
-(global-set-key (kbd "C-c C-H") 'hl-unhilight-all-local)
+(global-set-key (kbd "C-c H") (lambda () (interactive) (hl-unhighlight-all-global)))
 
 ;; show number of matches when searching a buffer
 (require 'evil-anzu)
@@ -341,11 +341,14 @@
 
 
 ;;; misc
-(setq mouse-autoselect-window t
+(require 'smooth-scrolling)
+(setq mouse-autoselect-window nil
+      smooth-scroll-margin 3
       browse-url-browser-function 'browse-url-chrome)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (global-set-key (kbd "<f11>") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "C-c o") 'browse-url)
+(smooth-scrolling-mode)
 
 
 
@@ -357,13 +360,17 @@
       aw-scope 'frame
       window-min-width 12
       window-min-height 5)
-(set-face-attribute 'aw-leading-char-face nil :height 8.0)
 (global-set-key (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
 
 
 ;;; IDE features, auto-complete, code documentation, and syntax checking.
+
+;; yafolding - code folding
+(require 'yafolding)
+(add-hook 'prog-mode-hook 'yafolding-mode)
+(define-key yafolding-mode-map (kbd "C-c f") 'yafolding-toggle-element)
 
 ;; company - auto-completion
 (require 'company)
@@ -457,12 +464,12 @@
 (add-hook 'cider-mode-hook 'flycheck-mode)
 
 ;; Emacs Lisp
+(defun eval-elisp-on-save () "Evaluate elisp buffers on save."
+       (add-hook 'after-save-hook 'eval-buffer nil t))
 (add-hook 'emacs-lisp-mode-hook 'company-mode)
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda ()
-            (define-key emacs-lisp-mode-map (kbd "C-c r") 'eval-buffer)))
+(add-hook 'emacs-lisp-mode-hook 'eval-elisp-on-save)
 
 ;; Rust
 ;;
@@ -517,13 +524,9 @@
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
 
-;; socyl
-(require 'socyl)
-(require 'socyl-ripgrep)
-(setq socyl-backend 'ripgrep)
 
 ;; load misc functions
-(require 'wm)
+(require 'wmv)
 
 (benchmark-init/deactivate)
 

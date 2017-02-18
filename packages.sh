@@ -10,7 +10,10 @@ sudo pacman -S arc-gtk-theme arc-icon-theme --needed
 sudo pacman -S ttf-fira-mono ttf-fira-sans --needed
 
 ## Apps
-sudo pacman -S chromium hexchat lxtask-gtk3 qjackctl --needed
+sudo pacman -S chromium lxtask-gtk3 qjackctl --needed
+
+## Multimedia
+sudo pacman -S rhythmbox
 
 ## Utilities
 sudo pacman -S arandr aspell-en markdown pandoc pinta scrot xclip --needed

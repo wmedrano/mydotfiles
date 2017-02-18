@@ -14,7 +14,7 @@ emacs.d/recentf
 emacs.d/smex-items
 emacs.d/snippets
 emacs.d/tramp
+emacs.d/url
 lein/self-installs/
 lein/repl-history
-hexchat/scrollback
-hexchat/servlist.conf
+wmp.el

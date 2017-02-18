@@ -39,7 +39,7 @@ end
 -- autostart
 awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs --daemon")
 awful.util.spawn_with_shell("pkill compton; sleep 0.5 && compton --dbus")
-awful.util.spawn_with_shell("pkill hexchat; sleep 0.5 && hexchat")
+awful.util.spawn_with_shell("pkill hexchat; sleep 5 && hexchat")
 
 -- widgets
 awful.util.spawn_with_shell("pkill nm-applet; sleep 1 && nm-applet")
@@ -57,7 +57,7 @@ beautiful.get().menu_height = 32
 beautiful.get().menu_width = 256
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
+terminal = "urxvt"
 cli_editor_cmd = "emacsclient -t"
 gui_editor_cmd = "emacsclient -c"
 

@@ -1,4 +1,4 @@
-;;; wm --- Summary:
+;;; wmv --- Summary:
 ;;;   Convenience functions
 ;;; Commentary:
 ;;;   will.s.medrano@gmail.com
@@ -12,34 +12,7 @@
 ;;; counsel-projectile-rg
 
 ;;;###autoload
-(defun counsel-projectile-rg (&optional options)
-  "Ivy version of `projectile-rg'."
-  (interactive)
-  (if (projectile-project-p)
-      (let* ((options
-              (if current-prefix-arg
-                  (read-string "options: ")
-                options))
-             (ignored
-              (unless (eq (projectile-project-vcs) 'git)
-                ;; rg supports git ignore files
-                (append
-                 (cl-union (projectile-ignored-files-rel) grep-find-ignored-files)
-                 (cl-union (projectile-ignored-directories-rel) grep-find-ignored-directories))))
-             (options
-              (concat options " "
-                      (mapconcat (lambda (i)
-                                   (concat "--ignore-file " (shell-quote-argument i)))
-                                 ignored
-                                 " "))))
-        (counsel-rg nil
-                    (projectile-project-root)
-                    options
-                    (projectile-prepend-project-name "rg")))
-    (user-error "You're not in a project")))
-
-;;;###autoload
-(defun wm-neotree-toggle-dwim ()
+(defun wmv-neotree-toggle-dwim ()
   "Similar to neotree-toggle but it is projectile aware.
 Opens in the project root if in a projectile project."
   (interactive)
@@ -47,10 +20,10 @@ Opens in the project root if in a projectile project."
       (neotree-projectile-action)
     (neotree-toggle)))
 
-(global-set-key (kbd "<f10>") 'wm-neotree-toggle-dwim)
+(global-set-key (kbd "<f10>") 'wmv-neotree-toggle-dwim)
 
 ;;;###autoload
-(defun wm-view-ide ()
+(defun wmv-ide ()
   "Use IDE layout.
 This is calibrated for taking an entire 4k display."
   (interactive)
@@ -77,7 +50,7 @@ This is calibrated for taking an entire 4k display."
         (display-buffer buffer '(display-buffer-same-window))))
 
 ;;;###autoload
-(defun wm-view-git ()
+(defun wmv-git ()
   "Use git layout."
   (interactive)
   (delete-other-windows)
@@ -97,18 +70,18 @@ This is calibrated for taking an entire 4k display."
   )
 
 ;;;###autoload
-(defun wm-new-view-ide ()
+(defun wmv-new-view-ide ()
   "Use IDE layout in a new frame."
   (interactive)
   (with-selected-frame (make-frame)
-    (wm-view-ide)))
+    (wmv-ide)))
 
 ;;;###autoload
-(defun wm-new-view-git ()
+(defun wmv-new-view-git ()
   "Use git layout in a new frame."
   (interactive)
   (with-selected-frame (make-frame)
-    (wm-view-git)))
+    (wmv-git)))
 
-(provide 'wm)
-;;; wm.el ends here
+(provide 'wmv)
+;;; wmv.el ends here
