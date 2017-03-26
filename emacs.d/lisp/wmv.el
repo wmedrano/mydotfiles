@@ -9,8 +9,6 @@
 (require 'neotree)
 (require 'projectile)
 
-;;; counsel-projectile-rg
-
 ;;;###autoload
 (defun wmv-neotree-toggle-dwim ()
   "Similar to neotree-toggle but it is projectile aware.
@@ -34,13 +32,13 @@ This is calibrated for taking an entire 4k display."
     (previous-buffer)
     (evil-window-set-height 16)
     (switch-to-buffer "*compilation*")
-    (with-selected-window (split-window-right 100))
+    (with-selected-window (split-window-right 104))
     )
 
   ;; right partition
-  (with-selected-window (split-window-right 128)
+  (with-selected-window (split-window-right 124)
     (with-selected-window (split-window-below))
-    (with-selected-window (split-window-right 100)))
+    (with-selected-window (split-window-right 104)))
   )
 
 
@@ -70,14 +68,14 @@ This is calibrated for taking an entire 4k display."
   )
 
 ;;;###autoload
-(defun wmv-new-view-ide ()
+(defun wmv-new-ide ()
   "Use IDE layout in a new frame."
   (interactive)
   (with-selected-frame (make-frame)
     (wmv-ide)))
 
 ;;;###autoload
-(defun wmv-new-view-git ()
+(defun wmv-new-git ()
   "Use git layout in a new frame."
   (interactive)
   (with-selected-frame (make-frame)

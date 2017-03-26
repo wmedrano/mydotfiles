@@ -54,6 +54,9 @@ cargo install racer
 cargo install ripgrep
 cargo install rust-fmt
 
+# Scheme
+sudo pacman -S guile
+
 # DB
 sudo pacman -S elasticsearch sqlite redis --needed
 

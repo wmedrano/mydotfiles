@@ -24,9 +24,8 @@ ln -s `pwd`/emacs.d ~/ # editing environment
 mv ~/emacs.d ~/.emacs.d
 
 # Other
-rm -r ~/.config/alacritty ~/.config/hexchat ~/.urxvt
+rm -r ~/.config/alacritty ~/.urxvt
 ln -s `pwd`/alacritty ~/.config # terminal
-ln -s `pwd`/hexchat ~/.config # irc client
 ln -s `pwd`/urxvt ~/.urxvt # terminal
 
 # Clojure

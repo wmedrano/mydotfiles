@@ -22,7 +22,6 @@
       '(
         ace-window ;; window jumping
         all-the-icons ;; icons
-        apropospriate-theme ;; Dark and Light theme
         benchmark-init ;; Profile emacs startup
         cider ;; Clojure REPL support
         circe ;; IRC client
@@ -35,6 +34,7 @@
         company-racer ;; Rust Racer backend for company
         counsel ;; Enhancements for ivy
         counsel-projectile ;; Counsel integration for projectile
+        dash ;; Functional library
         diff-hl ;; Show git changes in gutter
         diminish ;; Hide minor modes
         evil ;; VIM like keys
@@ -62,6 +62,7 @@
         log4j-mode ;; log4j syntax highlighting and utilies
         lua-mode ;; Syntax highlighting for lua
         magit ;; Emacs interface for git
+        magit-hub ;; Also know about github
         markdown-mode ;; Markdown syntax highlighting and utilies
         moe-theme ;; Light and Dark theme
         monokai-theme ;; Dark candy theme
@@ -75,6 +76,7 @@
         racer ;; Racer in Emacs
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
+        s ;; String manipulation library
         smex ;; Required for good sorting for Counsel-M-x
         smooth-scrolling ;; Scroll without being jumpy
         sql-mode ;; SQL syntax highlighting
@@ -143,6 +145,7 @@
 (key-chord-define evil-motion-state-map "??" 'swiper-all) ;; search open buffers
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg) ;; search in project
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map) ;; navigate buffers
+(global-set-key (kbd "C-c m") 'counsel-rhythmbox) ;; music player
 (add-to-list 'evil-motion-state-modes 'ripgrep-search-mode)
 
 ;; error navigation
@@ -178,12 +181,6 @@
   (interactive)
   (let ((th (or theme-name (getenv "EMACS_THEME"))))
     (cond
-     ((string= th "apro-dark")
-      (require 'apropospriate)
-      (load-theme 'apropospriate-dark))
-     ((string= th "apro-light")
-      (require 'apropospriate)
-      (load-theme 'apropospriate-light))
      ((string= th "leuven")
       (require 'leuven-theme)
       (load-theme 'leuven t))
@@ -217,7 +214,7 @@
 (require 'all-the-icons)
 (setq all-the-icons-scale-factor 1.0)
 (custom-set-faces
- '(default ((t (:family "Fira Mono" :slant normal :height 144 :width normal)))))
+ '(default ((t (:family "Fira Mono" :slant normal :height 140 :width normal)))))
 
 ;; remove screen clutter
 (setq inhibit-startup-screen t)
@@ -228,7 +225,7 @@
 ;; lines and highlight
 (require 'hlinum)
 (global-linum-mode t) ;; show line numbers
-(global-hl-line-mode t) ;; highlight current line
+;; (global-hl-line-mode t) ;; highlight current line
 (hlinum-activate) ;; emphasize current line number
 (column-number-mode) ;; show column number, as well as row number in modeline
 (hl-highlight-mode t) ;; allow highlighting
@@ -302,7 +299,8 @@
 (setq
  projectile-ignored-project-function
  (lambda (root)
-   nil))
+   (or (string-match "/tmp/*" root)
+       (string-match ".*\.cargo/*" root))))
 (projectile-mode t)
 
 ;; ivy + counsel - incremental completion
@@ -316,7 +314,11 @@
       ivy-flx-limit 10000
       ivy-height 24
       ivy-fixed-height-minibuffer t
-      ivy-wrap t)
+      ivy-wrap t
+      ;; ivy-re-builders-alist '((t . ivy--regex-fuzzy))
+      ;; ivy-re-builders-alist '((ivy-switch-buffer . ivy--regex-plus) (t . ivy--regex-fuzzy))
+      ;; ivy-initial-inputs-alist nil
+      )
 (ivy-mode)
 (counsel-mode)
 (ivy-toggle-fuzzy)
@@ -402,7 +404,7 @@
 
 
 ;; flycheck - syntax checking
-;; (require 'flycheck)
+(require 'flycheck)
 (setq flycheck-checker-error-threshold 400
       flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled)
       flycheck-display-errors-delay 0.5
@@ -426,9 +428,9 @@
 (define-key compilation-mode-map (kbd "g") nil)
 (define-key compilation-mode-map (kbd "h") nil)
 (define-key compilation-mode-map (kbd "r") 'revert-buffer)
-(add-hook 'compilation-filter-hook
-          (lambda () (let ((buffer-read-only nil))
-                       (ansi-color-apply-on-region (point-min) (point-max)))))
+;; (add-hook 'compilation-filter-hook
+;;           (lambda () (let ((buffer-read-only nil))
+;;                        (ansi-color-apply-on-region (point-min) (point-max)))))
 
 
 
@@ -524,11 +526,29 @@
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
 
-
 ;; load misc functions
 (require 'wmv)
+(require 'wmp)
 
 (benchmark-init/deactivate)
+
+;;; counsel-projectile-rg
+
+;;;###autoload
+(defun counsel-projectile-rg (&optional options)
+  "Ivy version of `projectile-rg'."
+  (interactive)
+  (if (projectile-project-p)
+      (let* ((options
+              (if current-prefix-arg
+                  (read-string "options: ")
+                options)))
+        (counsel-rg nil
+                    (projectile-project-root)
+                    options
+                    (projectile-prepend-project-name "rg")))
+    (user-error "You're not in a project")))
+
 
 (provide 'init)
 ;;; init.el ends here

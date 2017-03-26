@@ -39,7 +39,6 @@ end
 -- autostart
 awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs --daemon")
 awful.util.spawn_with_shell("pkill compton; sleep 0.5 && compton --dbus")
-awful.util.spawn_with_shell("pkill hexchat; sleep 5 && hexchat")
 
 -- widgets
 awful.util.spawn_with_shell("pkill nm-applet; sleep 1 && nm-applet")
