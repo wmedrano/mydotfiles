@@ -49,6 +49,7 @@ awful.util.spawn_with_shell("pkill redshift-gtk; sleep 3 && redshift-gtk")
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_themes_dir() .. "zenburn/theme.lua")
 beautiful.get().border_width = 3
+beautiful.get().useless_gap = 1
 beautiful.get().border_focus = "#FF0000"
 beautiful.get().border_marked = "#00FF00"
 beautiful.get().font = "Fira Mono 12"
@@ -57,8 +58,6 @@ beautiful.get().menu_width = 256
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
-cli_editor_cmd = "emacsclient -t"
-gui_editor_cmd = "emacsclient -c"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -108,7 +107,7 @@ end
 myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "manual", terminal .. " -e man awesome" },
-   { "edit config", gui_editor_cmd .. " " .. awesome.conffile },
+   { "edit config", "emacsclient -c " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }

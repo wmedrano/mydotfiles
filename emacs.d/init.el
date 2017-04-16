@@ -532,23 +532,6 @@
 
 (benchmark-init/deactivate)
 
-;;; counsel-projectile-rg
-
-;;;###autoload
-(defun counsel-projectile-rg (&optional options)
-  "Ivy version of `projectile-rg'."
-  (interactive)
-  (if (projectile-project-p)
-      (let* ((options
-              (if current-prefix-arg
-                  (read-string "options: ")
-                options)))
-        (counsel-rg nil
-                    (projectile-project-root)
-                    options
-                    (projectile-prepend-project-name "rg")))
-    (user-error "You're not in a project")))
-
 
 (provide 'init)
 ;;; init.el ends here
