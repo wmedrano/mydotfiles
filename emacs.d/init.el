@@ -74,6 +74,7 @@
         projectile-ripgrep ;; Run rg on project
         protobuf-mode ;; Protobuffers mode
         racer ;; Racer in Emacs
+        rainbow-delimiters ;; Color parens and other delimiters
         ripgrep ;; rg in Emacs
         rust-mode ;; Rust syntax highlighting and formatting
         s ;; String manipulation library
@@ -225,9 +226,11 @@
 ;; lines and highlight
 (require 'hlinum)
 (global-linum-mode t) ;; show line numbers
-;; (global-hl-line-mode t) ;; highlight current line
+(global-hl-line-mode t) ;; highlight current line
+(blink-cursor-mode 0) ;; disable blinking cursor
 (hlinum-activate) ;; emphasize current line number
 (column-number-mode) ;; show column number, as well as row number in modeline
+(rainbow-delimiters-mode t) ;;
 (hl-highlight-mode t) ;; allow highlighting
 (global-set-key (kbd "C-c h") 'hl-highlight-thingatpt-global)
 (global-set-key (kbd "C-c H") (lambda () (interactive) (hl-unhighlight-all-global)))
@@ -266,8 +269,6 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; parenthesis
-(require 'hl-anything)
-(add-hook 'prog-mode-hook 'hl-paren-mode)
 (electric-pair-mode t)
 
 
@@ -358,7 +359,7 @@
 (require 'ace-window)
 (setq split-window-preferred-function 'split-window-bsp
       aw-dispatch-always t
-      aw-fair-aspect-ratio 2.4
+      aw-fair-aspect-ratio 2.35
       aw-scope 'frame
       window-min-width 12
       window-min-height 5)
@@ -464,6 +465,8 @@
 (add-hook 'cider-mode-hook 'company-mode)
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'cider-mode-hook 'flycheck-mode)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-to-list 'evil-motion-state-modes 'cider-stacktrace-mode)
 
 ;; Emacs Lisp
 (defun eval-elisp-on-save () "Evaluate elisp buffers on save."
@@ -528,7 +531,7 @@
 
 ;; load misc functions
 (require 'wmv)
-(require 'wmp)
+;; (require 'wmp)
 
 (benchmark-init/deactivate)
 

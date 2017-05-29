@@ -303,7 +303,7 @@ globalkeys = awful.util.table.join(
               {description = "open a browser", group = "launcher"}),
     awful.key({ modkey,  "Shift"  }, "c", function () awful.spawn("google-chrome-stable --incognito") end,
               {description = "open a browser in private mode", group = "launcher"}),
-    awful.key({ modkey,           }, "e", function () awful.util.spawn_with_shell("EMACS_THEME=leuven /bin/emacs") end,
+    awful.key({ modkey,           }, "e", function () awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs") end,
               {description = "open emacs", group = "launcher"}),
     awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("/bin/emacs") end,
               {description = "open emacs without a theme", group = "launcher"}),
