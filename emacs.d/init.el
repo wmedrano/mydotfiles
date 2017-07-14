@@ -215,14 +215,9 @@
 (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
 
 ;; Clojure
-(defun cider-format-buffer-before-save ()
-  "Format Clojure buffers with Cider before saving."
-  (add-hook 'before-save-hook 'clojure-align)
-  (add-hook 'before-save-hook 'cider-format-buffer))
 (add-hook 'cider-mode-hook 'company-mode)
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'cider-mode-hook 'flycheck-mode)
-(add-hook 'cider-mode-hook 'cider-format-buffer-before-save)
 (add-hook 'cider-repl-mode-hook 'evil-insert-state)
 
 ;; Rust
