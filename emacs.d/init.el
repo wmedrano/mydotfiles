@@ -10,8 +10,6 @@
 ;;; Stop emacs from automatically modifying this file
 (setq custom-file "/dev/null")
 
-
-
 ;;; package management
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -19,8 +17,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
 (setq package-selected-packages
-      '(
-        cider ;; Clojure code introspection
+      '(cider ;; Clojure code introspection
         clojure-mode ;; Clojure
         company ;; Autocomplete
         company-racer ;; Autocomplete backend for Rust
@@ -45,20 +42,17 @@
         rust-mode ;; Rust
         s ;; String utility library
         smex ;; Better M-x for counse-M-x
-        smooth-scrolling ;; Smooth scrolling
         swiper ;; Search buffers for text
         volatile-highlights ;; Highlight undo
         which-key ;; Discover prefix keys
         zenburn-theme ;; Dark theme
-	))
+))
 
 (defun my-install-packages ()
   "Refresh contents from melpa and install the necessary packages."
   (interactive)
   (package-refresh-contents)
-  (package-install-selected-packages)
-  )
-
+  (package-install-selected-packages))
 
 ;; theming
 (require 'nyan-mode)
@@ -85,12 +79,11 @@
 (tool-bar-mode -1)
 (custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal)))))
 
-
 ;; Misc
 (require 'which-key)
 (setq browse-url-browser-function 'browse-url-chrome)
 (which-key-mode)
-
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; vim like keys
 (require 'evil)
@@ -103,18 +96,17 @@
 (define-key evil-normal-state-map (kbd "gs") 'evil-ex-sort)
 (define-key evil-motion-state-map (kbd "J") 'evil-scroll-down)
 (define-key evil-normal-state-map (kbd "J") nil)
-(define-key evil-normal-state-map (kbd "C-d") 'evil-join)
 (define-key evil-motion-state-map (kbd "K") 'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "K") nil)
+(define-key evil-motion-state-map (kbd "L") 'evil-scroll-line-down)
+(define-key evil-motion-state-map (kbd "H") 'evil-scroll-line-up)
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-motion-state-map (kbd "q") 'quit-window)
 
-
 ;; undo
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
-
 
 ;; file refresh
 (require 'autorevert)
@@ -125,17 +117,13 @@
 (global-auto-revert-mode t)
 (define-key evil-normal-state-map (kbd "gr") 'revert-buffer)
 
-
 ;; buffer formatting
-(require 'smooth-scrolling)
 (setq-default indent-tabs-mode nil
-	      fill-column 80
-              smooth-scroll-margin 3)
+              fill-column 80)
 (electric-pair-mode t)
 (global-hl-line-mode t)
 (global-linum-mode t)
-(smooth-scrolling-mode t)
-
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; version control
 (require 'diff-hl)
@@ -148,7 +136,6 @@
 (global-diff-hl-mode t)
 (diff-hl-flydiff-mode t)
 
-
 ;; emacs/project management
 (require 'counsel)
 (require 'counsel-projectile)
@@ -156,15 +143,14 @@
 (require 'ivy)
 (require 'projectile)
 (setq projectile-ignored-project-function (lambda (root)
-   (or (string-match "/tmp/*" root)
-       (string-match ".*\.cargo/*" root))))
-(setq ivy-re-builders-alist
-      '((ivy-switch-buffer . ivy--regex-plus)
-        (t . ivy--regex-fuzzy)))
+                                                  (or (string-match "/tmp/*" root)
+                                                      (string-match ".*\.cargo/*" root))))
+;; (setq ivy-re-builders-alist
+;;       '((ivy-switch-buffer . ivy--regex-plus)
+;;         (t . ivy--regex-fuzzy)))
 (setq ivy-height 24
       ivy-fixed-height-minibuffer t
-      ivy-wrap t
-      ivy-initial-inputs-alist nil)
+      ivy-wrap t)
 (counsel-mode)
 (ivy-mode)
 (counsel-projectile-on)
@@ -173,7 +159,6 @@
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map)
 (define-key evil-normal-state-map (kbd "gp") nil)
 (define-key projectile-mode-map (kbd "C-c p s") 'projectile-ripgrep)
-
 
 ;; Window management
 (require 'ace-window)
@@ -186,17 +171,16 @@
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
 
-
 ;; Text search
+(require 'counsel-projectile)
+(require 'swiper)
 (define-key evil-motion-state-map (kbd "g/") 'counsel-projectile-rg)
 (define-key evil-normal-state-map (kbd "g/") nil)
 (key-chord-define evil-motion-state-map (kbd "//") 'swiper)
 (key-chord-define evil-motion-state-map (kbd "??") 'swiper-all)
 
-
 ;; Code documentation
 (setq eldoc-echo-area-use-multiline-p t)
-
 
 ;; Autocompletion
 (require 'company)
@@ -213,12 +197,10 @@
 (define-key company-active-map [tab] 'company-complete-selection)
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
 
-
 ;; Syntax checking
 (require 'flycheck)
 (setq flycheck-check-syntax-automatically '(save mode-enabled))
 (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
-
 
 ;; Spell checking
 (require 'flyspell)
@@ -228,17 +210,20 @@
 (add-hook 'flyspell-mode-hook 'flyspell-buffer)
 (global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic)
 
-
 ;; Emacs Lisp
 (add-hook 'emacs-lisp-mode-hook 'company-mode)
 (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
 
-
 ;; Clojure
+(defun cider-format-buffer-before-save ()
+  "Format Clojure buffers with Cider before saving."
+  (add-hook 'before-save-hook 'clojure-align)
+  (add-hook 'before-save-hook 'cider-format-buffer))
 (add-hook 'cider-mode-hook 'company-mode)
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'cider-mode-hook 'flycheck-mode)
-
+(add-hook 'cider-mode-hook 'cider-format-buffer-before-save)
+(add-hook 'cider-repl-mode-hook 'evil-insert-state)
 
 ;; Rust
 (setenv "RUST_SRC_PATH" (expand-file-name "~/src/rust/src"))
@@ -254,17 +239,16 @@
 (add-hook 'racer-mode-hook 'company-mode)
 (add-hook 'racer-mode-hook 'eldoc-mode)
 (add-hook 'rust-mode-hook
-	  (lambda ()
-	    (setq-local fill-column 100)
-            (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
-	    (setq-local projectile-project-compilation-cmd "cargo build")
-	    (setq-local projectile-project-run-cmd "cargo run")
-	    (setq-local projectile-project-test-cmd "cargo test")))
+          (lambda ()
+                  (setq-local fill-column 100)
+                  (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
+                  (setq-local projectile-project-compilation-cmd "cargo build")
+                  (setq-local projectile-project-run-cmd "cargo run")
+                  (setq-local projectile-project-test-cmd "cargo test")))
 (add-hook 'racer-mode-hook
-	  (lambda ()
-            (define-key evil-normal-state-map (kbd "gd") nil)
-            (define-key evil-motion-state-map (kbd "gd") 'racer-find-definition)))
-
+          (lambda ()
+                  (define-key evil-normal-state-map (kbd "gd") nil)
+                  (define-key evil-motion-state-map (kbd "gd") 'racer-find-definition)))
 
 ;; Hide modeline entries
 (diminish 'auto-revert-mode)
@@ -275,7 +259,6 @@
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
-
 
 (provide 'init)
 ;;; init.el ends here
