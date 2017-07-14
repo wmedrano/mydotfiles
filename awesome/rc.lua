@@ -37,7 +37,7 @@ end
 -- }}}
 
 -- autostart
-awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs --daemon")
+awful.util.spawn_with_shell("/bin/emacs --daemon")
 awful.util.spawn_with_shell("pkill compton; sleep 0.5 && compton --dbus")
 
 -- widgets
@@ -303,10 +303,8 @@ globalkeys = awful.util.table.join(
               {description = "open a browser", group = "launcher"}),
     awful.key({ modkey,  "Shift"  }, "c", function () awful.spawn("google-chrome-stable --incognito") end,
               {description = "open a browser in private mode", group = "launcher"}),
-    awful.key({ modkey,           }, "e", function () awful.util.spawn_with_shell("EMACS_THEME=zenburn /bin/emacs") end,
+    awful.key({ modkey,           }, "e", function () awful.util.spawn_with_shell("/bin/emacs") end,
               {description = "open emacs", group = "launcher"}),
-    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("/bin/emacs") end,
-              {description = "open emacs without a theme", group = "launcher"}),
     awful.key({ modkey, "Control"   }, "e", function () awful.util.spawn_with_shell("emacsclient -c") end,
               {description = "open daemon emacs instance", group = "launcher"}),
     awful.key({ modkey, "Shift"   }, "r", awesome.restart,
@@ -340,6 +338,9 @@ globalkeys = awful.util.table.join(
               {description = "select next", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
+    awful.key({ modkey,           }, "z", function ()
+          awful.util.spawn_with_shell("slock") end,
+              {description = "select next", group = "layout"}),
 
     awful.key({ modkey, "Control" }, "n",
               function ()
