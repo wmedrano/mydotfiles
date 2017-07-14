@@ -34,6 +34,7 @@
         flycheck ;; Syntax checking
         flycheck-rust ;; Syntax checking backend for Rust
         flyspell ;; Spell checking
+        flx ;; Fuzzy scoring
         ivy ;; Emacs completions
         key-chord ;; Bind functions to key chords
         leuven-theme ;; Light theme
@@ -82,8 +83,7 @@
 (nyan-start-animation)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(custom-set-faces
- '(default ((t (:family "Fira Mono" :slant normal :width normal)))))
+(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal)))))
 
 
 ;; Misc
@@ -152,14 +152,19 @@
 ;; emacs/project management
 (require 'counsel)
 (require 'counsel-projectile)
+(require 'flx)
 (require 'ivy)
 (require 'projectile)
 (setq projectile-ignored-project-function (lambda (root)
    (or (string-match "/tmp/*" root)
        (string-match ".*\.cargo/*" root))))
+(setq ivy-re-builders-alist
+      '((ivy-switch-buffer . ivy--regex-plus)
+        (t . ivy--regex-fuzzy)))
 (setq ivy-height 24
       ivy-fixed-height-minibuffer t
-      ivy-wrap t)
+      ivy-wrap t
+      ivy-initial-inputs-alist nil)
 (counsel-mode)
 (ivy-mode)
 (counsel-projectile-on)
@@ -263,9 +268,10 @@
 
 ;; Hide modeline entries
 (diminish 'auto-revert-mode)
+(diminish 'counsel-mode)
 (diminish 'evil-commentary-mode)
 (diminish 'flyspell-mode)
-(diminish 'helm-mode)
+(diminish 'ivy-mode)
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
