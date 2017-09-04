@@ -17,7 +17,8 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
 (setq package-selected-packages
-      '(cider ;; Clojure code introspection
+      '(ace-window ;; navigate windows
+        cider ;; Clojure code introspection
         clojure-mode ;; Clojure
         company ;; Autocomplete
         company-racer ;; Autocomplete backend for Rust
@@ -31,6 +32,7 @@
         flycheck ;; Syntax checking
         flycheck-rust ;; Syntax checking backend for Rust
         flyspell ;; Spell checking
+        flyspell-correct-ivy ;; Use ivy as flyspell correction frontend
         flx ;; Fuzzy scoring
         ivy ;; Emacs completions
         key-chord ;; Bind functions to key chords
@@ -182,6 +184,9 @@
 ;; Code documentation
 (setq eldoc-echo-area-use-multiline-p t)
 
+;; Code references
+(setq-default xref-backend-functions '()) ;; disable etags xrefs
+
 ;; Autocompletion
 (require 'company)
 (setq company-selection-wrap-around t
@@ -207,7 +212,6 @@
 (require 'flyspell-correct)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'flyspell-mode-hook 'flyspell-buffer)
 (global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic)
 
 ;; Emacs Lisp
@@ -242,8 +246,7 @@
                   (setq-local projectile-project-test-cmd "cargo test")))
 (add-hook 'racer-mode-hook
           (lambda ()
-                  (define-key evil-normal-state-map (kbd "gd") nil)
-                  (define-key evil-motion-state-map (kbd "gd") 'racer-find-definition)))
+            (setq-local xref-backend-functions '(racer-find-definition))))
 
 ;; Hide modeline entries
 (diminish 'auto-revert-mode)
