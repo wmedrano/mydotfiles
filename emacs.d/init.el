@@ -24,6 +24,7 @@
         company-racer ;; Autocomplete backend for Rust
         counsel ;; Ivy integration
         counsel-projectile ;; Counsel for projectile
+        dash ;; List utilities
         diff-hl ;; Highlight git differences
         diminish ;; Hide modeline
         evil ;; VIM keys
@@ -41,6 +42,7 @@
         nyan-mode ;; Nyan cat in modeline
         projectile ;; Project management
         projectile-ripgrep ;; Search project with ripgrep
+        racer ;; Rust Auto CompletER
         rust-mode ;; Rust
         s ;; String utility library
         smex ;; Better M-x for counse-M-x
