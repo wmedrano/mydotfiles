@@ -19,6 +19,7 @@
 (setq package-selected-packages
       '(ace-window ;; navigate windows
         cider ;; Clojure code introspection
+        circe ;; IRC client
         clojure-mode ;; Clojure
         company ;; Autocomplete
         company-racer ;; Autocomplete backend for Rust
@@ -81,7 +82,7 @@
 (nyan-start-animation)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal)))))
+(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 125)))))
 
 ;; Misc
 (require 'which-key)
@@ -107,6 +108,11 @@
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
 (define-key evil-motion-state-map (kbd "q") 'quit-window)
+(define-key evil-motion-state-map (kbd "gd") 'xref-find-definitions)
+(define-key evil-motion-state-map (kbd "gx") 'xref-find-references)
+(define-key evil-motion-state-map (kbd "gX") 'xref-find-apropos)
+(define-key evil-motion-state-map (kbd "gr") 'revert-buffer)
+(define-key evil-normal-state-map (kbd "C-d") 'evil-join)
 
 ;; undo
 (require 'volatile-highlights)
@@ -171,6 +177,10 @@
       aw-scope 'frame
       window-min-width 12
       window-min-height 5)
+(defun ace-revert-buffer (window)
+  "Revert the buffer at WINDOW without asking the user for confirmation."
+  (with-selected-window window (revert-buffer t t)))
+(add-to-list 'aw-dispatch-alist '(?r revert-buffer " Ace - Revert Buffer"))
 (global-set-key (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
@@ -232,6 +242,7 @@
 ;; then it switches to bogus value
 (setq-default racer-rust-src-path nil)
 (add-to-list 'exec-path "~/.cargo/bin")
+(setenv "PATH" (concat "~/.cargo/bin:" (getenv "PATH")))
 (add-to-list 'company-backends 'company-racer)
 (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
 (add-hook 'rust-mode-hook 'rust-enable-format-on-save)
@@ -241,14 +252,16 @@
 (add-hook 'racer-mode-hook 'eldoc-mode)
 (add-hook 'rust-mode-hook
           (lambda ()
-                  (setq-local fill-column 100)
-                  (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
-                  (setq-local projectile-project-compilation-cmd "cargo build")
-                  (setq-local projectile-project-run-cmd "cargo run")
-                  (setq-local projectile-project-test-cmd "cargo test")))
-(add-hook 'racer-mode-hook
-          (lambda ()
-            (setq-local xref-backend-functions '(racer-find-definition))))
+            (evil-define-key 'motion racer-mode-map (kbd "gd") 'racer-find-definition)
+            (setq-local fill-column 100)
+            (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
+            (setq-local projectile-project-compilation-cmd "cargo build")
+            (setq-local projectile-project-run-cmd "cargo run")
+            (setq-local projectile-project-test-cmd "cargo test")))
+
+;; Miscellaneous modes that don't work well with evil.
+(define-key compilation-mode-map (kbd "g") nil)
+(define-key compilation-mode-map (kbd "r") 'revert-buffer)
 
 ;; Hide modeline entries
 (diminish 'auto-revert-mode)
@@ -259,6 +272,9 @@
 (diminish 'undo-tree-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'which-key-mode)
+
+(if (file-exists-p "~/local/emacs.el")
+    (load-file "~/local/emacs.el"))
 
 (provide 'init)
 ;;; init.el ends here
