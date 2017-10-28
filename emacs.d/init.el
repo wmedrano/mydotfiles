@@ -18,9 +18,12 @@
 
 (setq package-selected-packages
       '(ace-window ;; navigate windows
+        all-the-icons ;; Icons
+        all-the-icons-ivy ;; Icons for ivy
         cider ;; Clojure code introspection
         circe ;; IRC client
         clojure-mode ;; Clojure
+        coffee-mode ;; CoffeeScript language support
         company ;; Autocomplete
         company-racer ;; Autocomplete backend for Rust
         counsel ;; Ivy integration
@@ -40,13 +43,17 @@
         key-chord ;; Bind functions to key chords
         leuven-theme ;; Light theme
         magit ;; git integration
+        monokai-theme ;; Dark theme
+        neotree ;; File tree
         nyan-mode ;; Nyan cat in modeline
         projectile ;; Project management
         projectile-ripgrep ;; Search project with ripgrep
+        spacegray-theme ;; Dark theme
         racer ;; Rust Auto CompletER
         rust-mode ;; Rust
         s ;; String utility library
         smex ;; Better M-x for counse-M-x
+        spacemacs-theme ;; Light and dark theme
         swiper ;; Search buffers for text
         volatile-highlights ;; Highlight undo
         which-key ;; Discover prefix keys
@@ -64,13 +71,13 @@
 (defun light-theme ()
   "Enable the light theme."
   (interactive)
-  (disable-theme 'zenburn)
+  (disable-theme 'spacemacs-dark)
   (load-theme 'leuven t))
 (defun dark-theme ()
   "Enable the dark theme."
   (interactive)
   (disable-theme 'leuven)
-  (load-theme 'zenburn t))
+  (load-theme 'spacemacs-dark t))
 (setq inhibit-startup-screen t
       nyan-animate-nyancat t
       nyan-bar-length 10
@@ -82,7 +89,7 @@
 (nyan-start-animation)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 125)))))
+(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 132)))))
 
 ;; Misc
 (require 'which-key)
@@ -146,7 +153,14 @@
 (global-diff-hl-mode t)
 (diff-hl-flydiff-mode t)
 
+;; file tree
+(require 'neotree)
+(require 'all-the-icons)
+(setq neo-theme 'icons)
+(add-to-list 'evil-motion-state-modes 'neotree-mode)
+
 ;; emacs/project management
+(require 'all-the-icons-ivy)
 (require 'counsel)
 (require 'counsel-projectile)
 (require 'flx)
@@ -169,6 +183,7 @@
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map)
 (define-key evil-normal-state-map (kbd "gp") nil)
 (define-key projectile-mode-map (kbd "C-c p s") 'projectile-ripgrep)
+(all-the-icons-ivy-setup)
 
 ;; Window management
 (require 'ace-window)
@@ -180,7 +195,7 @@
 (defun ace-revert-buffer (window)
   "Revert the buffer at WINDOW without asking the user for confirmation."
   (with-selected-window window (revert-buffer t t)))
-(add-to-list 'aw-dispatch-alist '(?r revert-buffer " Ace - Revert Buffer"))
+(add-to-list 'aw-dispatch-alist '(?r ace-revert-buffer))
 (global-set-key (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
@@ -256,7 +271,7 @@
             (setq-local fill-column 100)
             (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
             (setq-local projectile-project-compilation-cmd "cargo build")
-            (setq-local projectile-project-run-cmd "cargo run")
+            (setq-local projectile-project-run-cmd "RUST_LOG=warn cargo run")
             (setq-local projectile-project-test-cmd "cargo test")))
 
 ;; Miscellaneous modes that don't work well with evil.

@@ -3,7 +3,7 @@
 # Install Packages
 
 ## Window Manager and Stuff
-sudo pacman -S awesome compton vicious --needed
+sudo pacman -S awesome compton slock vicious --needed
 
 ## Themes & Fonts
 sudo pacman -S arc-gtk-theme arc-icon-theme --needed
