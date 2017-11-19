@@ -144,7 +144,7 @@
 (setq-default indent-tabs-mode nil
               fill-column 80)
 (electric-pair-mode t)
-;; (global-hl-line-mode t)
+(global-hl-line-mode t)
 (global-linum-mode t)
 (smooth-scrolling-mode t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
