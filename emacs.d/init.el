@@ -35,6 +35,7 @@
         evil-commentary ;; Comment out code
         evil-magit ;; Fix VIM keys for magit
         flycheck ;; Syntax checking
+        flycheck-pos-tip ;; Show errors in tooltip
         flycheck-rust ;; Syntax checking backend for Rust
         flyspell ;; Spell checking
         flyspell-correct-ivy ;; Use ivy as flyspell correction frontend
@@ -42,6 +43,7 @@
         ivy ;; Emacs completions
         key-chord ;; Bind functions to key chords
         leuven-theme ;; Light theme
+        lua-mode ;; Lua programming language
         magit ;; git integration
         monokai-theme ;; Dark theme
         neotree ;; File tree
@@ -71,6 +73,8 @@
 (defun light-theme ()
   "Enable the light theme."
   (interactive)
+  (require 'leuven-theme)
+  (custom-set-faces '(hl-line ((t (:background "#D5F1CF" :underline nil)))))
   (disable-theme 'spacemacs-dark)
   (load-theme 'leuven t))
 (defun dark-theme ()
@@ -135,11 +139,14 @@
 (define-key evil-normal-state-map (kbd "gr") 'revert-buffer)
 
 ;; buffer formatting
+(require 'smooth-scrolling)
+(setq smooth-scroll-margin 3)
 (setq-default indent-tabs-mode nil
               fill-column 80)
 (electric-pair-mode t)
-(global-hl-line-mode t)
+;; (global-hl-line-mode t)
 (global-linum-mode t)
+(smooth-scrolling-mode t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; version control
@@ -187,15 +194,28 @@
 
 ;; Window management
 (require 'ace-window)
+(defun ace-revert-buffer (window)
+  "Revert the buffer at WINDOW without asking the user for confirmation."
+  (with-selected-window window (revert-buffer t t)))
+(defun ace-split-window-fair (&optional window)
+  "Split WINDOW into 2."
+  (aw-split-window-fair (or window (selected-window))))
 (setq aw-dispatch-always t
       aw-fair-aspect-ratio 2.35
       aw-scope 'frame
       window-min-width 12
       window-min-height 5)
-(defun ace-revert-buffer (window)
-  "Revert the buffer at WINDOW without asking the user for confirmation."
-  (with-selected-window window (revert-buffer t t)))
-(add-to-list 'aw-dispatch-alist '(?r ace-revert-buffer))
+(setq aw-dispatch-alist
+  '((?x aw-delete-window " Ace - Delete Window")
+    (?m aw-swap-window " Ace - Swap Window")
+    (?M aw-move-window " Ace - Move Window")
+    (?n aw-flip-window)
+    (?c ace-split-window-fair)
+    (?v aw-split-window-vert " Ace - Split Vert Window")
+    (?r ace-revert-buffer "Revert buffer")
+    (?b aw-split-window-horz " Ace - Split Horz Window")
+    (?i delete-other-windows " Ace - Delete Other Windows")
+    (?o delete-other-windows)))
 (global-set-key (kbd "C-c w") 'ace-window)
 (define-key evil-motion-state-map (kbd "gw") 'ace-window)
 (define-key evil-normal-state-map (kbd "gw") nil)
@@ -235,10 +255,12 @@
 (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
 
 ;; Spell checking
+(require 'flycheck-pos-tip)
 (require 'flyspell)
 (require 'flyspell-correct)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'flycheck-mode 'flycheck-pos-tip-mode)
 (global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic)
 
 ;; Emacs Lisp
