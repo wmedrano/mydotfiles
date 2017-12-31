@@ -20,6 +20,7 @@
       '(ace-window ;; navigate windows
         all-the-icons ;; Icons
         all-the-icons-ivy ;; Icons for ivy
+        avy ;; Jump around quicker
         cider ;; Clojure code introspection
         circe ;; IRC client
         clojure-mode ;; Clojure
@@ -47,6 +48,7 @@
         magit ;; git integration
         monokai-theme ;; Dark theme
         neotree ;; File tree
+        nlinum ;; Current line number
         nyan-mode ;; Nyan cat in modeline
         projectile ;; Project management
         projectile-ripgrep ;; Search project with ripgrep
@@ -57,11 +59,18 @@
         smex ;; Better M-x for counse-M-x
         spacemacs-theme ;; Light and dark theme
         swiper ;; Search buffers for text
+        toml-mode ;; TOML configuration format
         volatile-highlights ;; Highlight undo
         which-key ;; Discover prefix keys
         yaml-mode ;; Yaml syntax highlighting
         zenburn-theme ;; Dark theme
 ))
+
+;; Use lite mode if the EMACS_LITE variable is defined or using emacs from the
+;; terminal.
+(defvar wm-full
+      (if (getenv "EMACS_LITE")
+          (eq (getenv "EMACS_LITE") "") window-system))
 
 (defun my-install-packages ()
   "Refresh contents from melpa and install the necessary packages."
@@ -76,30 +85,35 @@
   (require 'leuven-theme)
   (custom-set-faces '(hl-line ((t (:background "#D5F1CF" :underline nil)))))
   (disable-theme 'spacemacs-dark)
-  (global-hl-line-mode t)
-  (load-theme 'leuven t))
+  (global-hl-line-mode -1)
+  (load-theme 'leuven t)
+  (global-hl-line-mode t))
 (defun dark-theme ()
   "Enable the dark theme."
   (interactive)
   (disable-theme 'leuven)
   (global-hl-line-mode -1)
-  (load-theme 'spacemacs-dark t))
+  (load-theme 'spacemacs-dark t)
+  (global-hl-line-mode t))
 (defun init-theme ()
   (require 'neotree)
-  (require 'nyan-mode)
   (require 'all-the-icons)
   (require 'all-the-icons-ivy)
   (setq inhibit-startup-screen t
-	nyan-animate-nyancat t
-	nyan-bar-length 10
-	nyan-wavy-trail t
 	neo-theme 'icons)
   (blink-cursor-mode -1)
   (dark-theme)
-  (nyan-mode t)
-  (nyan-start-animation)
   (custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 132))))))
 (init-theme)
+
+(defun init-nyan ()
+  (require 'nyan-mode)
+  (setq nyan-animate-nyancat t
+	nyan-bar-length 10
+	nyan-wavy-trail t)
+  (nyan-mode t)
+  (nyan-start-animation))
+(if wm-full (init-nyan))
 
 ;; Disable nags
 (defun init-disable-nags ()
@@ -116,30 +130,33 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; vim like keys
-(require 'evil)
-(require 'evil-commentary)
-(require 'key-chord)
-(evil-mode t)
-(key-chord-mode t)
-(evil-commentary-mode)
-(key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
-(define-key evil-normal-state-map (kbd "gs") #'evil-ex-sort)
-(define-key evil-motion-state-map (kbd "J") #'evil-scroll-down)
-(define-key evil-normal-state-map (kbd "J") nil)
-(define-key evil-motion-state-map (kbd "K") #'evil-scroll-up)
-(define-key evil-normal-state-map (kbd "K") nil)
-(define-key evil-motion-state-map (kbd "L") #'evil-scroll-line-down)
-(define-key evil-motion-state-map (kbd "H") #'evil-scroll-line-up)
-(define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
-(define-key evil-visual-state-map (kbd "TAB") #'indent-for-tab-command)
-(define-key evil-motion-state-map (kbd "q") #'quit-window)
-(define-key evil-motion-state-map (kbd "gd") #'xref-find-definitions)
-(define-key evil-motion-state-map (kbd "gx") #'xref-find-references)
-(define-key evil-motion-state-map (kbd "gX") #'xref-find-apropos)
-(define-key evil-motion-state-map (kbd "gr") #'revert-buffer)
-(define-key evil-normal-state-map (kbd "C-d") #'evil-join)
-(define-key evil-normal-state-map (kbd "RET") #'evil-next-line)
-(define-key evil-motion-state-map (kbd "RET") nil)
+(defun init-vim-keys ()
+  (require 'evil)
+  (require 'evil-commentary)
+  (require 'key-chord)
+  (evil-mode t)
+  (key-chord-mode t)
+  (evil-commentary-mode)
+  (key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
+  (define-key evil-motion-state-map (kbd "gW") #'avy-goto-word-0)
+  (define-key evil-normal-state-map (kbd "gs") #'evil-ex-sort)
+  (define-key evil-motion-state-map (kbd "J") #'evil-scroll-down)
+  (define-key evil-normal-state-map (kbd "J") nil)
+  (define-key evil-motion-state-map (kbd "K") #'evil-scroll-up)
+  (define-key evil-normal-state-map (kbd "K") nil)
+  (define-key evil-motion-state-map (kbd "L") #'evil-scroll-line-down)
+  (define-key evil-motion-state-map (kbd "H") #'evil-scroll-line-up)
+  (define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
+  (define-key evil-visual-state-map (kbd "TAB") #'indent-for-tab-command)
+  (define-key evil-motion-state-map (kbd "q") #'quit-window)
+  (define-key evil-motion-state-map (kbd "gd") #'xref-find-definitions)
+  (define-key evil-motion-state-map (kbd "gx") #'xref-find-references)
+  (define-key evil-motion-state-map (kbd "gX") #'xref-find-apropos)
+  (define-key evil-motion-state-map (kbd "gr") #'revert-buffer)
+  (define-key evil-normal-state-map (kbd "C-d") #'evil-join)
+  (define-key evil-normal-state-map (kbd "RET") #'evil-next-line)
+  (define-key evil-motion-state-map (kbd "RET") nil))
+(init-vim-keys)
 
 ;; undo
 (require 'volatile-highlights)
@@ -149,15 +166,17 @@
 (require 'autorevert)
 (setq auto-save-file-name-transforms `((".*" "~/.saves/" t))
       auto-save-list-file-prefix "~/.saves/"
-      backup-directory-alist '(("." . "~/.saves")))
+      backup-directory-alist '(("." . "~/.saves"))
+      auto-revert-interval (if wm-full 5 60))
 (global-auto-revert-mode t)
 (define-key evil-normal-state-map (kbd "gr") 'revert-buffer)
 
 ;; buffer formatting
 (setq-default indent-tabs-mode nil
+              require-final-newline t
               fill-column 80)
 (electric-pair-mode t)
-(global-linum-mode t)
+(global-nlinum-mode t)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 ;; version control
@@ -166,7 +185,7 @@
 (require 'magit)
 (require 'evil-magit)
 (setq auto-revert-check-vc-info t
-      diff-hl-flydiff-delay 1.0
+      diff-hl-flydiff-delay (if wm-full 1.0 10.0)
       magit-commit-show-diff nil)
 (global-diff-hl-mode t)
 (diff-hl-flydiff-mode t)
@@ -198,35 +217,37 @@
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map)
 (define-key evil-normal-state-map (kbd "gp") nil)
 (define-key projectile-mode-map (kbd "C-c p s") 'projectile-ripgrep)
-(all-the-icons-ivy-setup)
+(if wm-full (all-the-icons-ivy-setup))
 
 ;; Window management
-(require 'ace-window)
 (defun ace-revert-buffer (window)
   "Revert the buffer at WINDOW without asking the user for confirmation."
   (with-selected-window window (revert-buffer t t)))
 (defun ace-split-window-fair (&optional window)
   "Split WINDOW into 2."
   (aw-split-window-fair (or window (selected-window))))
-(setq aw-dispatch-always t
-      aw-fair-aspect-ratio 2.35
-      aw-scope 'frame
-      window-min-width 12
-      window-min-height 5)
-(setq aw-dispatch-alist
-  '((?x aw-delete-window " Ace - Delete Window")
-    (?m aw-swap-window " Ace - Swap Window")
-    (?M aw-move-window " Ace - Move Window")
-    (?n aw-flip-window)
-    (?c ace-split-window-fair)
-    (?v aw-split-window-vert " Ace - Split Vert Window")
-    (?r ace-revert-buffer "Revert buffer")
-    (?b aw-split-window-horz " Ace - Split Horz Window")
-    (?i delete-other-windows " Ace - Delete Other Windows")
-    (?o delete-other-windows)))
-(global-set-key (kbd "C-c w") 'ace-window)
-(define-key evil-motion-state-map (kbd "gw") 'ace-window)
-(define-key evil-normal-state-map (kbd "gw") nil)
+(defun init-window-management ()
+  (require 'ace-window)
+  (setq aw-dispatch-always t
+        aw-fair-aspect-ratio 2.35
+        aw-scope 'frame
+        window-min-width 12
+        window-min-height 5)
+  (setq aw-dispatch-alist
+        '((?x aw-delete-window " Ace - Delete Window")
+          (?m aw-swap-window " Ace - Swap Window")
+          (?M aw-move-window " Ace - Move Window")
+          (?n aw-flip-window)
+          (?c ace-split-window-fair)
+          (?v aw-split-window-vert " Ace - Split Vert Window")
+          (?r ace-revert-buffer "Revert buffer")
+          (?b aw-split-window-horz " Ace - Split Horz Window")
+          (?i delete-other-windows " Ace - Delete Other Windows")
+          (?o delete-other-windows)))
+  (global-set-key (kbd "C-c w") 'ace-window)
+  (define-key evil-motion-state-map (kbd "gw") 'ace-window)
+  (define-key evil-normal-state-map (kbd "gw") nil))
+(init-window-management)
 
 ;; Text search
 (require 'counsel-projectile)
@@ -243,7 +264,7 @@
   (add-hook 'racer-mode-hook #'eldoc-mode)
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode))
-;; (init-code-documentation)
+(if wm-full (init-code-documentation))
 
 ;; Code references
 (setq-default xref-backend-functions '()) ;; disable etags xrefs
@@ -268,7 +289,7 @@
   (add-hook 'emacs-lisp-mode-hook #'company-mode)
   (add-hook 'rust-mode-hook #'company-mode)
   (add-hook 'clojure-mode-hook #'company-mode))
-;; (init-autocomplete)
+(if wm-full (init-autocomplete))
 
 ;; Syntax checking
 (defun init-syntax-checking ()
@@ -281,21 +302,21 @@
   (add-hook 'rust-mode-hook #'flycheck-mode)
   (add-hook 'clojure-mode-hook #'flycheck-mode)
   (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-  (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error))
-;; (init-syntax-checking)
+  (define-key evil-normal-state-map (kbd "ge") #'flycheck-next-error))
+(if wm-full (init-syntax-checking))
 
 ;; Spell checking
 (defun init-spell-checking ()
   (interactive)
   (require 'flyspell)
   (require 'flyspell-correct)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  (global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic))
-;; (init-spell-checking)
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode)
+  (add-hook 'text-mode-hook #'flyspell-mode)
+  (global-set-key (kbd "C-c a") #'flyspell-correct-previous-word-generic))
+(if wm-full (init-spell-checking))
 
 ;; Clojure
-(add-hook 'cider-repl-mode-hook 'evil-insert-state)
+(add-hook 'cider-repl-mode-hook #'evil-insert-state)
 
 ;; Rust
 (setenv "RUST_SRC_PATH" (expand-file-name "~/src/rust/src"))
@@ -304,15 +325,15 @@
 (setq-default racer-rust-src-path nil)
 (add-to-list 'exec-path "~/.cargo/bin")
 (setenv "PATH" (concat "~/.cargo/bin:" (getenv "PATH")))
-(add-hook 'rust-mode-hook 'rust-enable-format-on-save)
-(add-hook 'rust-mode-hook 'racer-mode)
+(add-hook 'rust-mode-hook #'rust-enable-format-on-save)
+(if wm-full (add-hook 'rust-mode-hook #'racer-mode))
 (add-hook 'rust-mode-hook
           (lambda ()
             (evil-define-key 'motion racer-mode-map (kbd "gd") 'racer-find-definition)
             (setq-local fill-column 100)
             (setq-local projectile-tags-command "~/.cargo/bin/rusty-tags emacs")
             (setq-local projectile-project-compilation-cmd "cargo build")
-            (setq-local projectile-project-run-cmd "RUST_LOG=warn cargo run")
+            (setq-local projectile-project-run-cmd "cargo run")
             (setq-local projectile-project-test-cmd "cargo test")))
 
 ;; Miscellaneous modes that don't work well with evil.
@@ -332,6 +353,7 @@
 
 (if (file-exists-p "~/local/emacs.el")
     (load-file "~/local/emacs.el"))
+
 
 (provide 'init)
 ;;; init.el ends here
