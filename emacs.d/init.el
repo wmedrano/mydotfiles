@@ -59,6 +59,7 @@
         swiper ;; Search buffers for text
         volatile-highlights ;; Highlight undo
         which-key ;; Discover prefix keys
+        yaml-mode ;; Yaml syntax highlighting
         zenburn-theme ;; Dark theme
 ))
 
@@ -69,31 +70,44 @@
   (package-install-selected-packages))
 
 ;; theming
-(require 'nyan-mode)
 (defun light-theme ()
   "Enable the light theme."
   (interactive)
   (require 'leuven-theme)
   (custom-set-faces '(hl-line ((t (:background "#D5F1CF" :underline nil)))))
   (disable-theme 'spacemacs-dark)
+  (global-hl-line-mode t)
   (load-theme 'leuven t))
 (defun dark-theme ()
   "Enable the dark theme."
   (interactive)
   (disable-theme 'leuven)
+  (global-hl-line-mode -1)
   (load-theme 'spacemacs-dark t))
-(setq inhibit-startup-screen t
-      nyan-animate-nyancat t
-      nyan-bar-length 10
-      nyan-wavy-trail t)
-(blink-cursor-mode -1)
-(light-theme)
-(menu-bar-mode -1)
-(nyan-mode t)
-(nyan-start-animation)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 132)))))
+(defun init-theme ()
+  (require 'neotree)
+  (require 'nyan-mode)
+  (require 'all-the-icons)
+  (require 'all-the-icons-ivy)
+  (setq inhibit-startup-screen t
+	nyan-animate-nyancat t
+	nyan-bar-length 10
+	nyan-wavy-trail t
+	neo-theme 'icons)
+  (blink-cursor-mode -1)
+  (dark-theme)
+  (nyan-mode t)
+  (nyan-start-animation)
+  (custom-set-faces '(default ((t (:family "Fira Mono" :slant normal :width normal :height 132))))))
+(init-theme)
+
+;; Disable nags
+(defun init-disable-nags ()
+  (setq inhibit-startup-screen t)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1))
+(init-disable-nags)
 
 ;; Misc
 (require 'which-key)
@@ -108,22 +122,24 @@
 (evil-mode t)
 (key-chord-mode t)
 (evil-commentary-mode)
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-(define-key evil-normal-state-map (kbd "gs") 'evil-ex-sort)
-(define-key evil-motion-state-map (kbd "J") 'evil-scroll-down)
+(key-chord-define evil-insert-state-map "jj" #'evil-normal-state)
+(define-key evil-normal-state-map (kbd "gs") #'evil-ex-sort)
+(define-key evil-motion-state-map (kbd "J") #'evil-scroll-down)
 (define-key evil-normal-state-map (kbd "J") nil)
-(define-key evil-motion-state-map (kbd "K") 'evil-scroll-up)
+(define-key evil-motion-state-map (kbd "K") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "K") nil)
-(define-key evil-motion-state-map (kbd "L") 'evil-scroll-line-down)
-(define-key evil-motion-state-map (kbd "H") 'evil-scroll-line-up)
-(define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
-(define-key evil-visual-state-map (kbd "TAB") 'indent-for-tab-command)
-(define-key evil-motion-state-map (kbd "q") 'quit-window)
-(define-key evil-motion-state-map (kbd "gd") 'xref-find-definitions)
-(define-key evil-motion-state-map (kbd "gx") 'xref-find-references)
-(define-key evil-motion-state-map (kbd "gX") 'xref-find-apropos)
-(define-key evil-motion-state-map (kbd "gr") 'revert-buffer)
-(define-key evil-normal-state-map (kbd "C-d") 'evil-join)
+(define-key evil-motion-state-map (kbd "L") #'evil-scroll-line-down)
+(define-key evil-motion-state-map (kbd "H") #'evil-scroll-line-up)
+(define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
+(define-key evil-visual-state-map (kbd "TAB") #'indent-for-tab-command)
+(define-key evil-motion-state-map (kbd "q") #'quit-window)
+(define-key evil-motion-state-map (kbd "gd") #'xref-find-definitions)
+(define-key evil-motion-state-map (kbd "gx") #'xref-find-references)
+(define-key evil-motion-state-map (kbd "gX") #'xref-find-apropos)
+(define-key evil-motion-state-map (kbd "gr") #'revert-buffer)
+(define-key evil-normal-state-map (kbd "C-d") #'evil-join)
+(define-key evil-normal-state-map (kbd "RET") #'evil-next-line)
+(define-key evil-motion-state-map (kbd "RET") nil)
 
 ;; undo
 (require 'volatile-highlights)
@@ -131,23 +147,18 @@
 
 ;; file refresh
 (require 'autorevert)
-(setq auto-revert-interval 3
-      auto-save-file-name-transforms `((".*" "~/.saves/" t))
+(setq auto-save-file-name-transforms `((".*" "~/.saves/" t))
       auto-save-list-file-prefix "~/.saves/"
       backup-directory-alist '(("." . "~/.saves")))
 (global-auto-revert-mode t)
 (define-key evil-normal-state-map (kbd "gr") 'revert-buffer)
 
 ;; buffer formatting
-(require 'smooth-scrolling)
-(setq smooth-scroll-margin 3)
 (setq-default indent-tabs-mode nil
               fill-column 80)
 (electric-pair-mode t)
-(global-hl-line-mode t)
 (global-linum-mode t)
-(smooth-scrolling-mode t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 ;; version control
 (require 'diff-hl)
@@ -162,12 +173,9 @@
 
 ;; file tree
 (require 'neotree)
-(require 'all-the-icons)
-(setq neo-theme 'icons)
 (add-to-list 'evil-motion-state-modes 'neotree-mode)
 
 ;; emacs/project management
-(require 'all-the-icons-ivy)
 (require 'counsel)
 (require 'counsel-projectile)
 (require 'flx)
@@ -184,7 +192,7 @@
       ivy-wrap t)
 (counsel-mode)
 (ivy-mode)
-(counsel-projectile-on)
+(counsel-projectile-mode)
 (projectile-mode t)
 (global-set-key (kbd "M-x") #'counsel-M-x)
 (define-key evil-motion-state-map (kbd "gp") 'projectile-command-map)
@@ -229,48 +237,64 @@
 (key-chord-define evil-motion-state-map (kbd "??") 'swiper-all)
 
 ;; Code documentation
-(setq eldoc-echo-area-use-multiline-p t)
+(defun init-code-documentation ()
+  (interactive)
+  (setq eldoc-echo-area-use-multiline-p t)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode))
+;; (init-code-documentation)
 
 ;; Code references
 (setq-default xref-backend-functions '()) ;; disable etags xrefs
 
 ;; Autocompletion
-(require 'company)
-(setq company-selection-wrap-around t
-      company-tooltip-align-annotations t
-      company-tooltip-limit 20
-      company-tooltip-minimum 20
-      company-tooltip-minimum-width 60)
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
-(define-key company-active-map (kbd "RET") nil)
-(define-key company-active-map [return] nil)
-(define-key company-active-map [tab] 'company-complete-selection)
-(define-key company-active-map (kbd "TAB") 'company-complete-selection)
+(defun init-autocomplete ()
+  (interactive)
+  (require 'company)
+  (setq company-selection-wrap-around t
+	company-tooltip-align-annotations t
+	company-tooltip-limit 20
+	company-tooltip-minimum 20
+	company-tooltip-minimum-width 60)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous)
+  (define-key company-active-map (kbd "C-h") #'company-show-doc-buffer)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map [return] nil)
+  (define-key company-active-map [tab] #'company-complete-selection)
+  (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+  (add-to-list 'company-backends 'company-racer)
+  (add-hook 'emacs-lisp-mode-hook #'company-mode)
+  (add-hook 'rust-mode-hook #'company-mode)
+  (add-hook 'clojure-mode-hook #'company-mode))
+;; (init-autocomplete)
 
 ;; Syntax checking
-(require 'flycheck)
-(setq flycheck-check-syntax-automatically '(save mode-enabled))
-(define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error)
+(defun init-syntax-checking ()
+  (interactive)
+  (require 'flycheck)
+  (require 'flycheck-pos-tip)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+  (add-hook 'flycheck-mode-hook #'flycheck-pos-tip-mode)
+  (add-hook 'rust-mode-hook #'flycheck-mode)
+  (add-hook 'clojure-mode-hook #'flycheck-mode)
+  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  (define-key evil-normal-state-map (kbd "ge") 'flycheck-next-error))
+;; (init-syntax-checking)
 
 ;; Spell checking
-(require 'flycheck-pos-tip)
-(require 'flyspell)
-(require 'flyspell-correct)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'flycheck-mode 'flycheck-pos-tip-mode)
-(global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic)
-
-;; Emacs Lisp
-(add-hook 'emacs-lisp-mode-hook 'company-mode)
-(add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
+(defun init-spell-checking ()
+  (interactive)
+  (require 'flyspell)
+  (require 'flyspell-correct)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (global-set-key (kbd "C-c a") 'flyspell-correct-previous-word-generic))
+;; (init-spell-checking)
 
 ;; Clojure
-(add-hook 'cider-mode-hook 'company-mode)
-(add-hook 'cider-mode-hook 'eldoc-mode)
-(add-hook 'cider-mode-hook 'flycheck-mode)
 (add-hook 'cider-repl-mode-hook 'evil-insert-state)
 
 ;; Rust
@@ -280,13 +304,8 @@
 (setq-default racer-rust-src-path nil)
 (add-to-list 'exec-path "~/.cargo/bin")
 (setenv "PATH" (concat "~/.cargo/bin:" (getenv "PATH")))
-(add-to-list 'company-backends 'company-racer)
-(add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
 (add-hook 'rust-mode-hook 'rust-enable-format-on-save)
-(add-hook 'rust-mode-hook 'flycheck-mode)
 (add-hook 'rust-mode-hook 'racer-mode)
-(add-hook 'racer-mode-hook 'company-mode)
-(add-hook 'racer-mode-hook 'eldoc-mode)
 (add-hook 'rust-mode-hook
           (lambda ()
             (evil-define-key 'motion racer-mode-map (kbd "gd") 'racer-find-definition)
@@ -299,6 +318,7 @@
 ;; Miscellaneous modes that don't work well with evil.
 (define-key compilation-mode-map (kbd "g") nil)
 (define-key compilation-mode-map (kbd "r") 'revert-buffer)
+(add-to-list 'evil-motion-state-modes 'profiler-report-mode)
 
 ;; Hide modeline entries
 (diminish 'auto-revert-mode)
